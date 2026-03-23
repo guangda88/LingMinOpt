@@ -25,7 +25,7 @@ python lingresearch_demo.py
 
 **说明**: 这是 LingMinOpt 框架的一个简化演示。完整的 LingResearch 项目请查看：
 - **完整项目**: https://github.com/guangda88/lingresearch
-- **本地路径**: `/home/ai/zhinengresearch/`
+- **本地路径**: `/home/ai/LingResearch/`
 
 完整项目包含：
 - 真实的训练数据和模型

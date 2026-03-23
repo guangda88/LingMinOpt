@@ -37,7 +37,7 @@
    - 目的: 演示框架用法
 
 2. **完整项目** - 保持独立
-   - 位置: `/home/ai/zhinengresearch/`
+   - 位置: `/home/ai/LingResearch/`
    - Git: `guangda88/lingresearch`
    - 状态: 独立项目，未修改
 
@@ -98,7 +98,7 @@ LingMinOpt/
 ```
 ┌─────────────────────────────────┐
 │   LingResearch (独立应用)       │
-│   /home/ai/zhinengresearch/     │
+│   /home/ai/LingResearch/     │
 │   - 真实的自主研究             │
 │   - 依赖 LingMinOpt (未来)      │
 │   - 独立 Git 仓库              │
@@ -138,10 +138,10 @@ LingMinOpt/
 - **示例数量**: 6 个完整示例 + 2 个内部示例
 - **搜索策略**: 4 种 (random, grid, bayesian, annealing)
 
-### LingResearch (zhinengresearch)
+### LingResearch
 
 - **状态**: 未修改
-- **位置**: `/home/ai/zhinengresearch/`
+- **位置**: `/home/ai/LingResearch/`
 - **远程**: github + gitea (保持不变)
 - **关系**: 独立项目，可依赖 LingMinOpt
 
@@ -169,7 +169,7 @@ git push gitea v0.1.0
 如果想让 LingResearch 使用 LingMinOpt：
 
 ```bash
-cd /home/ai/zhinengresearch
+cd /home/ai/LingResearch
 
 # 添加依赖到 pyproject.toml
 # dependencies = ["lingminopt>=0.1.0"]
