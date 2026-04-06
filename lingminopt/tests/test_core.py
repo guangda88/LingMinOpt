@@ -3,18 +3,16 @@ Unit tests for MinOpt core components
 """
 
 import pytest
-import numpy as np
 from lingminopt import (
     MinimalOptimizer,
     SearchSpace,
-    EvaluatorBase,
     FunctionEvaluator,
     ExperimentConfig,
     Experiment,
     OptimizationResult,
 )
 from lingminopt.core.evaluator import TimedEvaluator
-from lingminopt.core.strategy import RandomSearch, GridSearch, BayesianSearch
+from lingminopt.core.strategy import RandomSearch, BayesianSearch
 
 
 class TestSearchSpace:

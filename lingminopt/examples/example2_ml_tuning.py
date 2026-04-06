@@ -186,7 +186,7 @@ print("\n" + "="*60)
 print("Optimization Results")
 print("="*60)
 print(f"Best Accuracy: {-result.best_score:.4f} ({-result.best_score*100:.2f}%)")
-print(f"Best Parameters:")
+print("Best Parameters:")
 for key, value in result.best_params.items():
     print(f"  {key}: {value}")
 

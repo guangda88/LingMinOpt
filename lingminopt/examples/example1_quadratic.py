@@ -40,7 +40,7 @@ optimizer = MinimalOptimizer(
 
 # Run optimization
 print("Starting optimization...")
-print(f"Search strategy: random")
+print("Search strategy: random")
 print(f"Max experiments: {config.max_experiments}")
 print()
 
@@ -52,7 +52,7 @@ print("Optimization Results")
 print("="*60)
 print(f"Best Score: {result.best_score:.6f}")
 print(f"Best Parameters: {result.best_params}")
-print(f"Expected: x ≈ 2.0, y ≈ -3.0")
+print("Expected: x ≈ 2.0, y ≈ -3.0")
 print(f"\nTotal Experiments: {result.total_experiments}")
 print(f"Total Time: {result.total_time:.2f}s")
 print(f"Improvement: {result.improvement:.6f}")

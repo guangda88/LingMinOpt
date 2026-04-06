@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lingminopt"
-version = "0.1.0"
+version = "0.2.0"
 description = "LingMinOpt - A universal minimalist self-optimization framework inspired by 灵研"
 readme = "README.md"
 requires-python = ">=3.8"

@@ -6,6 +6,7 @@ A universal minimalist self-optimization framework inspired by 灵研 (LingResea
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-0.2.0-green.svg)](https://github.com/yourusername/lingminopt)
 
 ## 🌟 核心理念
 
@@ -24,8 +25,9 @@ A universal minimalist self-optimization framework inspired by 灵研 (LingResea
 - **通用**：适用于机器学习、数据库、游戏等多种场景
 - **可扩展**：插件系统和中间件
 - **易用**：CLI 工具和项目模板
-- **高效**：多种搜索策略
+- **高效**：多种搜索策略（随机、网格、贝叶斯、模拟退火）
 - **数据驱动**：基于结果做决策，而非直觉
+- **安全**：输入验证、路径遍历保护、代码加载警告
 
 ## 🚀 快速开始
 
@@ -110,13 +112,15 @@ config = ExperimentConfig(
     max_experiments=100,
     improvement_threshold=0.001,
     time_budget=300,  # 每次实验 5 分钟
-    search_strategy="bayesian"
+    direction="minimize"
 )
 
 optimizer = MinimalOptimizer(
     evaluate=train_and_evaluate,
     search_space=search_space,
-    config=config
+    config=config,
+    search_strategy="bayesian",  # random, grid, bayesian, annealing
+    seed=42  # 可重现的随机种子
 )
 result = optimizer.run()
 ```
@@ -152,6 +156,42 @@ optimizer = MinimalOptimizer(
     search_space=space,
     search_strategy="bayesian"  # random, grid, bayesian, annealing
 )
+```
+
+## 🔐 安全性
+
+LingMinOpt 包含多项安全措施保护用户：
+
+### 输入验证
+
+- 项目名称验证：防止路径遍历攻击（如 `../../../tmp/test`）
+- 配置文件验证：检查结果文件路径、优化方向等
+- 参数验证：离散参数拒绝空选项，连续参数拒绝无效范围
+
+### 代码加载警告
+
+使用 CLI 运行优化时，会显示警告：
+```
+UserWarning: Loading user code from variable.py. Only run code from trusted sources.
+```
+
+建议：
+- 只运行来自可信来源的 `variable.py` 文件
+- 在运行前审查 `variable.py` 内容
+- 在隔离环境中运行未验证的代码
+
+### 最佳实践
+
+```bash
+# ✓ 安全：使用合法的项目名称
+lingminopt init my-safe-project
+
+# ✗ 不安全：尝试路径遍历（会被拒绝）
+lingminopt init "../../../tmp/test"  # 报错：Invalid project name
+
+# ✓ 安全：审查 variable.py 后运行
+cat variable.py  # 先查看代码
+lingminopt run   # 再运行
 ```
 
 ## 📚 应用场景
@@ -300,6 +340,7 @@ pytest --cov=lingminopt tests/
 
 ## 📖 文档
 
+- [CHANGELOG](CHANGELOG.md) - 版本更新历史
 - [API 文档](docs/API.md)
 - [教程](docs/TUTORIAL.md)
 - [高级用法](docs/ADVANCED.md)
