@@ -2,12 +2,13 @@
 Command-line interface for minopt
 """
 
+import re
 import click
 import json
 import os
 import sys
+import warnings
 from pathlib import Path
-from typing import Optional
 
 from ..core import MinimalOptimizer, SearchSpace, OptimizationResult
 from ..config.config import ExperimentConfig
@@ -25,6 +26,73 @@ def setup_logging(level: str = "INFO"):
     handler = logging.StreamHandler()
     handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
     logger.addHandler(handler)
+
+
+def validate_project_name(name: str) -> str:
+    """
+    Validate project name to prevent path traversal.
+
+    Args:
+        name: Project name to validate
+
+    Returns:
+        Validated project name
+
+    Raises:
+        ValueError: If name is invalid
+    """
+    if not re.match(r'^[a-zA-Z0-9_-]+$', name):
+        raise ValueError(
+            "Invalid project name. Use only letters, numbers, underscores, and hyphens."
+        )
+    if name in ['.', '..'] or '/' in name or '\\' in name:
+        raise ValueError("Path traversal not allowed")
+    if len(name) > 100:
+        raise ValueError("Project name too long (max 100 characters)")
+    return name
+
+
+def validate_config_file(filepath: str) -> dict:
+    """
+    Safely load and validate config file.
+
+    Args:
+        filepath: Path to config file
+
+    Returns:
+        Parsed config dictionary
+
+    Raises:
+        ValueError: If config is invalid
+    """
+    try:
+        with open(filepath, "r") as f:
+            data = json.load(f)
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Invalid JSON in config file: {e}")
+    except Exception as e:
+        raise ValueError(f"Error reading config file: {e}")
+
+    # Validate config structure
+    if not isinstance(data, dict):
+        raise ValueError("Config must be a JSON object")
+
+    # Validate output file path to prevent path traversal
+    output_config = data.get("output", {})
+    if "results_file" in output_config:
+        results_file = output_config["results_file"]
+        if '..' in results_file or results_file.startswith('/'):
+            raise ValueError("Invalid results_file: path traversal not allowed")
+        if not results_file.endswith('.json'):
+            raise ValueError("results_file must be a JSON file")
+
+    # Validate optimizer config
+    optimizer_config = data.get("optimizer", {})
+    if "direction" in optimizer_config:
+        if optimizer_config["direction"] not in ["minimize", "maximize"]:
+            raise ValueError("direction must be 'minimize' or 'maximize'")
+
+    return data
 
 
 @click.group()
@@ -45,36 +113,47 @@ def cli():
 @click.option("--force", is_flag=True, help="Overwrite existing directory")
 def init(project_name, template, force):
     """Initialize a new optimization project"""
-    if os.path.exists(project_name) and not force:
-        click.echo(f"Error: Directory '{project_name}' already exists. Use --force to overwrite.")
+    try:
+        # Validate project name
+        project_name = validate_project_name(project_name)
+
+        # Check if directory exists
+        if os.path.exists(project_name) and not force:
+            click.echo(f"Error: Directory '{project_name}' already exists. Use --force to overwrite.")
+            sys.exit(1)
+
+        # Create project directory
+        os.makedirs(project_name, exist_ok=True)
+
+        # Create fixed.py
+        fixed_content = _get_fixed_template(template)
+        with open(os.path.join(project_name, "fixed.py"), "w") as f:
+            f.write(fixed_content)
+
+        # Create variable.py
+        variable_content = _get_variable_template(template)
+        with open(os.path.join(project_name, "variable.py"), "w") as f:
+            f.write(variable_content)
+
+        # Create README.md
+        readme_content = _get_readme_template(project_name, template)
+        with open(os.path.join(project_name, "README.md"), "w") as f:
+            f.write(readme_content)
+
+        # Create config.json
+        config_content = _get_config_template(template)
+        with open(os.path.join(project_name, "config.json"), "w") as f:
+            json.dump(config_content, f, indent=2)
+
+        click.echo(f"✓ Created project '{project_name}' using template '{template}'")
+        click.echo("  - Edit variable.py to define your experiment")
+        click.echo("  - Run 'lingminopt run' to start optimization")
+    except ValueError as e:
+        click.echo(f"Error: {e}", err=True)
         sys.exit(1)
-
-    # Create project directory
-    os.makedirs(project_name, exist_ok=True)
-
-    # Create fixed.py
-    fixed_content = _get_fixed_template(template)
-    with open(os.path.join(project_name, "fixed.py"), "w") as f:
-        f.write(fixed_content)
-
-    # Create variable.py
-    variable_content = _get_variable_template(template)
-    with open(os.path.join(project_name, "variable.py"), "w") as f:
-        f.write(variable_content)
-
-    # Create README.md
-    readme_content = _get_readme_template(project_name, template)
-    with open(os.path.join(project_name, "README.md"), "w") as f:
-        f.write(readme_content)
-
-    # Create config.json
-    config_content = _get_config_template(template)
-    with open(os.path.join(project_name, "config.json"), "w") as f:
-        json.dump(config_content, f, indent=2)
-
-    click.echo(f"✓ Created project '{project_name}' using template '{template}'")
-    click.echo(f"  - Edit variable.py to define your experiment")
-    click.echo(f"  - Run 'minopt run' to start optimization")
+    except Exception as e:
+        click.echo(f"Error creating project: {e}", err=True)
+        sys.exit(1)
 
 
 @cli.command()
@@ -90,64 +169,86 @@ def run(config, max_experiments, verbose):
     """Run optimization"""
     setup_logging("DEBUG" if verbose else "INFO")
 
-    # Load config
-    with open(config, "r") as f:
-        config_data = json.load(f)
+    try:
+        # Load and validate config
+        config_data = validate_config_file(config)
 
-    # Import variable.py (the experiment definition)
-    sys.path.insert(0, os.getcwd())
-    import variable
+        # Check if variable.py exists
+        variable_path = Path(os.getcwd()) / 'variable.py'
+        if not variable_path.exists():
+            click.echo("Error: variable.py not found in current directory")
+            sys.exit(1)
 
-    # Create search space
-    search_space = SearchSpace()
-    if hasattr(variable, "search_space"):
-        search_space = variable.search_space
-    else:
-        # Try to build from config
-        if "search_space" in config_data:
-            search_space.add_from_dict(config_data["search_space"])
+        # Warn about dynamic import
+        warnings.warn(
+            "Loading user code from variable.py. Only run code from trusted sources.",
+            UserWarning,
+            stacklevel=2
+        )
 
-    # Create config
-    exp_config = ExperimentConfig(
-        max_experiments=max_experiments or config_data.get("optimizer", {}).get("max_experiments", 100),
-        improvement_threshold=config_data.get("optimizer", {}).get("improvement_threshold", 0.001),
-        time_budget=config_data.get("resources", {}).get("time_budget", 300.0),
-        early_stopping_patience=config_data.get("optimizer", {}).get("early_stopping_patience", 10),
-        direction=config_data.get("optimizer", {}).get("direction", "minimize"),
-    )
+        # Import variable.py (the experiment definition)
+        sys.path.insert(0, os.getcwd())
+        import variable
 
-    # Create optimizer
-    if hasattr(variable, "run_experiment"):
-        evaluator = variable.run_experiment
-    else:
-        click.echo("Error: variable.py must define a run_experiment() function")
+        # Create search space
+        search_space = SearchSpace()
+        if hasattr(variable, "search_space"):
+            search_space = variable.search_space
+        else:
+            # Try to build from config
+            if "search_space" in config_data:
+                search_space.add_from_dict(config_data["search_space"])
+
+        # Create config
+        exp_config = ExperimentConfig(
+            max_experiments=max_experiments or config_data.get("optimizer", {}).get("max_experiments", 100),
+            improvement_threshold=config_data.get("optimizer", {}).get("improvement_threshold", 0.001),
+            time_budget=config_data.get("resources", {}).get("time_budget", 300.0),
+            early_stopping_patience=config_data.get("optimizer", {}).get("early_stopping_patience", 10),
+            direction=config_data.get("optimizer", {}).get("direction", "minimize"),
+        )
+
+        # Create optimizer
+        if hasattr(variable, "run_experiment"):
+            evaluator = variable.run_experiment
+        else:
+            click.echo("Error: variable.py must define a run_experiment() function")
+            sys.exit(1)
+
+        search_strategy = config_data.get("optimizer", {}).get("search_strategy", "random")
+
+        optimizer = MinimalOptimizer(
+            evaluate=evaluator,
+            search_space=search_space,
+            config=exp_config,
+            search_strategy=search_strategy,
+        )
+
+        # Run optimization
+        result = optimizer.run()
+
+        # Save results
+        results_file = config_data.get("output", {}).get("results_file", "results.json")
+        result.save(results_file)
+
+        click.echo("\n" + "="*60)
+        click.echo("Optimization Complete!")
+        click.echo("="*60)
+        click.echo(f"Best score: {result.best_score:.6f}")
+        click.echo(f"Best params: {result.best_params}")
+        click.echo(f"Improvement: {result.improvement:.6f}")
+        click.echo(f"Total experiments: {result.total_experiments}")
+        click.echo(f"Total time: {result.total_time:.2f}s")
+        click.echo(f"\nResults saved to: {results_file}")
+    except ValueError as e:
+        click.echo(f"Error: {e}", err=True)
         sys.exit(1)
-
-    search_strategy = config_data.get("optimizer", {}).get("search_strategy", "random")
-
-    optimizer = MinimalOptimizer(
-        evaluate=evaluator,
-        search_space=search_space,
-        config=exp_config,
-        search_strategy=search_strategy,
-    )
-
-    # Run optimization
-    result = optimizer.run()
-
-    # Save results
-    results_file = config_data.get("output", {}).get("results_file", "results.json")
-    result.save(results_file)
-
-    click.echo("\n" + "="*60)
-    click.echo("Optimization Complete!")
-    click.echo("="*60)
-    click.echo(f"Best score: {result.best_score:.6f}")
-    click.echo(f"Best params: {result.best_params}")
-    click.echo(f"Improvement: {result.improvement:.6f}")
-    click.echo(f"Total experiments: {result.total_experiments}")
-    click.echo(f"Total time: {result.total_time:.2f}s")
-    click.echo(f"\nResults saved to: {results_file}")
+    except Exception as e:
+        click.echo(f"Error running optimization: {e}", err=True)
+        if verbose:
+            import traceback
+            traceback.print_exc()
+        sys.exit(1)
 
 
 @cli.command()
@@ -166,7 +267,7 @@ def report(results):
     click.echo("="*60)
 
     click.echo(f"\nBest Score: {result.best_score:.6f}")
-    click.echo(f"Best Parameters:")
+    click.echo("Best Parameters:")
     for key, value in result.best_params.items():
         click.echo(f"  {key}: {value}")
 
@@ -174,7 +275,7 @@ def report(results):
     click.echo(f"Total Experiments: {result.total_experiments}")
     click.echo(f"Total Time: {result.total_time:.2f}s")
 
-    click.echo(f"\nExperiment History:")
+    click.echo("\nExperiment History:")
     click.echo(f"{'ID':<5} {'Score':<12} {'Timestamp'}")
     click.echo("-" * 50)
     for exp in result.history:
@@ -248,7 +349,7 @@ Variable parameters and experiment logic (MODIFY THIS)
 This file defines what the AI can modify during optimization.
 """
 
-from minopt import SearchSpace
+from lingminopt import SearchSpace
 
 # Define search space
 search_space = SearchSpace()
@@ -287,7 +388,7 @@ def run_experiment(params):
 Variable parameters for ML optimization (MODIFY THIS)
 """
 
-from minopt import SearchSpace
+from lingminopt import SearchSpace
 import fixed
 
 # Define search space

@@ -5,7 +5,6 @@ Search strategies for parameter optimization
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any, Optional
 import random
-import math
 from .models import Experiment
 from .searcher import SearchSpace
 import logging
@@ -198,12 +197,6 @@ class SimulatedAnnealing(SearchStrategy):
         # If no history yet, use random
         if not history:
             return self.search_space.sample()
-
-        # Find best score for normalization
-        scores = [e.score for e in history]
-        min_score = min(scores)
-        max_score = max(scores)
-        score_range = max_score - min_score if max_score > min_score else 1.0
 
         # Generate neighbor by perturbing current
         new_params = self._perturb(self.current_params)
