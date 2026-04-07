@@ -78,6 +78,8 @@ class MinimalOptimizer:
         start_time = time.time()
         patience_counter = 0
         last_best = self.result.best_score
+        consecutive_failures = 0
+        max_consecutive_failures = max(3, self.config.max_experiments // 5)
 
         logger.info(f"Starting optimization with {self.config.max_experiments} experiments")
 
@@ -94,8 +96,15 @@ class MinimalOptimizer:
             # Evaluate
             try:
                 score = self.evaluate(params)
+                consecutive_failures = 0
             except Exception as e:
-                logger.error(f"Experiment {i} failed: {e}", exc_info=True)
+                consecutive_failures += 1
+                logger.error(f"Experiment {i} failed ({consecutive_failures} consecutive): {e}")
+                if consecutive_failures >= max_consecutive_failures:
+                    logger.error(
+                        f"Aborting: {consecutive_failures} consecutive evaluation failures"
+                    )
+                    break
                 continue
 
             # Update best
