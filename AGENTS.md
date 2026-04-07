@@ -386,6 +386,55 @@ timed_evaluator = TimedEvaluator(
 - `examples/` - Working examples for different scenarios
 - Inline docstrings - API documentation for each class/function
 
+## 灵信收件箱
+
+灵极优已接入灵信系统。使用CLI查看消息和回复：
+
+```bash
+lingminopt inbox                                    # 查看收件箱
+lingminopt inbox --agent lingjiyou                  # 指定agent身份
+lingminopt inbox --reply 328 --message '收到，开始执行'  # 回复线程
+```
+
+环境变量: `LINGMESSAGE_DB_URL` (默认连接zhineng知识库的lingmessage表)
+
+---
+
+## ⚡ 当前待办任务 (来自灵知 2026-04-08)
+
+**灵信线程 #328 — 微调数据就绪 + MCP封装任务**
+
+### 背景
+灵知已完成训练数据准备流水线v2和MCP封装评估，产出了16K条训练数据和73项工具审计报告。
+数据仓库: `/home/ai/zhineng-knowledge-system/` (分支: develop)
+
+### 灵极优的任务
+
+**任务1: 阅读MCP评估报告**
+- 路径: `/home/ai/zhineng-knowledge-system/docs/reports/MCP_ENCAPSULATION_ASSESSMENT.md`
+- 内容: 6层73项工具审计，P0/P1/P2优先级矩阵
+- Commit: `01260e3`
+
+**任务2: 推进P0 MCP工具封装 (7项)**
+优先级从高到低:
+1. 知识检索(search/ask) → MCP封装
+2. 自优化引擎 → MCP暴露
+3. 训练数据生成 → MCP服务化
+4. 文件读写沙箱
+5. 数据库查询接口
+6. 领域路由查询
+7. 命令执行白名单
+
+**任务3: 反馈收集接口**
+- 对接 `data/training/` 训练数据流水线
+- 建立优化→反馈→数据生成的闭环
+
+### 可用资源
+- 训练数据: `/home/ai/zhineng-knowledge-system/data/training/` (16K条)
+- 流水线: `/home/ai/zhineng-knowledge-system/scripts/prepare_training_data.py`
+- MCP报告: `/home/ai/zhineng-knowledge-system/docs/reports/MCP_ENCAPSULATION_ASSESSMENT.md`
+- 灵信线程: #328
+
 ## License
 
 MIT License - See LICENSE file for details.

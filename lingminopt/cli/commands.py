@@ -494,5 +494,111 @@ def _get_config_template(template: str) -> dict:
     }
 
 
+@cli.command()
+@click.option("--agent", default="lingjiyou", help="Agent ID to check messages for")
+@click.option("--threads/--no-threads", default=True, help="Show active threads")
+@click.option("--unread/--all", default=True, help="Only show unread messages")
+@click.option("--reply", default=None, help="Reply to a thread by ID")
+@click.option("--message", default=None, help="Message content for reply")
+@click.option("--db-url", default=None, help="Database URL (or set LINGMESSAGE_DB_URL)")
+def inbox(agent, threads, unread, reply, message, db_url):
+    """灵信收件箱 — 查看和回复灵信消息"""
+    import subprocess
+
+    db = db_url or os.environ.get(
+        "LINGMESSAGE_DB_URL",
+        "postgresql://zhineng:zhineng_secure_2024@localhost:5436/zhineng_kb"
+    )
+
+    if reply and message:
+        _inbox_reply(db, agent, reply, message)
+        return
+
+    _inbox_read(db, agent, threads, unread)
+
+
+def _inbox_read(db_url: str, agent_id: str, show_threads: bool, unread_only: bool):
+    """Read inbox messages from lingmessage database"""
+    import subprocess
+
+    if show_threads:
+        sql = (
+            "SELECT t.id, t.topic, t.status, t.priority, t.current_round, "
+            "  (SELECT COUNT(*) FROM lingmessage_messages m WHERE m.thread_id = t.id) as msg_count "
+            "FROM lingmessage_threads t "
+            "WHERE t.status = 'active' "
+            "ORDER BY t.priority = 'high' DESC, t.created_at DESC "
+            "LIMIT 20"
+        )
+        result = subprocess.run(
+            ["psql", db_url, "-t", "-A", "-F", "|", "-c", sql],
+            capture_output=True, text=True, timeout=10
+        )
+        if result.returncode != 0:
+            click.echo(f"连接灵信失败: {result.stderr.strip()}")
+            return
+        lines = [l for l in result.stdout.strip().split("\n") if l]
+        if not lines:
+            click.echo("📭 没有活跃的议事厅线程")
+            return
+        click.echo(f"\n📋 议事厅线程 (共{len(lines)}个)")
+        click.echo("=" * 70)
+        for line in lines:
+            parts = line.split("|")
+            if len(parts) >= 6:
+                tid, topic, status, priority, rounds, msg_count = parts[:6]
+                flag = "🔴" if priority == "high" else "🟢"
+                click.echo(f"  {flag} #{tid} [{status}] {topic} ({msg_count}条消息)")
+
+    sql_msgs = (
+        "SELECT m.id, m.thread_id, t.topic, a.display_name, "
+        "  LEFT(m.content, 200) as preview, m.message_type, m.created_at "
+        "FROM lingmessage_messages m "
+        "JOIN lingmessage_threads t ON t.id = m.thread_id "
+        "JOIN lingmessage_agents a ON a.agent_id = m.agent_id "
+        f"WHERE m.agent_id != '{agent_id}' "
+        "ORDER BY m.created_at DESC LIMIT 10"
+    )
+    result = subprocess.run(
+        ["psql", db_url, "-t", "-A", "-F", "|", "-c", sql_msgs],
+        capture_output=True, text=True, timeout=10
+    )
+    if result.returncode == 0 and result.stdout.strip():
+        lines = [l for l in result.stdout.strip().split("\n") if l]
+        click.echo(f"\n📬 最新消息 (共{len(lines)}条)")
+        click.echo("=" * 70)
+        for line in lines:
+            parts = line.split("|")
+            if len(parts) >= 7:
+                mid, tid, topic, sender, preview, msg_type, ts = parts[:7]
+                tag = "📌" if msg_type == "task_assignment" else "💬"
+                if msg_type == "direct_mention":
+                    tag = "🔔"
+                click.echo(f"  {tag} [线程#{tid}] {sender} → {preview[:60]}...")
+                click.echo(f"     ({ts})  回复: lingminopt inbox --reply {tid} --message '你的回复'")
+
+
+def _inbox_reply(db_url: str, agent_id: str, thread_id: str, content: str):
+    """Reply to a lingmessage thread"""
+    import subprocess
+
+    sql = (
+        "INSERT INTO lingmessage_messages (thread_id, agent_id, round_number, content, message_type) "
+        "SELECT $1::integer, $2, "
+        "  COALESCE(MAX(round_number), 0) + 1, $3, 'response' "
+        "FROM lingmessage_messages WHERE thread_id = $1::integer"
+    )
+    safe_content = content.replace("'", "''")
+    safe_sql = sql.replace("$1", thread_id).replace("$2", f"'{agent_id}'").replace("$3", f"'{safe_content}'")
+    result = subprocess.run(
+        ["psql", db_url, "-c", safe_sql],
+        capture_output=True, text=True, timeout=10
+    )
+    if result.returncode == 0:
+        click.echo(f"✅ 回复已发送到线程 #{thread_id}")
+    else:
+        click.echo(f"❌ 发送失败: {result.stderr.strip()}")
+
+
 if __name__ == "__main__":
     cli()
