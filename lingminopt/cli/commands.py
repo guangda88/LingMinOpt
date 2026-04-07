@@ -1,5 +1,5 @@
 """
-Command-line interface for minopt
+Command-line interface for lingminopt
 """
 
 import re
@@ -447,8 +447,8 @@ Optimization project using Minimal Optimizer (MinOpt).
 ## Getting Started
 
 1. Edit `variable.py` to define your experiment
-2. Run optimization: `minopt run`
-3. View results: `minopt report`
+2. Run optimization: `lingminopt run`
+3. View results: `lingminopt report`
 
 ## Configuration
 
@@ -465,7 +465,7 @@ Results are saved to `results.json` by default.
 
 This project was created using the '{template}' template.
 
-For more information, visit: https://github.com/yourusername/minopt
+For more information, visit: https://github.com/yourusername/lingminopt
 '''
 
 
@@ -503,12 +503,10 @@ def _get_config_template(template: str) -> dict:
 @click.option("--db-url", default=None, help="Database URL (or set LINGMESSAGE_DB_URL)")
 def inbox(agent, threads, unread, reply, message, db_url):
     """灵信收件箱 — 查看和回复灵信消息"""
-    import subprocess
-
-    db = db_url or os.environ.get(
-        "LINGMESSAGE_DB_URL",
-        "postgresql://zhineng:zhineng_secure_2024@localhost:5436/zhineng_kb"
-    )
+    db = db_url or os.environ.get("LINGMESSAGE_DB_URL")
+    if not db:
+        click.echo("❌ 请设置环境变量 LINGMESSAGE_DB_URL 或使用 --db-url 参数")
+        return
 
     if reply and message:
         _inbox_reply(db, agent, reply, message)
@@ -519,85 +517,80 @@ def inbox(agent, threads, unread, reply, message, db_url):
 
 def _inbox_read(db_url: str, agent_id: str, show_threads: bool, unread_only: bool):
     """Read inbox messages from lingmessage database"""
-    import subprocess
+    import asyncio
 
-    if show_threads:
-        sql = (
-            "SELECT t.id, t.topic, t.status, t.priority, t.current_round, "
-            "  (SELECT COUNT(*) FROM lingmessage_messages m WHERE m.thread_id = t.id) as msg_count "
-            "FROM lingmessage_threads t "
-            "WHERE t.status = 'active' "
-            "ORDER BY t.priority = 'high' DESC, t.created_at DESC "
-            "LIMIT 20"
-        )
-        result = subprocess.run(
-            ["psql", db_url, "-t", "-A", "-F", "|", "-c", sql],
-            capture_output=True, text=True, timeout=10
-        )
-        if result.returncode != 0:
-            click.echo(f"连接灵信失败: {result.stderr.strip()}")
-            return
-        lines = [l for l in result.stdout.strip().split("\n") if l]
-        if not lines:
-            click.echo("📭 没有活跃的议事厅线程")
-            return
-        click.echo(f"\n📋 议事厅线程 (共{len(lines)}个)")
-        click.echo("=" * 70)
-        for line in lines:
-            parts = line.split("|")
-            if len(parts) >= 6:
-                tid, topic, status, priority, rounds, msg_count = parts[:6]
-                flag = "🔴" if priority == "high" else "🟢"
-                click.echo(f"  {flag} #{tid} [{status}] {topic} ({msg_count}条消息)")
+    async def _read():
+        import asyncpg
 
-    sql_msgs = (
-        "SELECT m.id, m.thread_id, t.topic, a.display_name, "
-        "  LEFT(m.content, 200) as preview, m.message_type, m.created_at "
-        "FROM lingmessage_messages m "
-        "JOIN lingmessage_threads t ON t.id = m.thread_id "
-        "JOIN lingmessage_agents a ON a.agent_id = m.agent_id "
-        f"WHERE m.agent_id != '{agent_id}' "
-        "ORDER BY m.created_at DESC LIMIT 10"
-    )
-    result = subprocess.run(
-        ["psql", db_url, "-t", "-A", "-F", "|", "-c", sql_msgs],
-        capture_output=True, text=True, timeout=10
-    )
-    if result.returncode == 0 and result.stdout.strip():
-        lines = [l for l in result.stdout.strip().split("\n") if l]
-        click.echo(f"\n📬 最新消息 (共{len(lines)}条)")
-        click.echo("=" * 70)
-        for line in lines:
-            parts = line.split("|")
-            if len(parts) >= 7:
-                mid, tid, topic, sender, preview, msg_type, ts = parts[:7]
-                tag = "📌" if msg_type == "task_assignment" else "💬"
-                if msg_type == "direct_mention":
-                    tag = "🔔"
-                click.echo(f"  {tag} [线程#{tid}] {sender} → {preview[:60]}...")
-                click.echo(f"     ({ts})  回复: lingminopt inbox --reply {tid} --message '你的回复'")
+        conn = await asyncpg.connect(db_url)
+        try:
+            if show_threads:
+                rows = await conn.fetch(
+                    "SELECT t.id, t.topic, t.status, t.priority, t.current_round, "
+                    "  (SELECT COUNT(*) FROM lingmessage_messages m WHERE m.thread_id = t.id) as msg_count "
+                    "FROM lingmessage_threads t "
+                    "WHERE t.status = 'active' "
+                    "ORDER BY t.priority = 'high' DESC, t.created_at DESC "
+                    "LIMIT 20"
+                )
+                if not rows:
+                    click.echo("📭 没有活跃的议事厅线程")
+                    return
+                click.echo(f"\n📋 议事厅线程 (共{len(rows)}个)")
+                click.echo("=" * 70)
+                for r in rows:
+                    flag = "🔴" if r["priority"] == "high" else "🟢"
+                    click.echo(f"  {flag} #{r['id']} [{r['status']}] {r['topic']} ({r['msg_count']}条消息)")
+
+            rows = await conn.fetch(
+                "SELECT m.id, m.thread_id, t.topic, a.display_name, "
+                "  LEFT(m.content, 200) as preview, m.message_type, m.created_at "
+                "FROM lingmessage_messages m "
+                "JOIN lingmessage_threads t ON t.id = m.thread_id "
+                "JOIN lingmessage_agents a ON a.agent_id = m.agent_id "
+                "WHERE m.agent_id != $1 "
+                "ORDER BY m.created_at DESC LIMIT 10",
+                agent_id
+            )
+            if rows:
+                click.echo(f"\n📬 最新消息 (共{len(rows)}条)")
+                click.echo("=" * 70)
+                for r in rows:
+                    msg_type = r["message_type"]
+                    tag = "📌" if msg_type == "task_assignment" else ("🔔" if msg_type == "direct_mention" else "💬")
+                    preview = (r["preview"] or "")[:60]
+                    click.echo(f"  {tag} [线程#{r['thread_id']}] {r['display_name']} → {preview}...")
+                    click.echo(f"     ({r['created_at']})  回复: lingminopt inbox --reply {r['thread_id']} --message '你的回复'")
+        finally:
+            await conn.close()
+
+    asyncio.run(_read())
 
 
 def _inbox_reply(db_url: str, agent_id: str, thread_id: str, content: str):
     """Reply to a lingmessage thread"""
-    import subprocess
+    import asyncio
 
-    sql = (
-        "INSERT INTO lingmessage_messages (thread_id, agent_id, round_number, content, message_type) "
-        "SELECT $1::integer, $2, "
-        "  COALESCE(MAX(round_number), 0) + 1, $3, 'response' "
-        "FROM lingmessage_messages WHERE thread_id = $1::integer"
-    )
-    safe_content = content.replace("'", "''")
-    safe_sql = sql.replace("$1", thread_id).replace("$2", f"'{agent_id}'").replace("$3", f"'{safe_content}'")
-    result = subprocess.run(
-        ["psql", db_url, "-c", safe_sql],
-        capture_output=True, text=True, timeout=10
-    )
-    if result.returncode == 0:
-        click.echo(f"✅ 回复已发送到线程 #{thread_id}")
-    else:
-        click.echo(f"❌ 发送失败: {result.stderr.strip()}")
+    async def _reply():
+        import asyncpg
+
+        conn = await asyncpg.connect(db_url)
+        try:
+            await conn.execute(
+                "INSERT INTO lingmessage_messages (thread_id, agent_id, round_number, content, message_type) "
+                "SELECT $1::integer, $2, "
+                "  COALESCE(MAX(round_number), 0) + 1, $3, 'response' "
+                "FROM lingmessage_messages WHERE thread_id = $1::integer",
+                int(thread_id), agent_id, content
+            )
+            click.echo(f"✅ 回复已发送到线程 #{thread_id}")
+        finally:
+            await conn.close()
+
+    try:
+        asyncio.run(_reply())
+    except Exception as e:
+        click.echo(f"❌ 发送失败: {e}")
 
 
 if __name__ == "__main__":

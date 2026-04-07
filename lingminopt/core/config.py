@@ -1,10 +1,3 @@
-from dataclasses import dataclass
+from lingminopt.config.config import ExperimentConfig
 
-@dataclass
-class ExperimentConfig:
-    max_experiments: int = 50
-    improvement_threshold: float = 0.01
-    time_budget: float = 300
-    early_stopping_patience: int = 10
-    direction: str = "minimize"
-    random_seed: int = 42
+__all__ = ["ExperimentConfig"]

@@ -359,5 +359,71 @@ class TestModels:
         assert loaded.total_experiments == result.total_experiments
 
 
+class TestAuditRegressions:
+    """Regression tests for audit findings (v0.3.0)"""
+
+    def test_consecutive_failures_abort(self):
+        """C1: Optimizer must abort after consecutive failures, not run silently."""
+        call_count = 0
+
+        def always_fails(params):
+            nonlocal call_count
+            call_count += 1
+            raise RuntimeError("deliberate failure")
+
+        space = SearchSpace()
+        space.add_continuous("x", 0.0, 1.0)
+
+        config = ExperimentConfig(max_experiments=100, time_budget=10.0)
+        optimizer = MinimalOptimizer(
+            evaluate=always_fails,
+            search_space=space,
+            config=config,
+            search_strategy="random",
+            seed=42,
+        )
+
+        result = optimizer.run()
+
+        assert call_count <= 20, f"Ran {call_count} times without aborting"
+        assert result.total_experiments == 0
+        assert result.total_time > 0
+
+    def test_single_failure_does_not_abort(self):
+        """C1: A single failure should not abort — optimizer should continue."""
+        results = [None, 1.0, None, 2.0, None, 3.0, None, 4.0, None, 5.0]
+        call_count = 0
+
+        def flaky_evaluator(params):
+            nonlocal call_count
+            val = results[call_count] if call_count < len(results) else 0.0
+            call_count += 1
+            if val is None:
+                raise ValueError("flaky")
+            return val
+
+        space = SearchSpace()
+        space.add_continuous("x", 0.0, 1.0)
+
+        config = ExperimentConfig(max_experiments=20, time_budget=10.0, early_stopping_patience=20)
+        optimizer = MinimalOptimizer(
+            evaluate=flaky_evaluator,
+            search_space=space,
+            config=config,
+            search_strategy="random",
+            seed=42,
+        )
+
+        result = optimizer.run()
+        assert result.total_experiments > 0, "Should have at least 1 successful experiment"
+
+    def test_experiment_config_single_source(self):
+        """H1: core.config should re-export from config.config (single source of truth)."""
+        from lingminopt.core.config import ExperimentConfig as CoreConfig
+        from lingminopt.config.config import ExperimentConfig as CanonicalConfig
+
+        assert CoreConfig is CanonicalConfig, "core.config should re-export from config.config"
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
