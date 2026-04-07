@@ -515,8 +515,18 @@ def inbox(agent, threads, unread, reply, message, db_url):
     _inbox_read(db, agent, threads, unread)
 
 
-def _inbox_read(db_url: str, agent_id: str, show_threads: bool, unread_only: bool):
-    """Read inbox messages from lingmessage database"""
+def _inbox_read(db_url: str, agent_id: str, show_threads: bool, unread_only: bool) -> None:
+    """Read inbox messages from LingMessage PostgreSQL database.
+
+    Displays active threads and recent messages addressed to or excluding
+    the given agent. Uses asyncpg for parameterized queries to prevent SQL injection.
+
+    Args:
+        db_url: PostgreSQL connection string (from LINGMESSAGE_DB_URL or --db-url)
+        agent_id: Agent identifier to filter messages (e.g. 'lingjiyou')
+        show_threads: Whether to display active thread list before messages
+        unread_only: Whether to show only unread messages (currently unused)
+    """
     import asyncio
 
     async def _read():
@@ -567,8 +577,18 @@ def _inbox_read(db_url: str, agent_id: str, show_threads: bool, unread_only: boo
     asyncio.run(_read())
 
 
-def _inbox_reply(db_url: str, agent_id: str, thread_id: str, content: str):
-    """Reply to a lingmessage thread"""
+def _inbox_reply(db_url: str, agent_id: str, thread_id: str, content: str) -> None:
+    """Reply to a LingMessage thread via PostgreSQL.
+
+    Inserts a response message into the specified thread with auto-incremented
+    round number. Uses asyncpg parameterized queries to prevent SQL injection.
+
+    Args:
+        db_url: PostgreSQL connection string
+        agent_id: Agent identifier sending the reply
+        thread_id: Numeric thread ID to reply to
+        content: Message body text
+    """
     import asyncio
 
     async def _reply():

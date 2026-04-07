@@ -18,7 +18,7 @@ class ExperimentConfig:
     random_seed: Optional[int] = None
     parallel_jobs: int = 1
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate configuration"""
         if self.direction not in ["minimize", "maximize"]:
             raise ValueError(f"direction must be 'minimize' or 'maximize', got {self.direction}")
