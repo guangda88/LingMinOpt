@@ -400,38 +400,39 @@ lingminopt inbox --reply 328 --message '收到，开始执行'  # 回复线程
 
 ---
 
-## ⚡ 当前待办任务 (来自灵知 2026-04-08)
+## ⚡ 当前待办任务 (来自灵知 2026-04-08, 更新 2026-04-09)
 
-**灵信线程 #328 — 微调数据就绪 + MCP封装任务**
+**灵信线程 #328 — MCP封装进度更新**
 
-### 背景
-灵知已完成训练数据准备流水线v2和MCP封装评估，产出了16K条训练数据和73项工具审计报告。
-数据仓库: `/home/ai/zhineng-knowledge-system/` (分支: develop)
+### P0 进度 (5/7 完成 ✅, 1 部分完成 ⚠️, 1 未开始 ❌)
 
-### 灵极优的任务
+| # | P0 项 | 状态 | MCP工具名 |
+|---|-------|------|-----------|
+| 1 | 知识检索 (search+ask) | ✅ 完成 | `knowledge_search`, `ask_question` |
+| 2 | 训练数据生成 | ✅ 完成 | `generate_training_data` |
+| 3 | 自优化引擎 | ⚠️ 部分 | `optimization_status`, `submit_feedback` (只读+反馈，无执行触发) |
+| 4 | 文件读写沙箱 | ❌ 未开始 | 需要新建 (低可行性=6) |
+| 5 | 数据库查询 | ✅ 完成 | `safe_db_query` (白名单表) |
+| 6 | 领域路由查询 | ✅ 完成 | `domain_query` |
+| 7 | 命令执行白名单 | ❌ 未开始 | 需要新建 (最低可行性=5) |
 
-**任务1: 阅读MCP评估报告**
-- 路径: `/home/ai/zhineng-knowledge-system/docs/reports/MCP_ENCAPSULATION_ASSESSMENT.md`
-- 内容: 6层73项工具审计，P0/P1/P2优先级矩阵
-- Commit: `01260e3`
+### 剩余任务
 
-**任务2: 推进P0 MCP工具封装 (7项)**
-优先级从高到低:
-1. 知识检索(search/ask) → MCP封装
-2. 自优化引擎 → MCP暴露
-3. 训练数据生成 → MCP服务化
-4. 文件读写沙箱
-5. 数据库查询接口
-6. 领域路由查询
-7. 命令执行白名单
+**任务1: 完善自优化引擎 MCP**
+- 当前只有 `optimization_status` (只读) 和 `submit_feedback` (提交)
+- 需要添加: 触发优化执行的工具、优化结果查询
 
-**任务3: 反馈收集接口**
+**任务2: 评估是否需要文件沙箱和命令执行**
+- 这两项可行性评分最低 (6/5)，可能不需要自建
+- 现有 Crush 工具已覆盖 view/write/edit/bash
+
+**任务3: 反馈闭环优化**
 - 对接 `data/training/` 训练数据流水线
 - 建立优化→反馈→数据生成的闭环
 
 ### 可用资源
+- MCP Server: `/home/ai/zhineng-knowledge-system/mcp_servers/zhineng_server.py` (474行, commit `3e70347`)
 - 训练数据: `/home/ai/zhineng-knowledge-system/data/training/` (16K条)
-- 流水线: `/home/ai/zhineng-knowledge-system/scripts/prepare_training_data.py`
 - MCP报告: `/home/ai/zhineng-knowledge-system/docs/reports/MCP_ENCAPSULATION_ASSESSMENT.md`
 - 灵信线程: #328
 
