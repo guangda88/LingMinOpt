@@ -26,7 +26,7 @@ class EvaluatorBase(ABC):
         """
         pass
 
-    def setup(self, params: Dict[str, Any]):
+    def setup(self, params: Dict[str, Any]) -> None:
         """
         Setup before evaluation (optional).
 
@@ -35,7 +35,7 @@ class EvaluatorBase(ABC):
         """
         pass
 
-    def cleanup(self, params: Dict[str, Any]):
+    def cleanup(self, params: Dict[str, Any]) -> None:
         """
         Cleanup after evaluation (optional).
 

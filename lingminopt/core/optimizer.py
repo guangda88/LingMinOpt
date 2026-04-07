@@ -4,7 +4,7 @@ Optimization engine
 
 import time
 import logging
-from typing import Callable, Dict, Any
+from typing import Callable, Dict, Any, Optional
 from lingminopt.core.searcher import SearchSpace
 from lingminopt.core.models import Experiment, OptimizationResult
 from lingminopt.config.config import ExperimentConfig
@@ -20,9 +20,9 @@ class MinimalOptimizer:
         self,
         evaluate: Callable[[Dict[str, Any]], float],
         search_space: SearchSpace,
-        config: ExperimentConfig = None,
+        config: Optional[ExperimentConfig] = None,
         search_strategy: str = "random",
-        seed: int = None
+        seed: Optional[int] = None
     ):
         """
         Initialize the optimizer.
