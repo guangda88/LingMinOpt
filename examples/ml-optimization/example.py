@@ -167,7 +167,7 @@ def main():
     print("=" * 70)
     print()
     print(f"最佳验证损失: {result.best_score:.6f}")
-    print(f"最佳超参数:")
+    print("最佳超参数:")
     for key, value in result.best_params.items():
         print(f"  {key}: {value}")
     print()
