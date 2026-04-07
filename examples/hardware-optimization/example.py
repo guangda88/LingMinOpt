@@ -78,7 +78,7 @@ def benchmark_program(exe_file, num_runs=10):
         start_time = time.time()
 
         # 运行程序
-        result = subprocess.run(
+        subprocess.run(
             [exe_file],
             capture_output=True,
             timeout=30
@@ -307,7 +307,7 @@ def main():
     print("=" * 70)
     print()
     print(f"最佳执行时间: {result.best_score:.4f} 秒")
-    print(f"最佳编译标志:")
+    print("最佳编译标志:")
     for key, value in result.best_params.items():
         if value is not None and value != "":
             print(f"  {key}: {value}")
@@ -324,7 +324,7 @@ def main():
     print()
 
     best_flags = build_flags(result.best_params)
-    print(f"编译命令:")
+    print("编译命令:")
     print(f"  gcc {' '.join(best_flags)} -o optimized_program")
     print()
 

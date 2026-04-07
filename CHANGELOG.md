@@ -2,6 +2,34 @@
 
 All notable changes to LingMinOpt will be documented in this file.
 
+## [0.2.1] - 2026-04-07
+
+### Security (Critical)
+- **C1**: Fixed silent exception swallowing in optimizer — added consecutive failure tracking with abort after `max(3, max_experiments//5)` failures
+- **C2**: Eliminated SQL injection in inbox CLI — replaced string concatenation with asyncpg parameterized queries
+- **C3**: Removed hardcoded database credentials — now requires `LINGMESSAGE_DB_URL` env var or `--db-url` parameter
+
+### Fixed
+- **H1**: Resolved duplicate `ExperimentConfig` — `core/config.py` now re-exports from `config/config.py`
+- **H2**: Fixed 4 instances of `minopt` → `lingminopt` in CLI templates
+- **M3**: Removed unused `import subprocess`
+- **M4**: Replaced variable name `l` with proper dict row access
+
+### Refactored
+- Converted package examples (`example1_quadratic.py`, `example2_ml_tuning.py`) from `print()` to `logging`
+- Added type hints to `core/optimizer.py`, `core/searcher.py`, `core/evaluator.py`, `config/config.py`
+- Added docstrings to `_inbox_read()` and `_inbox_reply()` CLI functions
+- Fixed ruff warnings in external examples (f-string without placeholders, unused variable)
+
+### Testing
+- 55 tests total (29 core + 26 new CLI)
+- New CLI tests: `validate_project_name` (9), `validate_config_file` (8), `cli init` (5), `cli report` (2), `cli inbox` (2)
+- New audit regression tests: `test_consecutive_failures_abort`, `test_single_failure_does_not_abort`, `test_experiment_config_single_source`
+
+### Documentation
+- Added `AUDIT_REPORT.md` — full system audit against 灵通宪章 and 灵信章程
+- Added `TASK_LIST.md` — P0/P1/P2 task tracking with status
+
 ## [0.2.0] - 2026-04-06
 
 ### Added
