@@ -12,12 +12,13 @@ from lingminopt.core.strategy import (
     GridSearch,
     BayesianSearch,
     SimulatedAnnealing,
+    TPESearch,
     create_strategy,
 )
 from lingminopt.config.config import ExperimentConfig
 from lingminopt.utils.logger import setup_logger
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __all__ = [
     "MinimalOptimizer",
     "SearchSpace",
@@ -31,6 +32,7 @@ __all__ = [
     "GridSearch",
     "BayesianSearch",
     "SimulatedAnnealing",
+    "TPESearch",
     "create_strategy",
     "ExperimentConfig",
     "setup_logger",

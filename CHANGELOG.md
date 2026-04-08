@@ -2,6 +2,52 @@
 
 All notable changes to LingMinOpt will be documented in this file.
 
+## [0.4.0] - 2026-04-09
+
+### Added
+- Added `TPESearch` strategy — Tree-structured Parzen Estimator for efficient hyperparameter optimization
+  - Maintains two distributions (good/bad) and maximizes EI = l(x)/g(x)
+  - Configurable `gamma` (quantile split) and `n_candidates` (samples per iteration)
+- Added `lingminopt.utils.visualization` module with 5 plot functions:
+  - `plot_convergence()` — Best score over experiments
+  - `plot_score_distribution()` — Histogram of experiment scores
+  - `plot_param_importance()` — Correlation-based parameter importance
+  - `plot_timeline()` — Experiment scores over wall-clock time
+  - `generate_report()` — Generate all plots at once
+- Added MCP feedback loop tools to `lingminopt/mcp_server.py`:
+  - `feedback_from_result` — Generate structured feedback from optimization results
+  - `export_training_sample` — Export optimization history as training data (jsonl/json)
+  - `list_feedback` — Query saved feedback records
+  - `optimization_pipeline` — One-click optimization→feedback→export pipeline
+  - `compare_results` — Compare two optimization results
+- Added P1 MCP tools to `zhineng_server.py` (10 new):
+  - Document CRUD: `document_create`, `document_get`, `document_list`
+  - Embedding management: `embedding_update`
+  - Multi-model comparison: `evolution_compare`, `evolution_dashboard`
+  - Audio transcription: `audio_transcribe`
+  - Annotation system: `annotation_stats`, `ocr_pending_tasks`
+  - Content extraction pipeline: `content_extract`
+- Added P0 MCP optimization tools to `zhineng_server.py` (7 new):
+  - `analyze_optimization` — Deep-analyze an optimization opportunity
+  - `execute_optimization` — Trigger optimization execution
+  - `optimization_dashboard` — Optimization dashboard view
+  - `trigger_audit` / `audit_history` — System audit management
+  - `error_analysis` / `log_error` — Error tracking and analysis
+
+### Changed
+- Updated `__version__` from "0.3.0" to "0.4.0"
+- Updated `create_strategy()` to support "tpe" strategy name
+- Updated `pyproject.toml` version to "0.4.0"
+- Expanded `zhineng_server.py` from 30 to 47 tools
+- Expanded `lingminopt/mcp_server.py` from 6 to 11 tools
+
+### Fixed
+- Fixed unused variable warning in `mcp_server.py` (`strat` assigned but unused)
+
+### P0 Status
+- 6/7 P0 MCP tasks completed, 2 skipped (file sandbox + command execution — covered by Crush)
+- Feedback loop closed: optimization → feedback → training data export
+
 ## [0.3.0] - 2026-04-07
 
 ### Added

@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lingminopt"
-version = "0.2.0"
-description = "LingMinOpt - A universal minimalist self-optimization framework inspired by 灵研"
+version = "0.4.0"
+description = "LingMinOpt (灵极优) — A universal minimalist self-optimization framework"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
@@ -60,13 +60,13 @@ bayesian = [
 lingminopt = "lingminopt.cli.commands:cli"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/lingminopt"
-Documentation = "https://github.com/yourusername/lingminopt/blob/main/README.md"
-Repository = "https://github.com/yourusername/lingminopt"
-"Bug Tracker" = "https://github.com/yourusername/lingminopt/issues"
+Homepage = "https://github.com/zhineng-knowledge-system/LingMinOpt"
+Documentation = "https://github.com/zhineng-knowledge-system/LingMinOpt/blob/main/README.md"
+Repository = "https://github.com/zhineng-knowledge-system/LingMinOpt"
+"Bug Tracker" = "https://github.com/zhineng-knowledge-system/LingMinOpt/issues"
 
 [tool.setuptools]
-packages = ["lingminopt", "lingminopt.core", "lingminopt.config", "lingminopt.utils", "lingminopt.cli"]
+packages = ["lingminopt", "lingminopt.core", "lingminopt.config", "lingminopt.utils", "lingminopt.cli", "lingminopt.tests"]
 
 [tool.black]
 line-length = 100

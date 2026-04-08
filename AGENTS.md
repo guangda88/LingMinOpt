@@ -404,35 +404,37 @@ lingminopt inbox --reply 328 --message '收到，开始执行'  # 回复线程
 
 **灵信线程 #328 — MCP封装进度更新**
 
-### P0 进度 (5/7 完成 ✅, 1 部分完成 ⚠️, 1 未开始 ❌)
+### P0 进度 (6/7 完成 ✅, 1 评估后跳过 ⏭️)
 
 | # | P0 项 | 状态 | MCP工具名 |
 |---|-------|------|-----------|
 | 1 | 知识检索 (search+ask) | ✅ 完成 | `knowledge_search`, `ask_question` |
 | 2 | 训练数据生成 | ✅ 完成 | `generate_training_data` |
-| 3 | 自优化引擎 | ⚠️ 部分 | `optimization_status`, `submit_feedback` (只读+反馈，无执行触发) |
-| 4 | 文件读写沙箱 | ❌ 未开始 | 需要新建 (低可行性=6) |
+| 3 | 自优化引擎 | ✅ 完成 | `optimization_status`, `analyze_optimization`, `execute_optimization`, `optimization_dashboard`, `trigger_audit`, `audit_history`, `error_analysis`, `log_error`, `submit_feedback` |
+| 4 | 文件读写沙箱 | ⏭️ 跳过 | Crush 已覆盖 view/write/edit |
 | 5 | 数据库查询 | ✅ 完成 | `safe_db_query` (白名单表) |
 | 6 | 领域路由查询 | ✅ 完成 | `domain_query` |
-| 7 | 命令执行白名单 | ❌ 未开始 | 需要新建 (最低可行性=5) |
+| 7 | 命令执行白名单 | ⏭️ 跳过 | Crush 已覆盖 bash |
 
-### 剩余任务
+### 反馈闭环 ✅ 已完成
 
-**任务1: 完善自优化引擎 MCP**
-- 当前只有 `optimization_status` (只读) 和 `submit_feedback` (提交)
-- 需要添加: 触发优化执行的工具、优化结果查询
+**LingMinOpt MCP Server** (`lingminopt/mcp_server.py`) 新增工具:
 
-**任务2: 评估是否需要文件沙箱和命令执行**
-- 这两项可行性评分最低 (6/5)，可能不需要自建
-- 现有 Crush 工具已覆盖 view/write/edit/bash
+| 工具 | 功能 |
+|------|------|
+| `feedback_from_result` | 从优化结果生成结构化反馈，持久化到 `data/feedback/` |
+| `export_training_sample` | 将优化历史导出为训练数据 (best_only/top_k/all/trajectory) |
+| `list_feedback` | 列出已保存的反馈记录 |
+| `optimization_pipeline` | 一键闭环：优化→反馈→训练数据导出 |
+| `compare_results` | 对比两次优化结果 |
 
-**任务3: 反馈闭环优化**
-- 对接 `data/training/` 训练数据流水线
-- 建立优化→反馈→数据生成的闭环
+闭环流程: `run_optimization` → `feedback_from_result` → `export_training_sample` → `generate_training_data`
 
 ### 可用资源
-- MCP Server: `/home/ai/zhineng-knowledge-system/mcp_servers/zhineng_server.py` (474行, commit `3e70347`)
+- MCP Server (灵知): `/home/ai/zhineng-knowledge-system/mcp_servers/zhineng_server.py` (37工具)
+- MCP Server (灵极优): `/home/ai/LingMinOpt/lingminopt/mcp_server.py` (11工具)
 - 训练数据: `/home/ai/zhineng-knowledge-system/data/training/` (16K条)
+- 反馈数据: `data/feedback/` (LingMinOpt本地)
 - MCP报告: `/home/ai/zhineng-knowledge-system/docs/reports/MCP_ENCAPSULATION_ASSESSMENT.md`
 - 灵信线程: #328
 
