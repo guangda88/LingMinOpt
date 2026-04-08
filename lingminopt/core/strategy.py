@@ -3,7 +3,9 @@ Search strategies for parameter optimization
 """
 
 from abc import ABC, abstractmethod
+from itertools import product
 from typing import List, Dict, Any, Optional
+import math
 import random
 from .models import Experiment
 from .searcher import SearchSpace
@@ -53,9 +55,21 @@ class RandomSearch(SearchStrategy):
 class GridSearch(SearchStrategy):
     """Grid search strategy (exhaustive search)"""
 
-    def __init__(self, search_space: SearchSpace, seed: Optional[int] = None):
-        """Initialize grid search"""
+    def __init__(
+        self,
+        search_space: SearchSpace,
+        seed: Optional[int] = None,
+        grid_points_per_axis: int = 5,
+    ):
+        """Initialize grid search
+
+        Args:
+            search_space: The search space to explore
+            seed: Random seed for reproducibility
+            grid_points_per_axis: Number of grid points per continuous parameter
+        """
         super().__init__(search_space, seed)
+        self.grid_points_per_axis = grid_points_per_axis
         self.grid_points = self._generate_grid()
         self.current_index = 0
 
@@ -73,15 +87,12 @@ class GridSearch(SearchStrategy):
             if config.param_type == "discrete":
                 param_values[name] = config.choices
             else:  # continuous
-                # Use 5 equally spaced points
                 param_values[name] = [
-                    config.min_val + (i / 4.0) * (config.max_val - config.min_val)
-                    for i in range(5)
+                    config.min_val + (i / max(1, self.grid_points_per_axis - 1)) * (config.max_val - config.min_val)
+                    for i in range(self.grid_points_per_axis)
                 ]
 
         # Generate all combinations
-        from itertools import product
-
         for values in product(*[param_values[name] for name in param_names]):
             params = dict(zip(param_names, values))
             grid_points.append(params)
@@ -189,28 +200,53 @@ class SimulatedAnnealing(SearchStrategy):
         """Suggest parameters using simulated annealing"""
         self.history = history
 
-        # First suggestion
+        # First suggestion: initialize from history if available
         if self.current_params is None:
-            self.current_params = self.search_space.sample()
-            return self.current_params
+            if history and len(history) > 0:
+                # Initialize from best experiment in history
+                best = min(history, key=lambda e: e.score)
+                self.current_params = best.params
+                self.current_score = best.score
+            else:
+                # No history, use random sample
+                self.current_params = self.search_space.sample()
+            # Generate and return suggestion (don't cool down yet)
+            new_params = self._perturb(self.current_params)
+            return new_params
 
-        # If no history yet, use random
-        if not history:
-            return self.search_space.sample()
+        # If we have history, update current_score from latest result
+        if history:
+            latest = history[-1]
+            new_score = latest.score
+
+            if self.current_score is not None:
+                delta = new_score - self.current_score
+                if delta < 0:
+                    # Improvement (minimizing): always accept
+                    self.current_score = new_score
+                    self.current_params = latest.params
+                elif self.current_temp > 1e-10:
+                    # Worse: accept with probability exp(-delta / temp)
+                    acceptance_prob = math.exp(-delta / self.current_temp)
+                    if self.rng.random() < acceptance_prob:
+                        self.current_score = new_score
+                        self.current_params = latest.params
+                    # else: keep current_params and current_score
+                else:
+                    # Temperature too low: reject
+                    pass
+            else:
+                # First score recorded (shouldn't happen if initialized from history)
+                self.current_score = new_score
+                self.current_params = latest.params
 
         # Generate neighbor by perturbing current
         new_params = self._perturb(self.current_params)
 
-        # Evaluate acceptance probability
-        # Since we're minimizing, lower score is better
-        # If we had score, we could compute delta, but we don't have it yet
-        # So we'll just accept the perturbation
-        self.current_params = new_params
-
         # Cool down
         self.current_temp *= self.cooling_rate
 
-        return self.current_params
+        return new_params
 
     def _perturb(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Perturb parameters to generate neighbor"""

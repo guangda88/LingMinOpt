@@ -2,6 +2,47 @@
 
 All notable changes to LingMinOpt will be documented in this file.
 
+## [0.3.0] - 2026-04-07
+
+### Added
+- Added `callbacks` parameter to `MinimalOptimizer.__init__()` — list of functions called after each experiment with full info dict (experiment_id, params, score, best_score, best_params, improved, elapsed, total_experiments)
+- Added `Experiment.to_json()` method for JSON serialization
+- Added `Experiment.save()` and `Experiment.load()` class methods for file persistence
+- Added `Experiment.__post_init__` validation — rejects negative experiment_id, NaN scores, and inf scores
+- Added `grid_points_per_axis` parameter to `GridSearch.__init__()` (default 5) for configurable grid density
+- Added `setup_logger()` function with `RotatingFileHandler` support (10MB default, 5 backups)
+- Added `file_level`, `max_bytes`, `backup_count` parameters to `setup_logger()` for flexible logging configuration
+- Added exports to `__init__.py`: `SearchStrategy`, `create_strategy`, `setup_logger`, `__version__`
+- Added comprehensive test suite for v0.3.0 features (24 new tests)
+
+### Fixed
+- Fixed `SimulatedAnnealing.suggest_next()` — now properly implements Metropolis-Hastings acceptance criterion:
+  - Delta < 0 (improvement): always accept
+  - Delta > 0 (worse): accept with probability exp(-delta/temp)
+  - Initialize from best experiment in history when first called with history
+- Fixed `SimulatedAnnealing` temperature cooling — now cools after each suggestion (not on first call)
+- Fixed global random seed pollution — removed `random.seed()` call from `MinimalOptimizer.run()` to preserve global state
+- Removed redundant `from datetime import datetime` inside loop in `MinimalOptimizer.run()`
+- Fixed logger handler management — removed `logger.handlers.clear()` to avoid destroying external handlers, added `logger.propagate = False` guard
+
+### Changed
+- Updated `__version__` from "0.2.0" to "0.3.0"
+- Updated `__all__` in `__init__.py` to include all new exports
+- Updated CLI version option to use `__version__` from package instead of hardcoded "0.1.0"
+- Fixed README template: "Minimal Optimizer (MinOpt)" → "LingMinOpt (灵极优)"
+- Improved `Experiment.from_dict()` to handle missing `timestamp` gracefully (defaults to `now()`)
+
+### Testing
+- All 79 tests passing (55 existing + 24 new)
+- New test classes:
+  - `TestSimulatedAnnealingAcceptance` (4 tests)
+  - `TestGridSearchConfigurablePoints` (3 tests)
+  - `TestExperimentSerialization` (5 tests)
+  - `TestOptimizerCallbacks` (3 tests)
+  - `TestCreateStrategyKwargsForwarding` (3 tests)
+  - `TestSetupLogger` (2 tests)
+  - `TestPackageExports` (4 tests)
+
 ## [0.2.1] - 2026-04-07
 
 ### Security (Critical)

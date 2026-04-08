@@ -4,7 +4,8 @@ Optimization engine
 
 import time
 import logging
-from typing import Callable, Dict, Any, Optional
+from datetime import datetime
+from typing import Callable, Dict, Any, Optional, List
 from lingminopt.core.searcher import SearchSpace
 from lingminopt.core.models import Experiment, OptimizationResult
 from lingminopt.config.config import ExperimentConfig
@@ -22,7 +23,8 @@ class MinimalOptimizer:
         search_space: SearchSpace,
         config: Optional[ExperimentConfig] = None,
         search_strategy: str = "random",
-        seed: Optional[int] = None
+        seed: Optional[int] = None,
+        callbacks: Optional[List[Callable[[Dict[str, Any]], None]]] = None,
     ):
         """
         Initialize the optimizer.
@@ -33,12 +35,16 @@ class MinimalOptimizer:
             config: ExperimentConfig for optimization settings
             search_strategy: Strategy name ('random', 'grid', 'bayesian', 'annealing')
             seed: Random seed for reproducibility
+            callbacks: Optional list of callbacks invoked after each experiment.
+                       Each callback receives a dict with keys: experiment_id, params,
+                       score, best_score, best_params, improved, elapsed, total_experiments.
         """
         self.evaluate = evaluate
         self.search_space = search_space
         self.config = config or ExperimentConfig()
         self.search_strategy = search_strategy
         self.seed = seed or self.config.random_seed
+        self.callbacks = callbacks or []
 
         # Initialize result
         if self.config.direction == "minimize":
@@ -62,13 +68,6 @@ class MinimalOptimizer:
         Returns:
             OptimizationResult with best parameters and history
         """
-        import random
-
-        # Set random seed
-        if self.seed is not None:
-            random.seed(self.seed)
-
-        # Create search strategy
         strategy = create_strategy(
             self.search_strategy,
             self.search_space,
@@ -84,16 +83,13 @@ class MinimalOptimizer:
         logger.info(f"Starting optimization with {self.config.max_experiments} experiments")
 
         for i in range(self.config.max_experiments):
-            # Check time budget
             elapsed = time.time() - start_time
             if elapsed > self.config.time_budget:
                 logger.info(f"Time budget exceeded: {elapsed:.2f}s > {self.config.time_budget}s")
                 break
 
-            # Get next parameters from strategy
             params = strategy.suggest_next(self.result.history)
 
-            # Evaluate
             try:
                 score = self.evaluate(params)
                 consecutive_failures = 0
@@ -107,7 +103,6 @@ class MinimalOptimizer:
                     break
                 continue
 
-            # Update best
             improved = self.config.is_better(score, self.result.best_score)
 
             if improved:
@@ -123,8 +118,6 @@ class MinimalOptimizer:
                     logger.info(f"Early stopping after {patience_counter} experiments without improvement")
                     break
 
-            # Record history
-            from datetime import datetime
             exp = Experiment(
                 experiment_id=i,
                 params=params,
@@ -134,7 +127,18 @@ class MinimalOptimizer:
             self.result.history.append(exp)
             self.result.total_experiments += 1
 
-            # Log progress
+            for cb in self.callbacks:
+                cb({
+                    "experiment_id": i,
+                    "params": params,
+                    "score": score,
+                    "best_score": self.result.best_score,
+                    "best_params": self.result.best_params,
+                    "improved": improved,
+                    "elapsed": time.time() - start_time,
+                    "total_experiments": self.result.total_experiments,
+                })
+
             if (i + 1) % 10 == 0:
                 logger.info(f"Progress: {i + 1}/{self.config.max_experiments} experiments")
 

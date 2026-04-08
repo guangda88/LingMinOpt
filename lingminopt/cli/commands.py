@@ -12,6 +12,7 @@ from pathlib import Path
 
 from ..core import MinimalOptimizer, SearchSpace, OptimizationResult
 from ..config.config import ExperimentConfig
+from .. import __version__
 
 # Setup logging
 logger = None
@@ -96,7 +97,7 @@ def validate_config_file(filepath: str) -> dict:
 
 
 @click.group()
-@click.version_option(version="0.1.0")
+@click.version_option(version=__version__)
 def cli():
     """Minimal Optimizer - A universal self-optimization framework"""
     pass
@@ -442,7 +443,7 @@ def _get_readme_template(project_name: str, template: str) -> str:
     """Get README.md template content"""
     return f'''# {project_name}
 
-Optimization project using Minimal Optimizer (MinOpt).
+Optimization project using LingMinOpt (灵极优).
 
 ## Getting Started
 
