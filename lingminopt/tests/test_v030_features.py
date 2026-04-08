@@ -329,6 +329,6 @@ class TestPackageExports:
         assert SearchStrategy is not None
 
     def test_version_updated(self):
-        """__version__ should reflect v0.3.0."""
+        """__version__ should reflect v0.4.0."""
         from lingminopt import __version__
-        assert __version__ == "0.3.0"
+        assert __version__ == "0.4.0"

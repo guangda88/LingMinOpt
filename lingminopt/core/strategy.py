@@ -274,6 +274,130 @@ class SimulatedAnnealing(SearchStrategy):
         return new_params
 
 
+class TPESearch(SearchStrategy):
+    """Tree-structured Parzen Estimator (TPE) search strategy.
+
+    Maintains two distributions over parameter values:
+    - l(x): distribution of params from good (below quantile) experiments
+    - g(x): distribution of params from bad (above quantile) experiments
+    Samples candidates from l(x), evaluates EI = l(x)/g(x), picks the best.
+    """
+
+    def __init__(
+        self,
+        search_space: SearchSpace,
+        seed: Optional[int] = None,
+        gamma: float = 0.25,
+        n_candidates: int = 24,
+    ):
+        super().__init__(search_space, seed)
+        self.gamma = gamma
+        self.n_candidates = n_candidates
+
+    def suggest_next(self, history: List[Experiment]) -> Dict[str, Any]:
+        self.history = history
+
+        if len(history) < 3:
+            return self.search_space.sample()
+
+        scores = [e.score for e in history]
+        threshold = sorted(scores)[max(0, int(len(scores) * self.gamma) - 1)]
+
+        good = [e for e in history if e.score <= threshold]
+        bad = [e for e in history if e.score > threshold]
+
+        if not good:
+            good = [min(history, key=lambda e: e.score)]
+        if not bad:
+            bad = [max(history, key=lambda e: e.score)]
+
+        best_params = None
+        best_ei = -1.0
+
+        for _ in range(self.n_candidates):
+            candidate = {}
+            log_ei = 0.0
+            for name, config in self.search_space.parameters.items():
+                if config.param_type == "discrete":
+                    val, score = self._tpe_discrete(config, good, bad, name)
+                    candidate[name] = val
+                    log_ei += score
+                else:
+                    val, score = self._tpe_continuous(config, good, bad, name)
+                    candidate[name] = val
+                    log_ei += score
+
+            if log_ei > best_ei:
+                best_ei = log_ei
+                best_params = candidate
+
+        return best_params if best_params is not None else self.search_space.sample()
+
+    def _tpe_discrete(
+        self, config: Any, good: List[Experiment], bad: List[Experiment], name: str
+    ) -> tuple:
+        good_vals = [e.params.get(name) for e in good if name in e.params]
+        bad_vals = [e.params.get(name) for e in bad if name in e.params]
+
+        if not good_vals:
+            return self.rng.choice(config.choices), 0.0
+
+        choice = self.rng.choice(config.choices)
+
+        good_counts: Dict[Any, int] = {}
+        for v in good_vals:
+            good_counts[v] = good_counts.get(v, 0) + 1
+        bad_counts: Dict[Any, int] = {}
+        for v in bad_vals:
+            bad_counts[v] = bad_counts.get(v, 0) + 1
+
+        total_good = len(good_vals) + len(config.choices)
+        total_bad = len(bad_vals) + len(config.choices)
+
+        p_good = (good_counts.get(choice, 0) + 1) / total_good
+        p_bad = (bad_counts.get(choice, 0) + 1) / total_bad
+
+        log_ei = math.log(p_good) - math.log(p_bad)
+        return choice, log_ei
+
+    def _tpe_continuous(
+        self, config: Any, good: List[Experiment], bad: List[Experiment], name: str
+    ) -> tuple:
+        good_vals = [e.params.get(name) for e in good if name in e.params]
+        bad_vals = [e.params.get(name) for e in bad if name in e.params]
+
+        if not good_vals:
+            return self.rng.uniform(config.min_val, config.max_val), 0.0
+
+        bandwidth = (config.max_val - config.min_val) * 0.1
+
+        if self.rng.random() < 0.7:
+            base = self.rng.choice(good_vals)
+        else:
+            base = self.rng.uniform(config.min_val, config.max_val)
+
+        val = base + self.rng.gauss(0, bandwidth)
+        val = max(config.min_val, min(config.max_val, val))
+
+        p_good = self._kde_density(val, good_vals, bandwidth, config.max_val - config.min_val)
+        p_bad = self._kde_density(val, bad_vals, bandwidth, config.max_val - config.min_val)
+
+        log_ei = math.log(max(p_good, 1e-12)) - math.log(max(p_bad, 1e-12))
+        return val, log_ei
+
+    @staticmethod
+    def _kde_density(x: float, values: list, bw: float, range_size: float) -> float:
+        n = len(values)
+        if n == 0:
+            return 1.0 / range_size
+        density = 0.0
+        for v in values:
+            u = (x - v) / bw
+            density += math.exp(-0.5 * u * u)
+        density /= n * bw * math.sqrt(2 * math.pi)
+        return density
+
+
 # Strategy factory
 def create_strategy(
     strategy_name: str,
@@ -285,7 +409,7 @@ def create_strategy(
     Create a search strategy by name.
 
     Args:
-        strategy_name: Name of the strategy ("random", "grid", "bayesian", "annealing")
+        strategy_name: Name of the strategy ("random", "grid", "bayesian", "annealing", "tpe")
         search_space: The search space
         seed: Random seed
         **kwargs: Additional arguments for specific strategies
@@ -298,6 +422,7 @@ def create_strategy(
         "grid": GridSearch,
         "bayesian": BayesianSearch,
         "annealing": SimulatedAnnealing,
+        "tpe": TPESearch,
     }
 
     if strategy_name not in strategies:
