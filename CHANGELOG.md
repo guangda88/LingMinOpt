@@ -204,3 +204,6 @@ All notable changes to LingMinOpt will be documented in this file.
 - Random search, Grid search, Bayesian search, Simulated annealing strategies
 - CLI tool with init, run, report commands
 - Project templates (minimal, ml-optimization)
+
+## [Unreleased]
+- Preparing for release
