@@ -6,7 +6,7 @@ A universal minimalist self-optimization framework inspired by 灵研 (LingResea
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.2.0-green.svg)](https://github.com/yourusername/lingminopt)
+[![Version](https://img.shields.io/badge/version-0.4.0-green.svg)](https://github.com/yourusername/lingminopt)
 
 ## 🌟 核心理念
 

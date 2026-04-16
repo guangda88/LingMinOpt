@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lingminopt"
-version = "0.4.0"
+version = "0.5.0"
 description = "LingMinOpt (灵极优) — A universal minimalist self-optimization framework"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -66,7 +66,7 @@ Repository = "https://github.com/zhineng-knowledge-system/LingMinOpt"
 "Bug Tracker" = "https://github.com/zhineng-knowledge-system/LingMinOpt/issues"
 
 [tool.setuptools]
-packages = ["lingminopt", "lingminopt.core", "lingminopt.config", "lingminopt.utils", "lingminopt.cli", "lingminopt.tests"]
+packages = ["lingminopt", "lingminopt.core", "lingminopt.config", "lingminopt.utils", "lingminopt.cli", "lingminopt.tests", "lingminopt.meta_optimizer"]
 
 [tool.black]
 line-length = 100

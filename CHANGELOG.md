@@ -2,6 +2,46 @@
 
 All notable changes to LingMinOpt will be documented in this file.
 
+## [0.5.0] - 2026-04-13
+
+### Added
+- Added `lingminopt.meta_optimizer` module — Meta Knowledge Optimizer (MKO):
+  - `MetaOptimizer` — orchestrates prompt/routing/retry optimization via LingMinOpt's own engine
+  - `DataCollector` — reads LingClaude session JSON files into `SessionRecord` dataclasses
+  - `FeatureExtractor` — infers intent (8 types) and complexity from queries via keyword matching
+  - 4 predefined `SearchSpace` factories: prompt, routing, retry, combined meta
+  - `PromptEvaluator`, `RoutingEvaluator`, `RetryEvaluator` — simulate config against historical records (0–1 composite score)
+  - `ReportGenerator` — generates Markdown, JSON, config-file, and before/after comparison reports
+  - `optimize_all()` — one-call pipeline for prompt + routing + retry optimization
+- Added `lingminopt meta-optimize` CLI command with `--sessions-dir`, `--strategy`, `--experiments`, `--output` options
+- Exported MKO classes (`MetaOptimizer`, `DataCollector`, `SessionRecord`, `FeatureExtractor`, `TaskFeatures`, `ReportGenerator`) from top-level `lingminopt` package
+- Added design document: `docs/META_KNOWLEDGE_OPTIMIZATION.md`
+- Added 27 new tests for meta_optimizer module
+
+### Changed
+- Updated `__version__` from "0.4.0" to "0.5.0"
+- Updated `pyproject.toml` to include `lingminopt.meta_optimizer` in packages list
+- Updated version test to expect "0.5.0"
+
+### Fixed
+- Fixed 6 ruff F541 warnings (f-string without placeholders) in `report_generator.py`
+- Fixed ruff F401 warning (unused `tempfile` import) in `test_meta_optimizer.py`
+
+### Testing
+- All 120 tests passing (93 existing + 27 new)
+- New test classes:
+  - `TestSessionRecord` (2 tests)
+  - `TestDataCollector` (4 tests)
+  - `TestTaskFeatures` (3 tests)
+  - `TestFeatureExtractor` (4 tests)
+  - `TestSearchSpaces` (3 tests)
+  - `TestPromptEvaluator` (2 tests)
+  - `TestRoutingEvaluator` (1 test)
+  - `TestRetryEvaluator` (1 test)
+  - `TestMetaOptimizer` (3 tests)
+  - `TestReportGenerator` (3 tests)
+  - `TestMetaOptimizeCLI` (1 test)
+
 ## [0.4.0] - 2026-04-09
 
 ### Added
