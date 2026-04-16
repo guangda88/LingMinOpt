@@ -11,6 +11,7 @@
 
 from __future__ import annotations
 
+import ast
 import json
 import uuid
 from datetime import datetime
@@ -18,6 +19,61 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 from mcp.server.fastmcp import FastMCP
+
+_FORBIDDEN_AST = (
+    ast.Import, ast.ImportFrom, ast.Global,
+)
+_FORBIDDEN_ATTR_PREFIXES = ("__", "os", "sys", "subprocess", "builtins", "shutil", "pathlib")
+_FORBIDDEN_NAMES = frozenset({
+    "exec", "eval", "compile", "__import__", "open", "input",
+    "globals", "locals", "vars", "dir", "getattr", "setattr", "delattr",
+    "breakpoint", "exit", "quit",
+})
+
+
+def _validate_evaluate_code(code: str, max_len: int = 4096) -> str:
+    if len(code) > max_len:
+        raise ValueError(f"evaluate_code exceeds {max_len} chars")
+    indented = f"def _evaluate(params):\n    {code}"
+    try:
+        tree = ast.parse(indented)
+    except SyntaxError as e:
+        raise ValueError(f"Syntax error in evaluate_code: {e}") from e
+    func_def = tree.body[0]
+    if not isinstance(func_def, ast.FunctionDef):
+        raise ValueError("evaluate_code must be a function body")
+    for node in ast.walk(func_def):
+        if isinstance(node, _FORBIDDEN_AST):
+            raise ValueError(f"Forbidden AST node: {type(node).__name__}")
+        if isinstance(node, ast.Name) and node.id in _FORBIDDEN_NAMES:
+            raise ValueError(f"Forbidden name: {node.id}")
+        if isinstance(node, ast.Call):
+            func = node.func
+            if isinstance(func, ast.Name) and func.id in _FORBIDDEN_NAMES:
+                raise ValueError(f"Forbidden call: {func.id}")
+        if isinstance(node, ast.Attribute):
+            attr_name = node.attr
+            if isinstance(node.value, ast.Name) and node.value.id in ("os", "sys", "subprocess", "builtins", "shutil", "pathlib"):
+                raise ValueError(f"Forbidden module access: {node.value.id}.{attr_name}")
+            if attr_name.startswith("__"):
+                raise ValueError(f"Forbidden dunder attribute: {attr_name}")
+    return code
+
+
+_SAFE_BUILTINS = {
+    "min": min, "max": max, "abs": abs, "round": round,
+    "len": len, "sum": sum, "pow": pow, "float": float, "int": int,
+    "True": True, "False": False, "None": None,
+    "print": print,
+}
+
+
+def _build_evaluate_fn(evaluate_code: str) -> Any:
+    validated = _validate_evaluate_code(evaluate_code)
+    local_vars: dict[str, Any] = {}
+    exec(f"def _evaluate(params):\n    {validated}", {"__builtins__": _SAFE_BUILTINS}, local_vars)
+    return local_vars["_evaluate"]
+
 
 _FEEDBACK_DIR = Path("data/feedback")
 _TRAINING_EXPORT_DIR = Path("data/training_exports")
@@ -57,10 +113,9 @@ def tool_run_optimization(
         direction=direction,
         time_budget=time_budget,
     )
-    local_vars: dict[str, Any] = {}
-    exec(f"def _evaluate(params):\n    {evaluate_code}", local_vars)
+    evaluate_fn = _build_evaluate_fn(evaluate_code)
     optimizer = MinimalOptimizer(
-        evaluate=local_vars["_evaluate"],
+        evaluate=evaluate_fn,
         search_space=space,
         config=config,
         search_strategy=strategy,
@@ -391,10 +446,9 @@ def tool_optimization_pipeline(
         direction=direction,
         time_budget=time_budget,
     )
-    local_vars: dict[str, Any] = {}
-    exec(f"def _evaluate(params):\n    {evaluate_code}", local_vars)
+    evaluate_fn = _build_evaluate_fn(evaluate_code)
     optimizer = MinimalOptimizer(
-        evaluate=local_vars["_evaluate"],
+        evaluate=evaluate_fn,
         search_space=space,
         config=config,
         search_strategy=strategy,
@@ -436,6 +490,11 @@ def tool_optimization_pipeline(
 
 
 def main():
+    try:
+        from lingmessage.registry import register_fastmcp_server
+        register_fastmcp_server("lingminopt", "灵极优", mcp, "极简优化")
+    except Exception:
+        pass
     mcp.run()
 
 

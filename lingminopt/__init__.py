@@ -17,8 +17,16 @@ from lingminopt.core.strategy import (
 )
 from lingminopt.config.config import ExperimentConfig
 from lingminopt.utils.logger import setup_logger
+from lingminopt.meta_optimizer import (
+    MetaOptimizer,
+    DataCollector,
+    SessionRecord,
+    FeatureExtractor,
+    TaskFeatures,
+    ReportGenerator,
+)
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 __all__ = [
     "MinimalOptimizer",
     "SearchSpace",
@@ -36,5 +44,11 @@ __all__ = [
     "create_strategy",
     "ExperimentConfig",
     "setup_logger",
+    "MetaOptimizer",
+    "DataCollector",
+    "SessionRecord",
+    "FeatureExtractor",
+    "TaskFeatures",
+    "ReportGenerator",
     "__version__",
 ]

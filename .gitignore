@@ -50,3 +50,9 @@ results_*.json
 *.tmp
 *.bak
 *.log
+
+# AI agent identity cache
+.crush/
+
+# Audit records
+.audit/
