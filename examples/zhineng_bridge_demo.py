@@ -2,8 +2,15 @@ import sys
 import time
 from pathlib import Path
 
+_BRIDGE_OPT_DIR = Path(__file__).parent.parent.parent / "zhineng-bridge" / "optimization"
+if not (_BRIDGE_OPT_DIR / "variable.py").exists():
+    print("⚠️  安全限制: 此示例需要智桥优化模块，但路径不在灵极优管辖范围内。")
+    print(f"   期望路径: {_BRIDGE_OPT_DIR}")
+    print("   请在智桥项目中独立运行此优化。")
+    sys.exit(0)
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "zhineng-bridge" / "optimization"))
+sys.path.insert(0, str(_BRIDGE_OPT_DIR))
 
 from lingminopt import MinimalOptimizer, SearchSpace, ExperimentConfig
 from variable import create_websocket_search_space, create_performance_search_space

@@ -1,17 +1,19 @@
 """灵极优 MCP Server — 优化工具 + 反馈闭环。
 
-工具清单 (11):
+工具清单 (12):
   搜索空间: create_search_space
   优化执行: run_optimization, get_optimization_status
   策略管理: create_strategy_profile
   结果管理: load_results, compare_results, create_experiment_config
   反馈闭环: feedback_from_result, export_training_sample, list_feedback
   一键闭环: optimization_pipeline
+  审计日志: list_audit_log
 """
 
 from __future__ import annotations
 
 import ast
+import functools
 import json
 import uuid
 from datetime import datetime
@@ -77,6 +79,33 @@ def _build_evaluate_fn(evaluate_code: str) -> Any:
 
 _FEEDBACK_DIR = Path("data/feedback")
 _TRAINING_EXPORT_DIR = Path("data/training_exports")
+_AUDIT_LOG_PATH = Path("data/audit_log.jsonl")
+
+
+def _audit_log(tool_name: str, params: dict, result_summary: dict | None = None) -> None:
+    _AUDIT_LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+    entry = {
+        "timestamp": datetime.now().isoformat(),
+        "tool": tool_name,
+        "params_keys": list(params.keys()),
+        "result_summary": result_summary or {},
+    }
+    with open(_AUDIT_LOG_PATH, "a") as f:
+        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
+
+def _audit_wrap(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        tool_name = getattr(func, "__name__", str(func))
+        _audit_log(tool_name, kwargs)
+        result = func(*args, **kwargs)
+        if isinstance(result, dict):
+            summary_keys = [k for k in ("status", "error", "id", "saved_to", "count") if k in result]
+            _audit_log(f"{tool_name}_result", {k: result[k] for k in summary_keys})
+        return result
+    return wrapper
+
 
 mcp = FastMCP(
     name="LingMinOpt",
@@ -84,6 +113,7 @@ mcp = FastMCP(
 )
 
 
+@_audit_wrap
 @mcp.tool(name="create_search_space", description="创建搜索空间（灵空）")
 def tool_create_search_space(config_json: str) -> dict:
     """从JSON配置创建搜索空间。config_json 格式: {"discrete": {"name": [choices]}, "continuous": {"name": [min, max]}}。"""
@@ -95,6 +125,7 @@ def tool_create_search_space(config_json: str) -> dict:
     return {"status": "created", "sample_params": sample}
 
 
+@_audit_wrap
 @mcp.tool(name="run_optimization", description="运行优化（灵优）")
 def tool_run_optimization(
     search_space_config: str,
@@ -124,12 +155,14 @@ def tool_run_optimization(
     return result.to_dict()
 
 
+@_audit_wrap
 @mcp.tool(name="get_optimization_status", description="优化状态（灵态）")
 def tool_get_optimization_status() -> dict:
     """返回当前优化运行状态（需要有正在运行的优化实例）。"""
     return {"status": "no_active_run", "message": "灵极优无活跃优化任务，请先调用 run_optimization"}
 
 
+@_audit_wrap
 @mcp.tool(name="create_strategy_profile", description="创建优化策略（灵策）")
 def tool_create_strategy_profile(
     strategy_name: str,
@@ -145,6 +178,7 @@ def tool_create_strategy_profile(
     return {"strategy": strategy_name, "space_params": list(space.sample().keys())}
 
 
+@_audit_wrap
 @mcp.tool(name="load_results", description="加载优化结果（灵果）")
 def tool_load_results(filepath: str) -> dict:
     """从JSON文件加载历史优化结果。"""
@@ -154,6 +188,7 @@ def tool_load_results(filepath: str) -> dict:
     return result.to_dict()
 
 
+@_audit_wrap
 @mcp.tool(name="compare_results", description="对比优化结果（灵比）")
 def tool_compare_results(filepath_a: str, filepath_b: str) -> dict:
     """对比两次优化结果，返回差异分析。
@@ -196,6 +231,7 @@ def tool_compare_results(filepath_a: str, filepath_b: str) -> dict:
     }
 
 
+@_audit_wrap
 @mcp.tool(name="create_experiment_config", description="创建实验配置（灵配）")
 def tool_create_experiment_config(
     max_experiments: int = 100,
@@ -231,6 +267,7 @@ def tool_create_experiment_config(
 # ---------------------------------------------------------------------------
 
 
+@_audit_wrap
 @mcp.tool(name="feedback_from_result", description="从优化结果生成反馈（灵馈）")
 def tool_feedback_from_result(
     result_filepath: str,
@@ -286,6 +323,7 @@ def tool_feedback_from_result(
     return feedback
 
 
+@_audit_wrap
 @mcp.tool(name="export_training_sample", description="导出训练样本（灵出）")
 def tool_export_training_sample(
     result_filepath: str,
@@ -382,6 +420,7 @@ def _exp_to_training(
     return entry
 
 
+@_audit_wrap
 @mcp.tool(name="list_feedback", description="列出反馈记录（灵列）")
 def tool_list_feedback(
     feedback_type: str = "",
@@ -412,6 +451,7 @@ def tool_list_feedback(
     return {"feedbacks": feedbacks, "count": len(feedbacks)}
 
 
+@_audit_wrap
 @mcp.tool(name="optimization_pipeline", description="优化闭环流水线（灵环）")
 def tool_optimization_pipeline(
     search_space_config: str,
@@ -487,6 +527,29 @@ def tool_optimization_pipeline(
             "saved_to": export.get("saved_to"),
         },
     }
+
+
+@_audit_wrap
+@mcp.tool(name="list_audit_log", description="查看审计日志（灵审）")
+def tool_list_audit_log(limit: int = 50, tool_filter: str = "") -> dict:
+    """查看MCP工具调用审计日志。"""
+    if not _AUDIT_LOG_PATH.exists():
+        return {"entries": [], "count": 0}
+    entries = []
+    with open(_AUDIT_LOG_PATH) as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                entry = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if tool_filter and entry.get("tool", "") != tool_filter:
+                continue
+            entries.append(entry)
+    entries = entries[-limit:]
+    return {"entries": entries, "count": len(entries)}
 
 
 def main():
