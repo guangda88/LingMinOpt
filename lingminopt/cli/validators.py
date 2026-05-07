@@ -4,6 +4,7 @@ Validation helpers for lingminopt CLI.
 
 import json
 import re
+from pathlib import Path
 
 
 def validate_project_name(name: str) -> str:
@@ -21,7 +22,7 @@ def validate_project_name(name: str) -> str:
 def _validate_output_config(output_config: dict) -> None:
     if "results_file" in output_config:
         results_file = output_config["results_file"]
-        if '..' in results_file or results_file.startswith('/'):
+        if '..' in results_file or Path(results_file).is_absolute():
             raise ValueError("Invalid results_file: path traversal not allowed")
         if not results_file.endswith('.json'):
             raise ValueError("results_file must be a JSON file")
