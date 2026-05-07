@@ -33,6 +33,21 @@ _FORBIDDEN_NAMES = frozenset({
 })
 
 
+def _check_ast_node(node: ast.AST) -> None:
+    if isinstance(node, _FORBIDDEN_AST):
+        raise ValueError(f"Forbidden AST node: {type(node).__name__}")
+    if isinstance(node, ast.Name) and node.id in _FORBIDDEN_NAMES:
+        raise ValueError(f"Forbidden name: {node.id}")
+    if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id in _FORBIDDEN_NAMES:
+        raise ValueError(f"Forbidden call: {node.func.id}")
+    if isinstance(node, ast.Attribute):
+        attr_name = node.attr
+        if isinstance(node.value, ast.Name) and node.value.id in ("os", "sys", "subprocess", "builtins", "shutil", "pathlib"):
+            raise ValueError(f"Forbidden module access: {node.value.id}.{attr_name}")
+        if attr_name.startswith("__"):
+            raise ValueError(f"Forbidden dunder attribute: {attr_name}")
+
+
 def _validate_evaluate_code(code: str, max_len: int = 4096) -> str:
     if len(code) > max_len:
         raise ValueError(f"evaluate_code exceeds {max_len} chars")
@@ -45,20 +60,7 @@ def _validate_evaluate_code(code: str, max_len: int = 4096) -> str:
     if not isinstance(func_def, ast.FunctionDef):
         raise ValueError("evaluate_code must be a function body")
     for node in ast.walk(func_def):
-        if isinstance(node, _FORBIDDEN_AST):
-            raise ValueError(f"Forbidden AST node: {type(node).__name__}")
-        if isinstance(node, ast.Name) and node.id in _FORBIDDEN_NAMES:
-            raise ValueError(f"Forbidden name: {node.id}")
-        if isinstance(node, ast.Call):
-            func = node.func
-            if isinstance(func, ast.Name) and func.id in _FORBIDDEN_NAMES:
-                raise ValueError(f"Forbidden call: {func.id}")
-        if isinstance(node, ast.Attribute):
-            attr_name = node.attr
-            if isinstance(node.value, ast.Name) and node.value.id in ("os", "sys", "subprocess", "builtins", "shutil", "pathlib"):
-                raise ValueError(f"Forbidden module access: {node.value.id}.{attr_name}")
-            if attr_name.startswith("__"):
-                raise ValueError(f"Forbidden dunder attribute: {attr_name}")
+        _check_ast_node(node)
     return code
 
 
@@ -323,6 +325,41 @@ def tool_feedback_from_result(
     return feedback
 
 
+def _sample_best_only(history: list, result: Any, include_metadata: bool) -> List[Dict[str, Any]]:
+    best_exp = min(history, key=lambda e: e.score)
+    return [_exp_to_training(best_exp, result, include_metadata)]
+
+
+def _sample_top_k(history: list, result: Any, include_metadata: bool) -> List[Dict[str, Any]]:
+    sorted_hist = sorted(history, key=lambda e: e.score)
+    k = max(1, len(sorted_hist) // 10)
+    return [_exp_to_training(exp, result, include_metadata) for exp in sorted_hist[:k]]
+
+
+def _sample_all(history: list, result: Any, include_metadata: bool) -> List[Dict[str, Any]]:
+    return [_exp_to_training(exp, result, include_metadata) for exp in history]
+
+
+def _sample_trajectory(history: list, result: Any, include_metadata: bool) -> List[Dict[str, Any]]:
+    samples = []
+    for i, exp in enumerate(history):
+        entry = _exp_to_training(exp, result, include_metadata)
+        entry["step"] = i
+        entry["is_best_so_far"] = exp.score == min(
+            e.score for e in history[: i + 1]
+        )
+        samples.append(entry)
+    return samples
+
+
+_SAMPLE_DISPATCH = {
+    "best_only": _sample_best_only,
+    "top_k": _sample_top_k,
+    "all": _sample_all,
+    "trajectory": _sample_trajectory,
+}
+
+
 @_audit_wrap
 @mcp.tool(name="export_training_sample", description="导出训练样本（灵出）")
 def tool_export_training_sample(
@@ -348,38 +385,16 @@ def tool_export_training_sample(
     """
     from lingminopt import OptimizationResult
 
+    sampler = _SAMPLE_DISPATCH.get(sample_type)
+    if sampler is None:
+        return {"error": f"Invalid sample_type: {sample_type}"}
+
     result = OptimizationResult.load(result_filepath)
     history = result.history
-
     if not history:
         return {"error": "No experiments in result history"}
 
-    samples: List[Dict[str, Any]] = []
-
-    if sample_type == "best_only":
-        best_exp = min(history, key=lambda e: e.score)
-        samples.append(_exp_to_training(best_exp, result, include_metadata))
-
-    elif sample_type == "top_k":
-        sorted_hist = sorted(history, key=lambda e: e.score)
-        k = max(1, len(sorted_hist) // 10)
-        for exp in sorted_hist[:k]:
-            samples.append(_exp_to_training(exp, result, include_metadata))
-
-    elif sample_type == "all":
-        for exp in history:
-            samples.append(_exp_to_training(exp, result, include_metadata))
-
-    elif sample_type == "trajectory":
-        for i, exp in enumerate(history):
-            entry = _exp_to_training(exp, result, include_metadata)
-            entry["step"] = i
-            entry["is_best_so_far"] = exp.score == min(
-                e.score for e in history[: i + 1]
-            )
-            samples.append(entry)
-    else:
-        return {"error": f"Invalid sample_type: {sample_type}"}
+    samples = sampler(history, result, include_metadata)
 
     _TRAINING_EXPORT_DIR.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
