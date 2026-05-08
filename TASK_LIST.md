@@ -2,7 +2,7 @@
 
 **生成日期**: 2026-04-07
 **来源**: 系统审计 AUDIT_REPORT.md
-**状态**: P0已完成，P1已完成，P2待执行
+**状态**: P0已完成，P1已完成，P2执行中（7/8完成，#10阻塞）
 
 ---
 
@@ -17,18 +17,18 @@
 | 5 | P1 | minopt→lingminopt 替换 | H2 | 03e3161 |
 | 6 | P1 | lint清理 (import/l变量名) | M3-M4 | 03e3161 |
 
-## 待执行 (P2)
+## P2 执行结果
 
-| # | 优先级 | 任务 | 文件 | 依赖 | 备注 |
-|---|--------|------|------|------|------|
-| 7 | P2 | Examples print→logger | examples/*.py | 无 | 51处print替换 |
-| 8 | P2 | CLI 测试覆盖 | tests/test_cli.py | 无 | inbox命令测试需DB mock |
-| 9 | P2 | MCP generate_training_data 路径限制 | zhineng_server.py | zhineng-kb | 限制output_dir在允许范围内 |
-| 10 | P2 | FeedbackCollector 持久化 | feedback_collector.py | 灵知回复 | 等thread #328 round 3回复 |
-| 11 | P2 | type hints 补全 | lingminopt/core/*.py | 无 | mypy报告的缺失类型 |
-| 12 | P2 | CLI inbox docstring补全 | cli/commands.py | 无 | inbox相关函数缺docstring |
-| 13 | P2 | domain_query JWT解决方案 | zhineng_server.py | zhineng-kb | 当前返回401 |
-| 14 | P2 | 混合搜索超时优化 | zhineng_server.py | zhineng-kb | 大数据集超时 |
+| # | 优先级 | 任务 | 文件 | 状态 | Commit |
+|---|--------|------|------|------|--------|
+| 7 | P2 | Examples print→logger | examples/*.py | ✅ 完成 | 020f980 |
+| 8 | P2 | CLI 测试覆盖 | tests/test_cli.py | ✅ 完成 | ac70d9c |
+| 9 | P2 | MCP generate_training_data 路径限制 | zhineng_server.py | ✅ 完成 | 8787e3e |
+| 10 | P2 | FeedbackCollector 持久化 | feedback_collector.py | ⏸ 阻塞 | — |
+| 11 | P2 | type hints 补全 | lingminopt/core/*.py | ✅ 完成 | b393ce7 |
+| 12 | P2 | CLI inbox docstring补全 | cli/commands.py | ✅ 完成 | 70ef767 |
+| 13 | P2 | domain_query JWT解决方案 | zhineng_server.py | ✅ 完成 | 8787e3e |
+| 14 | P2 | 混合搜索超时优化 | zhineng_server.py | ✅ 完成 | 8787e3e |
 
 ## 外部依赖
 
