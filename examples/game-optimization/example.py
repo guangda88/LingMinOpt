@@ -11,6 +11,9 @@ sys.path.insert(0, '/home/ai/LingMinOpt')
 
 from lingminopt import MinimalOptimizer, SearchSpace, ExperimentConfig
 import numpy as np
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 # ============================================================================
@@ -259,11 +262,12 @@ def run_experiment(params):
 # ============================================================================
 def main():
     """主函数"""
-    print()
-    print("=" * 70)
-    print("游戏策略优化示例")
-    print("=" * 70)
-    print()
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
+    logger.info("")
+    logger.info("=" * 70)
+    logger.info("游戏策略优化示例")
+    logger.info("=" * 70)
+    logger.info("")
 
     # 配置优化器
     config = ExperimentConfig(
@@ -284,34 +288,34 @@ def main():
     )
 
     # 运行优化
-    print("开始优化...")
-    print(f"搜索空间: {len(search_space)} 个参数")
-    print(f"最大实验次数: {config.max_experiments}")
-    print()
+    logger.info("开始优化...")
+    logger.info("搜索空间: %d 个参数", len(search_space))
+    logger.info("最大实验次数: %d", config.max_experiments)
+    logger.info("")
 
     result = optimizer.run()
 
     # 打印结果
-    print()
-    print("=" * 70)
-    print("优化结果")
-    print("=" * 70)
-    print()
-    print(f"最佳平均奖励: {result.best_score:.4f}")
-    print(f"最佳策略参数:")
+    logger.info("")
+    logger.info("=" * 70)
+    logger.info("优化结果")
+    logger.info("=" * 70)
+    logger.info("")
+    logger.info("最佳平均奖励: %.4f", result.best_score)
+    logger.info("最佳策略参数:")
     for key, value in result.best_params.items():
-        print(f"  {key}: {value}")
-    print()
-    print(f"总实验次数: {result.total_experiments}")
-    print(f"总时间: {result.total_time:.2f} 秒")
-    print(f"改进: {result.improvement:.4f}")
-    print()
+        logger.info("  %s: %s", key, value)
+    logger.info("")
+    logger.info("总实验次数: %d", result.total_experiments)
+    logger.info("总时间: %.2f 秒", result.total_time)
+    logger.info("改进: %.4f", result.improvement)
+    logger.info("")
 
     # 使用最佳策略运行演示
-    print("=" * 70)
-    print("演示最佳策略")
-    print("=" * 70)
-    print()
+    logger.info("=" * 70)
+    logger.info("演示最佳策略")
+    logger.info("=" * 70)
+    logger.info("")
 
     strategy_type = result.best_params["strategy_type"]
     strategy = STRATEGIES[strategy_type]
@@ -330,13 +334,13 @@ def main():
         total_reward += reward
         if reward > 0:
             wins += 1
-        print(f"  游戏 {i+1}: 奖励 = {reward:.2f}")
+        logger.info("  游戏 %d: 奖励 = %.2f", i + 1, reward)
 
-    print()
-    print(f"演示结果:")
-    print(f"  平均奖励: {total_reward / 10:.2f}")
-    print(f"  正局数: {wins}/10")
-    print()
+    logger.info("")
+    logger.info("演示结果:")
+    logger.info("  平均奖励: %.2f", total_reward / 10)
+    logger.info("  正局数: %d/10", wins)
+    logger.info("")
 
     # 保存结果
     import json
@@ -354,7 +358,7 @@ def main():
             "total_time": result.total_time
         }, f, indent=2)
 
-    print(f"结果已保存到: {result_file}")
+    logger.info("结果已保存到: %s", result_file)
 
 
 if __name__ == "__main__":

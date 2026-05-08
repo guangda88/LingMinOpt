@@ -15,6 +15,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import log_loss
 import numpy as np
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 # ============================================================================
@@ -35,11 +38,12 @@ X_train, X_val, y_train, y_val = train_test_split(
     X, y, test_size=0.2, random_state=42, stratify=y
 )
 
-print("数据集信息:")
-print(f"  特征数: {X.shape[1]}")
-print(f"  类别数: {len(np.unique(y))}")
-print(f"  训练样本: {X_train.shape[0]}")
-print(f"  验证样本: {X_val.shape[0]}")
+logging.basicConfig(level=logging.INFO, format="%(message)s")
+logger.info("数据集信息:")
+logger.info("  特征数: %d", X.shape[1])
+logger.info("  类别数: %d", len(np.unique(y)))
+logger.info("  训练样本: %d", X_train.shape[0])
+logger.info("  验证样本: %d", X_val.shape[0])
 
 
 # ============================================================================
@@ -128,11 +132,11 @@ def run_experiment(params):
 # ============================================================================
 def main():
     """主函数"""
-    print()
-    print("=" * 70)
-    print("机器学习超参数优化示例")
-    print("=" * 70)
-    print()
+    logger.info("")
+    logger.info("=" * 70)
+    logger.info("机器学习超参数优化示例")
+    logger.info("=" * 70)
+    logger.info("")
 
     # 配置优化器
     config = ExperimentConfig(
@@ -153,34 +157,34 @@ def main():
     )
 
     # 运行优化
-    print("开始优化...")
-    print(f"搜索空间: {len(search_space)} 个参数")
-    print(f"最大实验次数: {config.max_experiments}")
-    print()
+    logger.info("开始优化...")
+    logger.info("搜索空间: %d 个参数", len(search_space))
+    logger.info("最大实验次数: %d", config.max_experiments)
+    logger.info("")
 
     result = optimizer.run()
 
     # 打印结果
-    print()
-    print("=" * 70)
-    print("优化结果")
-    print("=" * 70)
-    print()
-    print(f"最佳验证损失: {result.best_score:.6f}")
-    print("最佳超参数:")
+    logger.info("")
+    logger.info("=" * 70)
+    logger.info("优化结果")
+    logger.info("=" * 70)
+    logger.info("")
+    logger.info("最佳验证损失: %.6f", result.best_score)
+    logger.info("最佳超参数:")
     for key, value in result.best_params.items():
-        print(f"  {key}: {value}")
-    print()
-    print(f"总实验次数: {result.total_experiments}")
-    print(f"总时间: {result.total_time:.2f} 秒")
-    print(f"改进: {result.improvement:.6f}")
-    print()
+        logger.info("  %s: %s", key, value)
+    logger.info("")
+    logger.info("总实验次数: %d", result.total_experiments)
+    logger.info("总时间: %.2f 秒", result.total_time)
+    logger.info("改进: %.6f", result.improvement)
+    logger.info("")
 
     # 使用最佳参数训练最终模型
-    print("=" * 70)
-    print("训练最终模型")
-    print("=" * 70)
-    print()
+    logger.info("=" * 70)
+    logger.info("训练最终模型")
+    logger.info("=" * 70)
+    logger.info("")
 
     final_model = RandomForestClassifier(
         n_estimators=result.best_params["n_estimators"],
@@ -200,9 +204,9 @@ def main():
 
     final_model.fit(X_full, y_full)
 
-    print("最终模型已训练完成！")
-    print(f"训练样本: {X_full.shape[0]}")
-    print()
+    logger.info("最终模型已训练完成！")
+    logger.info("训练样本: %d", X_full.shape[0])
+    logger.info("")
 
     # 保存结果
     import json
@@ -220,7 +224,7 @@ def main():
             "total_time": result.total_time
         }, f, indent=2)
 
-    print(f"结果已保存到: {result_file}")
+    logger.info("结果已保存到: %s", result_file)
 
 
 if __name__ == "__main__":

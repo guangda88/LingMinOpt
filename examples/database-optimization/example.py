@@ -12,6 +12,9 @@ sys.path.insert(0, '/home/ai/LingMinOpt')
 from lingminopt import MinimalOptimizer, SearchSpace, ExperimentConfig
 import time
 import random
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 # ============================================================================
@@ -280,11 +283,12 @@ def run_experiment(params):
 # ============================================================================
 def main():
     """主函数"""
-    print()
-    print("=" * 70)
-    print("数据库查询优化示例")
-    print("=" * 70)
-    print()
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
+    logger.info("")
+    logger.info("=" * 70)
+    logger.info("数据库查询优化示例")
+    logger.info("=" * 70)
+    logger.info("")
 
     # 配置优化器
     config = ExperimentConfig(
@@ -305,34 +309,34 @@ def main():
     )
 
     # 运行优化
-    print("开始优化...")
-    print(f"搜索空间: {len(search_space)} 个参数")
-    print(f"最大实验次数: {config.max_experiments}")
-    print()
+    logger.info("开始优化...")
+    logger.info("搜索空间: %d 个参数", len(search_space))
+    logger.info("最大实验次数: %d", config.max_experiments)
+    logger.info("")
 
     result = optimizer.run()
 
     # 打印结果
-    print()
-    print("=" * 70)
-    print("优化结果")
-    print("=" * 70)
-    print()
-    print(f"最佳 QPS: {result.best_score:.2f}")
-    print(f"最佳配置:")
+    logger.info("")
+    logger.info("=" * 70)
+    logger.info("优化结果")
+    logger.info("=" * 70)
+    logger.info("")
+    logger.info("最佳 QPS: %.2f", result.best_score)
+    logger.info("最佳配置:")
     for key, value in result.best_params.items():
-        print(f"  {key}: {value}")
-    print()
-    print(f"总实验次数: {result.total_experiments}")
-    print(f"总时间: {result.total_time:.2f} 秒")
-    print(f"改进: {result.improvement:.2f} QPS")
-    print()
+        logger.info("  %s: %s", key, value)
+    logger.info("")
+    logger.info("总实验次数: %d", result.total_experiments)
+    logger.info("总时间: %.2f 秒", result.total_time)
+    logger.info("改进: %.2f QPS", result.improvement)
+    logger.info("")
 
     # 使用最佳配置进行详细测试
-    print("=" * 70)
-    print("详细测试")
-    print("=" * 70)
-    print()
+    logger.info("=" * 70)
+    logger.info("详细测试")
+    logger.info("=" * 70)
+    logger.info("")
 
     # 使用最佳配置
     db = SimulatedDatabase()
@@ -351,21 +355,21 @@ def main():
     # 运行更长的基准测试
     metrics = run_benchmark(db, benchmark_queries, duration=30.0)
 
-    print("性能指标:")
-    print(f"  QPS: {metrics['qps']:.2f}")
-    print(f"  平均延迟: {metrics['avg_latency']*1000:.2f} ms")
-    print(f"  缓存命中率: {metrics['cache_hit_rate']*100:.1f}%")
-    print(f"  查询总数: {metrics['query_count']}")
-    print()
+    logger.info("性能指标:")
+    logger.info("  QPS: %.2f", metrics['qps'])
+    logger.info("  平均延迟: %.2f ms", metrics['avg_latency'] * 1000)
+    logger.info("  缓存命中率: %.1f%%", metrics['cache_hit_rate'] * 100)
+    logger.info("  查询总数: %d", metrics['query_count'])
+    logger.info("")
 
     # 性能评估
     if metrics['qps'] > 1000:
-        print("✓ 性能优秀")
+        logger.info("✓ 性能优秀")
     elif metrics['qps'] > 500:
-        print("✓ 性能良好")
+        logger.info("✓ 性能良好")
     else:
-        print("✗ 性能一般，可能需要进一步优化")
-    print()
+        logger.info("✗ 性能一般，可能需要进一步优化")
+    logger.info("")
 
     # 保存结果
     import json
@@ -384,7 +388,7 @@ def main():
             "detailed_metrics": metrics
         }, f, indent=2)
 
-    print(f"结果已保存到: {result_file}")
+    logger.info("结果已保存到: %s", result_file)
 
 
 if __name__ == "__main__":

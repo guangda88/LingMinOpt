@@ -12,6 +12,9 @@ sys.path.insert(0, '/home/ai/LingMinOpt')
 from lingminopt import MinimalOptimizer, SearchSpace, ExperimentConfig
 import time
 import random
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 # ============================================================================
@@ -302,11 +305,12 @@ def run_experiment(params):
 # ============================================================================
 def main():
     """主函数"""
-    print()
-    print("=" * 70)
-    print("算法优化示例")
-    print("=" * 70)
-    print()
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
+    logger.info("")
+    logger.info("=" * 70)
+    logger.info("算法优化示例")
+    logger.info("=" * 70)
+    logger.info("")
 
     # 配置优化器
     config = ExperimentConfig(
@@ -327,34 +331,34 @@ def main():
     )
 
     # 运行优化
-    print("开始优化...")
-    print(f"搜索空间: {len(search_space)} 个参数")
-    print(f"最大实验次数: {config.max_experiments}")
-    print()
+    logger.info("开始优化...")
+    logger.info("搜索空间: %d 个参数", len(search_space))
+    logger.info("最大实验次数: %d", config.max_experiments)
+    logger.info("")
 
     result = optimizer.run()
 
     # 打印结果
-    print()
-    print("=" * 70)
-    print("优化结果")
-    print("=" * 70)
-    print()
-    print(f"最佳平均执行时间: {result.best_score:.6f} 秒")
-    print(f"最佳算法参数:")
+    logger.info("")
+    logger.info("=" * 70)
+    logger.info("优化结果")
+    logger.info("=" * 70)
+    logger.info("")
+    logger.info("最佳平均执行时间: %.6f 秒", result.best_score)
+    logger.info("最佳算法参数:")
     for key, value in result.best_params.items():
-        print(f"  {key}: {value}")
-    print()
-    print(f"总实验次数: {result.total_experiments}")
-    print(f"总时间: {result.total_time:.2f} 秒")
-    print(f"改进: {result.improvement:.6f} 秒")
-    print()
+        logger.info("  %s: %s", key, value)
+    logger.info("")
+    logger.info("总实验次数: %d", result.total_experiments)
+    logger.info("总时间: %.2f 秒", result.total_time)
+    logger.info("改进: %.6f 秒", result.improvement)
+    logger.info("")
 
     # 使用最佳参数进行对比测试
-    print("=" * 70)
-    print("对比测试")
-    print("=" * 70)
-    print()
+    logger.info("=" * 70)
+    logger.info("对比测试")
+    logger.info("=" * 70)
+    logger.info("")
 
     # 生成更大的测试数据
     test_size = 5000
@@ -381,21 +385,21 @@ def main():
     sorted_arr = sorted(arr_copy2)
     builtin_time = time.time() - start_time
 
-    print(f"测试数组大小: {test_size}")
-    print()
-    print(f"优化后的算法:")
-    print(f"  执行时间: {best_time:.6f} 秒")
-    print(f"  正确性: {'✓ 正确' if result_arr == sorted_arr else '✗ 错误'}")
-    print()
-    print(f"Python 内置排序:")
-    print(f"  执行时间: {builtin_time:.6f} 秒")
-    print()
-    print(f"性能比: {best_time / builtin_time:.2f}x")
+    logger.info("测试数组大小: %d", test_size)
+    logger.info("")
+    logger.info("优化后的算法:")
+    logger.info("  执行时间: %.6f 秒", best_time)
+    logger.info("  正确性: %s", '✓ 正确' if result_arr == sorted_arr else '✗ 错误')
+    logger.info("")
+    logger.info("Python 内置排序:")
+    logger.info("  执行时间: %.6f 秒", builtin_time)
+    logger.info("")
+    logger.info("性能比: %.2fx", best_time / builtin_time)
     if best_time / builtin_time < 5:
-        print("  ✓ 性能尚可")
+        logger.info("  ✓ 性能尚可")
     else:
-        print("  ✗ 仍需优化")
-    print()
+        logger.info("  ✗ 仍需优化")
+    logger.info("")
 
     # 保存结果
     import json
@@ -419,7 +423,7 @@ def main():
             }
         }, f, indent=2)
 
-    print(f"结果已保存到: {result_file}")
+    logger.info("结果已保存到: %s", result_file)
 
 
 if __name__ == "__main__":

@@ -10,8 +10,12 @@ https://github.com/guangda88/LingResearch
 - 自动化优化流程
 """
 
+import logging
+
 from lingminopt import MinimalOptimizer, SearchSpace, ExperimentConfig
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 
 def main():
@@ -66,13 +70,15 @@ def main():
     )
 
     # 4. 创建并运行优化器
-    print("=" * 70)
-    print("灵研简化示例 - 使用 LingMinOpt 框架")
-    print("=" * 70)
-    print()
-    print("完整版 LingResearch 项目：")
-    print("  https://github.com/guangda88/LingResearch")
-    print()
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
+
+    logger.info("=" * 70)
+    logger.info("灵研简化示例 - 使用 LingMinOpt 框架")
+    logger.info("=" * 70)
+    logger.info("")
+    logger.info("完整版 LingResearch 项目：")
+    logger.info("  https://github.com/guangda88/LingResearch")
+    logger.info("")
 
     optimizer = MinimalOptimizer(
         evaluate=evaluate,
@@ -85,19 +91,19 @@ def main():
     result = optimizer.run()
 
     # 6. 打印结果
-    print()
-    print("=" * 70)
-    print("优化结果")
-    print("=" * 70)
-    print(f"最佳 BPC: {result.best_score:.4f}")
-    print(f"最佳参数:")
+    logger.info("")
+    logger.info("=" * 70)
+    logger.info("优化结果")
+    logger.info("=" * 70)
+    logger.info("最佳 BPC: %.4f", result.best_score)
+    logger.info("最佳参数:")
     for key, value in result.best_params.items():
-        print(f"  {key}: {value}")
-    print()
-    print(f"总实验次数: {result.total_experiments}")
-    print(f"总时间: {result.total_time:.2f} 秒")
-    print(f"总改进: {result.improvement:.4f} BPC")
-    print()
+        logger.info("  %s: %s", key, value)
+    logger.info("")
+    logger.info("总实验次数: %s", result.total_experiments)
+    logger.info("总时间: %.2f 秒", result.total_time)
+    logger.info("总改进: %.4f BPC", result.improvement)
+    logger.info("")
 
 
 if __name__ == "__main__":

@@ -14,6 +14,9 @@ import time
 import subprocess
 import tempfile
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 # ============================================================================
@@ -244,7 +247,7 @@ def run_experiment(params):
 
     except Exception as e:
         # 如果编译失败，返回一个很大的值
-        print(f"  ⚠ 编译失败: {e}")
+        logger.warning("  ⚠ 编译失败: %s", e)
         return float('inf')
 
 
@@ -253,25 +256,26 @@ def run_experiment(params):
 # ============================================================================
 def main():
     """主函数"""
-    print()
-    print("=" * 70)
-    print("硬件/编译器优化示例")
-    print("=" * 70)
-    print()
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
+    logger.info("")
+    logger.info("=" * 70)
+    logger.info("硬件/编译器优化示例")
+    logger.info("=" * 70)
+    logger.info("")
 
     # 检查 gcc 是否可用
     try:
         result = subprocess.run(['gcc', '--version'], capture_output=True, timeout=5)
-        print("✓ GCC 编译器可用")
-        print(f"  版本: {result.stdout.decode().split()[2]}")
-        print()
+        logger.info("✓ GCC 编译器可用")
+        logger.info("  版本: %s", result.stdout.decode().split()[2])
+        logger.info("")
     except Exception as e:
-        print("✗ GCC 编译器不可用")
-        print(f"  错误: {e}")
-        print()
-        print("请安装 GCC 以运行此示例：")
-        print("  Ubuntu/Debian: sudo apt-get install gcc")
-        print("  CentOS/RHEL: sudo yum install gcc")
+        logger.info("✗ GCC 编译器不可用")
+        logger.info("  错误: %s", e)
+        logger.info("")
+        logger.info("请安装 GCC 以运行此示例：")
+        logger.info("  Ubuntu/Debian: sudo apt-get install gcc")
+        logger.info("  CentOS/RHEL: sudo yum install gcc")
         return
 
     # 配置优化器
@@ -293,59 +297,59 @@ def main():
     )
 
     # 运行优化
-    print("开始优化...")
-    print(f"搜索空间: {len(search_space)} 个参数")
-    print(f"最大实验次数: {config.max_experiments}")
-    print()
+    logger.info("开始优化...")
+    logger.info("搜索空间: %d 个参数", len(search_space))
+    logger.info("最大实验次数: %d", config.max_experiments)
+    logger.info("")
 
     result = optimizer.run()
 
     # 打印结果
-    print()
-    print("=" * 70)
-    print("优化结果")
-    print("=" * 70)
-    print()
-    print(f"最佳执行时间: {result.best_score:.4f} 秒")
-    print("最佳编译标志:")
+    logger.info("")
+    logger.info("=" * 70)
+    logger.info("优化结果")
+    logger.info("=" * 70)
+    logger.info("")
+    logger.info("最佳执行时间: %.4f 秒", result.best_score)
+    logger.info("最佳编译标志:")
     for key, value in result.best_params.items():
         if value is not None and value != "":
-            print(f"  {key}: {value}")
-    print()
-    print(f"总实验次数: {result.total_experiments}")
-    print(f"总时间: {result.total_time:.2f} 秒")
-    print(f"改进: {result.improvement:.4f} 秒")
-    print()
+            logger.info("  %s: %s", key, value)
+    logger.info("")
+    logger.info("总实验次数: %d", result.total_experiments)
+    logger.info("总时间: %.2f 秒", result.total_time)
+    logger.info("改进: %.4f 秒", result.improvement)
+    logger.info("")
 
     # 使用最佳标志编译并运行
-    print("=" * 70)
-    print("验证最佳配置")
-    print("=" * 70)
-    print()
+    logger.info("=" * 70)
+    logger.info("验证最佳配置")
+    logger.info("=" * 70)
+    logger.info("")
 
     best_flags = build_flags(result.best_params)
-    print("编译命令:")
-    print(f"  gcc {' '.join(best_flags)} -o optimized_program")
-    print()
+    logger.info("编译命令:")
+    logger.info("  gcc %s -o optimized_program", ' '.join(best_flags))
+    logger.info("")
 
     # 编译
     try:
         exe_file = compile_program(TEST_PROGRAM, best_flags)
 
         # 运行基准测试
-        print("运行基准测试...")
+        logger.info("运行基准测试...")
         final_time = benchmark_program(exe_file, num_runs=10)
 
-        print()
-        print(f"最终执行时间: {final_time:.4f} 秒")
-        print(f"平均执行时间: {final_time:.4f} 秒")
-        print()
+        logger.info("")
+        logger.info("最终执行时间: %.4f 秒", final_time)
+        logger.info("平均执行时间: %.4f 秒", final_time)
+        logger.info("")
 
         # 清理
         os.remove(exe_file)
 
     except Exception as e:
-        print(f"✗ 编译失败: {e}")
+        logger.warning("✗ 编译失败: %s", e)
 
     # 保存结果
     import json
@@ -364,7 +368,7 @@ def main():
             "total_time": result.total_time
         }, f, indent=2)
 
-    print(f"结果已保存到: {result_file}")
+    logger.info("结果已保存到: %s", result_file)
 
 
 if __name__ == "__main__":
