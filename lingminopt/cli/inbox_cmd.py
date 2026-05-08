@@ -8,7 +8,18 @@ import click
 
 
 def _inbox_read(db_url: str, agent_id: str, show_threads: bool, unread_only: bool) -> None:
-    """Read inbox messages from LingMessage PostgreSQL database."""
+    """Read inbox messages from LingMessage PostgreSQL database.
+
+    Displays active threads and recent messages from other agents.
+    Requires asyncpg package and a running PostgreSQL instance with
+    LingMessage schema.
+
+    Args:
+        db_url: PostgreSQL connection string.
+        agent_id: The agent identity to fetch messages for (e.g. ``"lingminopt"``).
+        show_threads: If ``True``, display active议事厅 thread summaries before messages.
+        unread_only: If ``True``, filter to only unread messages (not yet implemented in query).
+    """
     async def _read():
         import asyncpg
 
@@ -58,7 +69,17 @@ def _inbox_read(db_url: str, agent_id: str, show_threads: bool, unread_only: boo
 
 
 def _inbox_reply(db_url: str, agent_id: str, thread_id: str, content: str) -> None:
-    """Reply to a LingMessage thread via PostgreSQL."""
+    """Reply to a LingMessage thread via PostgreSQL.
+
+    Inserts a new message into the specified thread with auto-incremented
+    round number. The message type is set to ``'response'``.
+
+    Args:
+        db_url: PostgreSQL connection string.
+        agent_id: The agent identity sending the reply.
+        thread_id: Numeric thread ID to reply to.
+        content: The reply message body.
+    """
     async def _reply():
         import asyncpg
 

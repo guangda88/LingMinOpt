@@ -221,7 +221,20 @@ cli.add_command(meta_optimize)
 @click.option("--message", default=None, help="Message content for reply")
 @click.option("--db-url", default=None, help="Database URL (or set LINGMESSAGE_DB_URL)")
 def inbox(agent, threads, unread, reply, message, db_url):
-    """灵信收件箱 — 查看和回复灵信消息"""
+    """灵信收件箱 — 查看和回复灵信消息
+
+    Connect to LingMessage PostgreSQL database to read active threads
+    and recent messages, or reply to a specific thread.
+
+    Requires LINGMESSAGE_DB_URL environment variable or --db-url flag.
+
+    Examples:
+
+    \b
+      lingminopt inbox                        # Read inbox as default agent
+      lingminopt inbox --agent lingminopt      # Read as specific agent
+      lingminopt inbox --reply 42 --message 'OK, noted'  # Reply to thread #42
+    """
     db = db_url or os.environ.get("LINGMESSAGE_DB_URL")
     if not db:
         click.echo("❌ 请设置环境变量 LINGMESSAGE_DB_URL 或使用 --db-url 参数")
