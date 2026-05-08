@@ -7,6 +7,7 @@ import os
 
 import pytest
 from click.testing import CliRunner
+from unittest.mock import patch, AsyncMock
 
 from lingminopt.cli.commands import (
     cli,
@@ -195,3 +196,61 @@ class TestCLIInbox:
         env = {k: v for k, v in os.environ.items() if k != "LINGMESSAGE_DB_URL"}
         result = runner.invoke(cli, ["inbox", "--reply", "1", "--message", "test"], env=env)
         assert "LINGMESSAGE_DB_URL" in result.output
+
+    @patch("lingminopt.cli.commands._inbox_read")
+    def test_inbox_read_empty(self, mock_read):
+        runner = CliRunner()
+        env = {k: v for k, v in os.environ.items() if k != "LINGMESSAGE_DB_URL"}
+        result = runner.invoke(cli, ["inbox", "--db-url", "postgresql://test"], env=env)
+        assert result.exit_code == 0
+        mock_read.assert_called_once_with("postgresql://test", "lingjiyou", True, True)
+
+    @patch("lingminopt.cli.commands._inbox_read")
+    def test_inbox_read_with_agent(self, mock_read):
+        runner = CliRunner()
+        env = {k: v for k, v in os.environ.items() if k != "LINGMESSAGE_DB_URL"}
+        result = runner.invoke(
+            cli, ["inbox", "--agent", "lingminopt", "--db-url", "postgresql://test"], env=env,
+        )
+        assert result.exit_code == 0
+        mock_read.assert_called_once_with("postgresql://test", "lingminopt", True, True)
+
+    @patch("lingminopt.cli.commands._inbox_read")
+    def test_inbox_read_no_threads_flag(self, mock_read):
+        runner = CliRunner()
+        env = {k: v for k, v in os.environ.items() if k != "LINGMESSAGE_DB_URL"}
+        result = runner.invoke(
+            cli, ["inbox", "--no-threads", "--db-url", "postgresql://test"], env=env,
+        )
+        assert result.exit_code == 0
+        mock_read.assert_called_once_with("postgresql://test", "lingjiyou", False, True)
+
+    @patch("lingminopt.cli.commands._inbox_reply")
+    def test_inbox_reply_success(self, mock_reply):
+        runner = CliRunner()
+        env = {k: v for k, v in os.environ.items() if k != "LINGMESSAGE_DB_URL"}
+        result = runner.invoke(
+            cli, ["inbox", "--db-url", "postgresql://test", "--reply", "5", "--message", "ok"],
+            env=env,
+        )
+        assert result.exit_code == 0
+        mock_reply.assert_called_once_with("postgresql://test", "lingjiyou", "5", "ok")
+
+    @patch("lingminopt.cli.commands._inbox_reply")
+    def test_inbox_reply_with_agent(self, mock_reply):
+        runner = CliRunner()
+        env = {k: v for k, v in os.environ.items() if k != "LINGMESSAGE_DB_URL"}
+        result = runner.invoke(
+            cli, ["inbox", "--agent", "lingminopt", "--db-url", "postgresql://test",
+                  "--reply", "3", "--message", "hello"],
+            env=env,
+        )
+        assert result.exit_code == 0
+        mock_reply.assert_called_once_with("postgresql://test", "lingminopt", "3", "hello")
+
+    def test_inbox_with_db_url_option(self):
+        runner = CliRunner()
+        env = {k: v for k, v in os.environ.items() if k != "LINGMESSAGE_DB_URL"}
+        with patch("lingminopt.cli.commands._inbox_read"):
+            result = runner.invoke(cli, ["inbox", "--db-url", "postgresql://test"], env=env)
+        assert "LINGMESSAGE_DB_URL" not in result.output
