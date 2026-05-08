@@ -2,7 +2,7 @@
 
 **生成日期**: 2026-04-07
 **来源**: 系统审计 AUDIT_REPORT.md
-**状态**: P0已完成，P1已完成，P2执行中（7/8完成，#10阻塞）
+**状态**: P0已完成，P1已完成，P2全部完成（8/8）
 
 ---
 
@@ -24,7 +24,7 @@
 | 7 | P2 | Examples print→logger | examples/*.py | ✅ 完成 | 020f980 |
 | 8 | P2 | CLI 测试覆盖 | tests/test_cli.py | ✅ 完成 | ac70d9c |
 | 9 | P2 | MCP generate_training_data 路径限制 | zhineng_server.py | ✅ 完成 | 8787e3e |
-| 10 | P2 | FeedbackCollector 持久化 | feedback_collector.py | ⏸ 阻塞 | — |
+| 10 | P2 | FeedbackCollector 持久化 | mcp_server.py | ✅ 已解决（审计时过时，实际已有文件持久化） | 内置 |
 | 11 | P2 | type hints 补全 | lingminopt/core/*.py | ✅ 完成 | b393ce7 |
 | 12 | P2 | CLI inbox docstring补全 | cli/commands.py | ✅ 完成 | 70ef767 |
 | 13 | P2 | domain_query JWT解决方案 | zhineng_server.py | ✅ 完成 | 8787e3e |
@@ -34,6 +34,5 @@
 
 | 项目 | 依赖方 | 状态 |
 |------|--------|------|
-| FeedbackCollector持久化方案 | 灵知 | 已发问 (thread #328 round 3)，等待回复 |
 | 智桥再审结果 | 智桥 | 已发送 (thread e5de605b)，等待回复 |
 | 灵依审查 | 灵依 | 待提交 |
