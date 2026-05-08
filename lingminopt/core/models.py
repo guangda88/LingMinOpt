@@ -19,7 +19,7 @@ class Experiment:
     timestamp: datetime = field(default_factory=datetime.now)
     metadata: Dict[str, Any] = field(default_factory=dict)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.experiment_id < 0:
             raise ValueError("experiment_id must be non-negative")
         if math.isnan(self.score) or math.isinf(self.score):
@@ -51,7 +51,7 @@ class Experiment:
             metadata=data.get("metadata", {})
         )
 
-    def save(self, filepath: str):
+    def save(self, filepath: str) -> None:
         """Save to JSON file"""
         with open(filepath, "w") as f:
             f.write(self.to_json())
@@ -102,7 +102,7 @@ class OptimizationResult:
             improvement=data.get("improvement", 0.0)
         )
 
-    def save(self, filepath: str):
+    def save(self, filepath: str) -> None:
         """Save to JSON file"""
         with open(filepath, "w") as f:
             f.write(self.to_json())

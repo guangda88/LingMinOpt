@@ -84,7 +84,7 @@ class PromptEvaluator:
             return 1000.0
 
         total = sum(r.get("total_tokens", 0) for r in self.session_records)
-        return total / len(self.session_records)
+        return float(total / len(self.session_records))
 
     def _simulate_with_config(
         self,
@@ -260,11 +260,11 @@ class RoutingEvaluator:
 
         # 简单意图分类
         if any(kw in query for kw in ["代码", "写", "实现", "code", "write", "implement"]):
-            return params.get("code_intent_agent", "implementation")
+            return str(params.get("code_intent_agent", "implementation"))
         elif any(kw in query for kw in ["bug", "错误", "调试", "debug", "error"]):
-            return params.get("debug_intent_agent", "debugger")
+            return str(params.get("debug_intent_agent", "debugger"))
         else:
-            return params.get("chat_intent_agent", "implementation")
+            return str(params.get("chat_intent_agent", "implementation"))
 
     def _select_skill(
         self,

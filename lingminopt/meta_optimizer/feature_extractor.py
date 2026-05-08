@@ -133,7 +133,7 @@ class TaskFeatures:
                     scores[intent] += 1
 
         # 返回得分最高的意图
-        max_intent = max(scores, key=scores.get)
+        max_intent = max(scores, key=lambda k: scores[k])  # type: ignore[arg-type]
         if scores[max_intent] == 0:
             return IntentType.GENERAL_CHAT
 
@@ -186,7 +186,7 @@ class TaskFeatures:
 class FeatureExtractor:
     """特征提取器"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._cache: dict[str, TaskFeatures] = {}
 
     def extract_features(

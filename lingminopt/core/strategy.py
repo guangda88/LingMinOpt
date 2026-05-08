@@ -4,11 +4,11 @@ Search strategies for parameter optimization
 
 from abc import ABC, abstractmethod
 from itertools import product
-from typing import List, Dict, Any, Optional
+from typing import Any, Dict, List, Optional, Type
 import math
 import random
 from .models import Experiment
-from .searcher import SearchSpace
+from .searcher import SearchSpace, ParameterConfig
 import logging
 
 logger = logging.getLogger(__name__)
@@ -85,6 +85,7 @@ class GridSearch(SearchStrategy):
         param_values = {}
         for name, config in self.search_space.parameters.items():
             if config.param_type == "discrete":
+                assert config.choices is not None
                 param_values[name] = config.choices
             else:  # continuous
                 param_values[name] = [
@@ -153,6 +154,7 @@ class BayesianSearch(SearchStrategy):
                     if self.rng.random() < 0.7:
                         params[name] = best.params[name]
                     else:
+                        assert config.choices is not None
                         params[name] = self.rng.choice(config.choices)
                 else:  # continuous
                     # Add Gaussian noise
@@ -163,6 +165,7 @@ class BayesianSearch(SearchStrategy):
             else:
                 # Parameter not in best, use random
                 if config.param_type == "discrete":
+                    assert config.choices is not None
                     params[name] = self.rng.choice(config.choices)
                 else:
                     params[name] = self.rng.uniform(config.min_val, config.max_val)
@@ -256,7 +259,7 @@ class SimulatedAnnealing(SearchStrategy):
                 if config.param_type == "discrete":
                     # 30% chance to change value
                     if self.rng.random() < 0.3:
-                        new_params[name] = self.rng.choice(config.choices)
+                        new_params[name] = self.rng.choice(config.choices)  # type: ignore[arg-type]
                     else:
                         new_params[name] = params[name]
                 else:  # continuous
@@ -267,7 +270,7 @@ class SimulatedAnnealing(SearchStrategy):
             else:
                 # Missing parameter, use random
                 if config.param_type == "discrete":
-                    new_params[name] = self.rng.choice(config.choices)
+                    new_params[name] = self.rng.choice(config.choices)  # type: ignore[arg-type]
                 else:
                     new_params[name] = self.rng.uniform(config.min_val, config.max_val)
 
@@ -363,8 +366,8 @@ class TPESearch(SearchStrategy):
     def _tpe_continuous(
         self, config: Any, good: List[Experiment], bad: List[Experiment], name: str
     ) -> tuple:
-        good_vals = [e.params.get(name) for e in good if name in e.params]
-        bad_vals = [e.params.get(name) for e in bad if name in e.params]
+        good_vals = [e.params[name] for e in good if name in e.params]
+        bad_vals = [e.params[name] for e in bad if name in e.params]
 
         if not good_vals:
             return self.rng.uniform(config.min_val, config.max_val), 0.0
@@ -372,7 +375,8 @@ class TPESearch(SearchStrategy):
         bandwidth = (config.max_val - config.min_val) * 0.1
 
         if self.rng.random() < 0.7:
-            base = self.rng.choice(good_vals)
+            chosen = self.rng.choice(good_vals)
+            base = float(chosen) if not isinstance(chosen, float) else chosen
         else:
             base = self.rng.uniform(config.min_val, config.max_val)
 
@@ -403,7 +407,7 @@ def create_strategy(
     strategy_name: str,
     search_space: SearchSpace,
     seed: Optional[int] = None,
-    **kwargs
+    **kwargs: Any,
 ) -> SearchStrategy:
     """
     Create a search strategy by name.
@@ -431,4 +435,5 @@ def create_strategy(
             f"Available strategies: {list(strategies.keys())}"
         )
 
-    return strategies[strategy_name](search_space, seed, **kwargs)
+    strategy_cls = strategies[strategy_name]
+    return strategy_cls(search_space, seed, **kwargs)  # type: ignore[no-any-return]

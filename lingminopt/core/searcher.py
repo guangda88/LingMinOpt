@@ -1,6 +1,6 @@
 import random
 from dataclasses import dataclass
-from typing import List, Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 @dataclass
 class ParameterConfig:
@@ -56,6 +56,7 @@ class SearchSpace:
         sampled: Dict[str, Any] = {}
         for name, param in self.parameters.items():
             if param.param_type == "discrete":
+                assert param.choices is not None
                 sampled[name] = self._rng.choice(param.choices)
             else:
                 sampled[name] = self._rng.uniform(param.min_val, param.max_val)
