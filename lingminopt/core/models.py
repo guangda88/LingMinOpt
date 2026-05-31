@@ -6,7 +6,13 @@ import json
 import math
 from dataclasses import dataclass, field
 from datetime import datetime
+from pathlib import Path
 from typing import Any, Dict, List
+
+
+def _validate_filepath(filepath: str) -> None:
+    if ".." in filepath:
+        raise ValueError("Invalid filepath: path traversal not allowed")
 
 
 @dataclass
@@ -53,12 +59,14 @@ class Experiment:
 
     def save(self, filepath: str) -> None:
         """Save to JSON file"""
+        _validate_filepath(filepath)
         with open(filepath, "w") as f:
             f.write(self.to_json())
 
     @classmethod
     def load(cls, filepath: str) -> "Experiment":
         """Load from JSON file"""
+        _validate_filepath(filepath)
         with open(filepath, "r") as f:
             data = json.load(f)
         return cls.from_dict(data)
@@ -104,12 +112,14 @@ class OptimizationResult:
 
     def save(self, filepath: str) -> None:
         """Save to JSON file"""
+        _validate_filepath(filepath)
         with open(filepath, "w") as f:
             f.write(self.to_json())
 
     @classmethod
     def load(cls, filepath: str) -> "OptimizationResult":
         """Load from JSON file"""
+        _validate_filepath(filepath)
         with open(filepath, "r") as f:
             data = json.load(f)
         return cls.from_dict(data)

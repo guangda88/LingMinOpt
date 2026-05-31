@@ -34,7 +34,14 @@ def _validate_optimizer_config(optimizer_config: dict) -> None:
             raise ValueError("direction must be 'minimize' or 'maximize'")
 
 
+def _validate_filepath(filepath: str) -> str:
+    if ".." in filepath:
+        raise ValueError("Invalid filepath: path traversal not allowed")
+    return filepath
+
+
 def validate_config_file(filepath: str) -> dict:
+    _validate_filepath(filepath)
     try:
         with open(filepath, "r") as f:
             data = json.load(f)
