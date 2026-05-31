@@ -1,5 +1,5 @@
 """
-Inbox command for lingminopt CLI — LingMessage integration.
+Inbox command for lingminopt CLI — lingmessage integration.
 """
 
 import asyncio
@@ -8,11 +8,11 @@ import click
 
 
 def _inbox_read(db_url: str, agent_id: str, show_threads: bool, unread_only: bool) -> None:
-    """Read inbox messages from LingMessage PostgreSQL database.
+    """Read inbox messages from lingmessage PostgreSQL database.
 
     Displays active threads and recent messages from other agents.
     Requires asyncpg package and a running PostgreSQL instance with
-    LingMessage schema.
+    lingmessage schema.
 
     Args:
         db_url: PostgreSQL connection string.
@@ -20,6 +20,7 @@ def _inbox_read(db_url: str, agent_id: str, show_threads: bool, unread_only: boo
         show_threads: If ``True``, display active议事厅 thread summaries before messages.
         unread_only: If ``True``, filter to only unread messages (not yet implemented in query).
     """
+
     async def _read():
         import asyncpg
 
@@ -41,7 +42,9 @@ def _inbox_read(db_url: str, agent_id: str, show_threads: bool, unread_only: boo
                 click.echo("=" * 70)
                 for r in rows:
                     flag = "🔴" if r["priority"] == "high" else "🟢"
-                    click.echo(f"  {flag} #{r['id']} [{r['status']}] {r['topic']} ({r['msg_count']}条消息)")
+                    click.echo(
+                        f"  {flag} #{r['id']} [{r['status']}] {r['topic']} ({r['msg_count']}条消息)"
+                    )
 
             rows = await conn.fetch(
                 "SELECT m.id, m.thread_id, t.topic, a.display_name, "
@@ -51,17 +54,25 @@ def _inbox_read(db_url: str, agent_id: str, show_threads: bool, unread_only: boo
                 "JOIN lingmessage_agents a ON a.agent_id = m.agent_id "
                 "WHERE m.agent_id != $1 "
                 "ORDER BY m.created_at DESC LIMIT 10",
-                agent_id
+                agent_id,
             )
             if rows:
                 click.echo(f"\n📬 最新消息 (共{len(rows)}条)")
                 click.echo("=" * 70)
                 for r in rows:
                     msg_type = r["message_type"]
-                    tag = "📌" if msg_type == "task_assignment" else ("🔔" if msg_type == "direct_mention" else "💬")
+                    tag = (
+                        "📌"
+                        if msg_type == "task_assignment"
+                        else ("🔔" if msg_type == "direct_mention" else "💬")
+                    )
                     preview = (r["preview"] or "")[:60]
-                    click.echo(f"  {tag} [线程#{r['thread_id']}] {r['display_name']} → {preview}...")
-                    click.echo(f"     ({r['created_at']})  回复: lingminopt inbox --reply {r['thread_id']} --message '你的回复'")
+                    click.echo(
+                        f"  {tag} [线程#{r['thread_id']}] {r['display_name']} → {preview}..."
+                    )
+                    click.echo(
+                        f"     ({r['created_at']})  回复: lingminopt inbox --reply {r['thread_id']} --message '你的回复'"
+                    )
         finally:
             await conn.close()
 
@@ -69,7 +80,7 @@ def _inbox_read(db_url: str, agent_id: str, show_threads: bool, unread_only: boo
 
 
 def _inbox_reply(db_url: str, agent_id: str, thread_id: str, content: str) -> None:
-    """Reply to a LingMessage thread via PostgreSQL.
+    """Reply to a lingmessage thread via PostgreSQL.
 
     Inserts a new message into the specified thread with auto-incremented
     round number. The message type is set to ``'response'``.
@@ -80,6 +91,7 @@ def _inbox_reply(db_url: str, agent_id: str, thread_id: str, content: str) -> No
         thread_id: Numeric thread ID to reply to.
         content: The reply message body.
     """
+
     async def _reply():
         import asyncpg
 
@@ -90,7 +102,9 @@ def _inbox_reply(db_url: str, agent_id: str, thread_id: str, content: str) -> No
                 "SELECT $1::integer, $2, "
                 "  COALESCE(MAX(round_number), 0) + 1, $3, 'response' "
                 "FROM lingmessage_messages WHERE thread_id = $1::integer",
-                int(thread_id), agent_id, content
+                int(thread_id),
+                agent_id,
+                content,
             )
             click.echo(f"✅ 回复已发送到线程 #{thread_id}")
         finally:

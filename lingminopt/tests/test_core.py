@@ -3,16 +3,17 @@ Unit tests for MinOpt core components
 """
 
 import pytest
+
 from lingminopt import (
-    MinimalOptimizer,
-    SearchSpace,
-    FunctionEvaluator,
-    ExperimentConfig,
     Experiment,
+    ExperimentConfig,
+    FunctionEvaluator,
+    MinimalOptimizer,
     OptimizationResult,
+    SearchSpace,
 )
 from lingminopt.core.evaluator import TimedEvaluator
-from lingminopt.core.strategy import RandomSearch, BayesianSearch
+from lingminopt.core.strategy import BayesianSearch, RandomSearch
 
 
 class TestSearchSpace:
@@ -70,10 +71,7 @@ class TestSearchSpace:
 
     def test_from_dict(self):
         """Test creating search space from dictionary"""
-        config = {
-            "discrete": {"model": ["small", "medium"]},
-            "continuous": {"lr": [0.0, 1.0]}
-        }
+        config = {"discrete": {"model": ["small", "medium"]}, "continuous": {"lr": [0.0, 1.0]}}
         space = SearchSpace.from_dict(config)
 
         assert len(space) == 2
@@ -107,10 +105,7 @@ class TestExperimentConfig:
     def test_custom_config(self):
         """Test custom configuration"""
         config = ExperimentConfig(
-            max_experiments=50,
-            improvement_threshold=0.01,
-            time_budget=600.0,
-            direction="maximize"
+            max_experiments=50, improvement_threshold=0.01, time_budget=600.0, direction="maximize"
         )
         assert config.max_experiments == 50
         assert config.improvement_threshold == 0.01
@@ -130,13 +125,13 @@ class TestExperimentConfig:
     def test_is_better_minimize(self):
         """Test is_better with minimize direction"""
         config = ExperimentConfig(direction="minimize")
-        assert config.is_better(0.5, 1.0) is True   # Improved
+        assert config.is_better(0.5, 1.0) is True  # Improved
         assert config.is_better(1.0, 1.0) is False  # No improvement
 
     def test_is_better_maximize(self):
         """Test is_better with maximize direction"""
         config = ExperimentConfig(direction="maximize")
-        assert config.is_better(1.0, 0.5) is True   # Improved
+        assert config.is_better(1.0, 0.5) is True  # Improved
         assert config.is_better(0.5, 0.5) is False  # No improvement
 
 
@@ -145,6 +140,7 @@ class TestEvaluators:
 
     def test_function_evaluator(self):
         """Test FunctionEvaluator"""
+
         def objective(params):
             return params["x"] ** 2
 
@@ -154,6 +150,7 @@ class TestEvaluators:
 
     def test_timed_evaluator(self):
         """Test TimedEvaluator"""
+
         def objective(params):
             return params["x"]
 
@@ -194,6 +191,7 @@ class TestOptimizer:
 
     def test_simple_optimization(self):
         """Test simple optimization problem"""
+
         def objective(params):
             x = params["x"]
             return (x - 2.0) ** 2
@@ -201,18 +199,10 @@ class TestOptimizer:
         space = SearchSpace()
         space.add_continuous("x", 0.0, 5.0)
 
-        config = ExperimentConfig(
-            max_experiments=20,
-            time_budget=1.0,
-            direction="minimize"
-        )
+        config = ExperimentConfig(max_experiments=20, time_budget=1.0, direction="minimize")
 
         optimizer = MinimalOptimizer(
-            evaluate=objective,
-            search_space=space,
-            config=config,
-            search_strategy="random",
-            seed=42
+            evaluate=objective, search_space=space, config=config, search_strategy="random", seed=42
         )
 
         result = optimizer.run()
@@ -227,25 +217,18 @@ class TestOptimizer:
 
     def test_maximize_direction(self):
         """Test optimization with maximize direction"""
+
         def objective(params):
             x = params["x"]
-            return -(x - 2.0) ** 2  # Negative quadratic, max at x=2
+            return -((x - 2.0) ** 2)  # Negative quadratic, max at x=2
 
         space = SearchSpace()
         space.add_continuous("x", 0.0, 5.0)
 
-        config = ExperimentConfig(
-            max_experiments=20,
-            time_budget=1.0,
-            direction="maximize"
-        )
+        config = ExperimentConfig(max_experiments=20, time_budget=1.0, direction="maximize")
 
         optimizer = MinimalOptimizer(
-            evaluate=objective,
-            search_space=space,
-            config=config,
-            search_strategy="random",
-            seed=42
+            evaluate=objective, search_space=space, config=config, search_strategy="random", seed=42
         )
 
         result = optimizer.run()
@@ -255,26 +238,20 @@ class TestOptimizer:
 
     def test_early_stopping(self):
         """Test early stopping when no improvement"""
+
         def objective(params):
             x = params["x"]
-            return x ** 2
+            return x**2
 
         space = SearchSpace()
         space.add_continuous("x", 0.0, 1.0)
 
         config = ExperimentConfig(
-            max_experiments=100,
-            early_stopping_patience=5,
-            time_budget=1.0,
-            direction="minimize"
+            max_experiments=100, early_stopping_patience=5, time_budget=1.0, direction="minimize"
         )
 
         optimizer = MinimalOptimizer(
-            evaluate=objective,
-            search_space=space,
-            config=config,
-            search_strategy="random",
-            seed=42
+            evaluate=objective, search_space=space, config=config, search_strategy="random", seed=42
         )
 
         result = optimizer.run()
@@ -284,6 +261,7 @@ class TestOptimizer:
 
     def test_get_status(self):
         """Test get_status method"""
+
         def objective(params):
             return params["x"] ** 2
 
@@ -291,10 +269,7 @@ class TestOptimizer:
         space.add_continuous("x", 0.0, 1.0)
 
         optimizer = MinimalOptimizer(
-            evaluate=objective,
-            search_space=space,
-            search_strategy="random",
-            seed=42
+            evaluate=objective, search_space=space, search_strategy="random", seed=42
         )
 
         status = optimizer.get_status()
@@ -307,11 +282,7 @@ class TestModels:
 
     def test_experiment_to_dict(self):
         """Test Experiment serialization"""
-        exp = Experiment(
-            experiment_id=0,
-            params={"x": 1.0},
-            score=1.0
-        )
+        exp = Experiment(experiment_id=0, params={"x": 1.0}, score=1.0)
 
         data = exp.to_dict()
         assert data["experiment_id"] == 0
@@ -326,7 +297,7 @@ class TestModels:
             history=[],
             total_experiments=10,
             total_time=5.0,
-            improvement=0.3
+            improvement=0.3,
         )
 
         data = result.to_dict()
@@ -344,7 +315,7 @@ class TestModels:
             history=[],
             total_experiments=10,
             total_time=5.0,
-            improvement=0.3
+            improvement=0.3,
         )
 
         # Save
@@ -418,11 +389,13 @@ class TestAuditRegressions:
         assert result.total_experiments > 0, "Should have at least 1 successful experiment"
 
     def test_experiment_config_single_source(self):
-        """H1: core.config should re-export from config.config (single source of truth)."""
-        from lingminopt.core.config import ExperimentConfig as CoreConfig
-        from lingminopt.config.config import ExperimentConfig as CanonicalConfig
+        """H1: Only one ExperimentConfig source (single source of truth).
+        Previously there were two ExperimentConfig classes (core.config and config.config).
+        Now unified to config.config only. This test verifies no duplicate exists."""
+        import sys
 
-        assert CoreConfig is CanonicalConfig, "core.config should re-export from config.config"
+        # Verify core.config no longer exists
+        assert "lingminopt.core.config" not in sys.modules, "core.config should be removed"
 
 
 if __name__ == "__main__":

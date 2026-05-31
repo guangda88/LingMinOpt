@@ -1,4 +1,4 @@
-# LingMinOpt Development Guide
+# lingminopt Development Guide
 
 > 从 AGENTS.md 迁出，2026-05-06 瘦身。
 

@@ -1,13 +1,13 @@
 """
 示例：数据库查询优化
 
-使用 LingMinOpt 优化数据库查询性能。
+使用 lingminopt 优化数据库查询性能。
 
 目标：最大化查询吞吐量（QPS）
 """
 
 import sys
-sys.path.insert(0, '/home/ai/LingMinOpt')
+sys.path.insert(0, '/home/ai/lingminopt')
 
 from lingminopt import MinimalOptimizer, SearchSpace, ExperimentConfig
 import time

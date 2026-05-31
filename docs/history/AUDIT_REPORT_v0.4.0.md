@@ -2,7 +2,7 @@
 
 **审计员**: 灵极优 ⚡  
 **审计日期**: 2026-04-07  
-**审计范围**: /home/ai/LingMinOpt 全仓库 + /home/ai/zhineng-knowledge-system/mcp_servers/  
+**审计范围**: /home/ai/lingminopt 全仓库 + /home/ai/lingzhi/mcp_servers/  
 **对齐依据**: 灵通宪章 v1.0（自觉、自决、进化）+ 灵信章程 v0.2.0  
 
 ---

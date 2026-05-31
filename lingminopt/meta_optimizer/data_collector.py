@@ -1,15 +1,15 @@
 """
-Data Collector - 从 LingClaude 收集会话历史数据
+Data Collector - 从 lingclaude 收集会话历史数据
 """
 
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Any
-from dataclasses import dataclass
-from datetime import datetime
 import json
 import logging
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class SessionRecord:
     """单条会话记录"""
+
     session_id: str
     timestamp: float
     query: str
@@ -42,14 +43,14 @@ class SessionRecord:
 
 
 class DataCollector:
-    """从 LingClaude 会话历史收集数据"""
+    """从 lingclaude 会话历史收集数据"""
 
     def __init__(self, session_dir: str | Path):
         """
         初始化数据收集器
 
         Args:
-            session_dir: LingClaude 会话目录路径
+            session_dir: lingclaude 会话目录路径
         """
         self.session_dir = Path(session_dir)
         if not self.session_dir.exists():
@@ -82,7 +83,7 @@ class DataCollector:
                             input_tokens=0,
                             output_tokens=0,
                             latency_ms=0.0,
-                            success=True
+                            success=True,
                         )
                         records.append(record)
                     except Exception as e:
@@ -142,7 +143,7 @@ class DataCollector:
                         input_tokens=input_tokens,
                         output_tokens=output_tokens,
                         latency_ms=0.0,
-                        success=success
+                        success=success,
                     )
                     records.append(record)
 

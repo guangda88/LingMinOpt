@@ -14,24 +14,24 @@
 
 ## 📦 三个项目概览
 
-### 1. LingFlow (AI 工作流引擎)
+### 1. lingflow (AI 工作流引擎)
 
-- **目录**: `/home/ai/LingFlow/`
-- **GitHub**: https://github.com/guangda88/LingFlow
-- **Gitea**: http://zhinenggitea.iepose.cn/guangda/LingFlow.git
+- **目录**: `/home/ai/lingflow/`
+- **GitHub**: https://github.com/guangda88/lingflow
+- **Gitea**: http://zhinenggitea.iepose.cn/guangda/lingflow.git
 - **Git 用户**: guangda88 / liuqingabc@163.com ✅
 
-### 2. LingMinOpt (通用优化框架)
+### 2. lingminopt (通用优化框架)
 
-- **目录**: `/home/ai/LingMinOpt/`
-- **GitHub**: https://github.com/guangda88/LingMinOpt
-- **Gitea**: http://zhinenggitea.iepose.cn/guangda/LingMinOpt.git
+- **目录**: `/home/ai/lingminopt/`
+- **GitHub**: https://github.com/guangda88/lingminopt
+- **Gitea**: http://zhinenggitea.iepose.cn/guangda/lingminopt.git
 - **Git 用户**: guangda88 / liuqingabc@163.com ✅
 - **状态**: 已独立，准备推送（4 commits）
 
-### 3. LingResearch (自主研究项目)
+### 3. lingresearch (自主研究项目)
 
-- **目录**: `/home/ai/LingResearch/`
+- **目录**: `/home/ai/lingresearch/`
 - **GitHub**: https://github.com/guangda88/lingresearch
 - **Gitea**: http://zhinenggitea.iepose.cn/guangda/lingresearch.git
 - **Git 用户**: guangda88 / liuqingabc@163.com ✅
@@ -51,13 +51,13 @@
         │             │             │
         ▼             ▼             ▼
 ┌──────────┐  ┌──────────┐  ┌──────────┐
-│LingFlow  │  │LingMinOpt│  │LingResearch│
+│lingflow  │  │lingminopt│  │lingresearch│
 │工作流引擎 │  │ 优化框架  │  │ 自主研究  │
 └──────────┘  └──────────┘  └──────────┘
      │             │              │
      ▼             ▼              ▼
  guangda88     guangda88     guangda88
-/LingFlow     /LingMinOpt   /lingresearch
+/lingflow     /lingminopt   /lingresearch
 ```
 
 ---
@@ -66,9 +66,9 @@
 
 | 项目 | GitHub 仓库 | Gitea 仓库 | Git 用户 | 状态 |
 |------|------------|-----------|---------|------|
-| LingFlow | ✅ guangda88/LingFlow | ✅ guangda/LingFlow | ✅ 一致 | 正常 |
-| LingMinOpt | ✅ guangda88/LingMinOpt | ✅ guangda/LingMinOpt | ✅ 一致 | 待推送 |
-| LingResearch | ✅ guangda88/lingresearch | ✅ guangda/lingresearch | ✅ 一致 | 领先5提交 |
+| lingflow | ✅ guangda88/lingflow | ✅ guangda/lingflow | ✅ 一致 | 正常 |
+| lingminopt | ✅ guangda88/lingminopt | ✅ guangda/lingminopt | ✅ 一致 | 待推送 |
+| lingresearch | ✅ guangda88/lingresearch | ✅ guangda/lingresearch | ✅ 一致 | 领先5提交 |
 
 ---
 
@@ -77,9 +77,9 @@
 ### Git 用户配置
 
 ```bash
-✅ LingFlow:    guangda88 / liuqingabc@163.com
-✅ LingMinOpt:  guangda88 / liuqingabc@163.com
-✅ LingResearch: guangda88 / liuqingabc@163.com
+✅ lingflow:    guangda88 / liuqingabc@163.com
+✅ lingminopt:  guangda88 / liuqingabc@163.com
+✅ lingresearch: guangda88 / liuqingabc@163.com
 ```
 
 **结论**: 所有项目使用统一的 Git 用户配置 ✅
@@ -88,15 +88,15 @@
 
 **GitHub (origin)**:
 ```bash
-✅ git@github.com:guangda88/LingFlow.git
-✅ git@github.com:guangda88/LingMinOpt.git
+✅ git@github.com:guangda88/lingflow.git
+✅ git@github.com:guangda88/lingminopt.git
 ✅ git@github.com:guangda88/lingresearch.git
 ```
 
 **Gitea (gitea)**:
 ```bash
-✅ http://zhinenggitea.iepose.cn/guangda/LingFlow.git
-✅ http://zhinenggitea.iepose.cn/guangda/LingMinOpt.git
+✅ http://zhinenggitea.iepose.cn/guangda/lingflow.git
+✅ http://zhinenggitea.iepose.cn/guangda/lingminopt.git
 ✅ http://zhinenggitea.iepose.cn/guangda/lingresearch.git
 ```
 
@@ -105,9 +105,9 @@
 ### 目录权限
 
 ```bash
-drwxrwxr-x  ai ai  LingFlow
-drwxrwxr-x  ai ai  LingMinOpt
-drwxrwxr-x  ai ai  LingResearch
+drwxrwxr-x  ai ai  lingflow
+drwxrwxr-x  ai ai  lingminopt
+drwxrwxr-x  ai ai  lingresearch
 ```
 
 **结论**: 所有目录属于 ai 用户（guangda）✅
@@ -116,29 +116,29 @@ drwxrwxr-x  ai ai  LingResearch
 
 ## 🚀 待推送的提交
 
-### LingMinOpt
+### lingminopt
 
 ```bash
 $ git log --oneline
-835419b docs: add LingResearch rename report
-15c0dfe docs: rename zhinengresearch to LingResearch
+835419b docs: add lingresearch rename report
+15c0dfe docs: rename zhinengresearch to lingresearch
 10a72bd docs: add independence completion report
-3ea61c5 Initial commit: LingMinOpt (灵极优) v0.1.0
+3ea61c5 Initial commit: lingminopt (灵极优) v0.1.0
 ```
 
 **操作**:
 ```bash
-cd /home/ai/LingMinOpt
+cd /home/ai/lingminopt
 git push -u origin master
 git push -u gitea master
 ```
 
-### LingResearch
+### lingresearch
 
 **状态**: 领先 origin/main 5 个提交
 **操作**:
 ```bash
-cd /home/ai/LingResearch
+cd /home/ai/lingresearch
 git push origin main
 git push gitea main
 ```
@@ -151,27 +151,27 @@ git push gitea main
 |------|------|------|
 | **项目所有者** | guangda88 | GitHub 用户名 |
 | **邮箱** | liuqingabc@163.com | Git 配置邮箱 |
-| **目录名** | PascalCase | LingFlow, LingMinOpt, LingResearch |
-| **仓库名** | GitHub 惯例 | LingFlow, LingMinOpt, lingresearch |
+| **目录名** | PascalCase | lingflow, lingminopt, lingresearch |
+| **仓库名** | GitHub 惯例 | lingflow, lingminopt, lingresearch |
 | **Gitea 用户** | guangda | 小写（Gitea 惯例） |
 
 ---
 
 ## 🎯 项目定位
 
-### LingFlow
+### lingflow
 - **定位**: AI 工作流协调引擎
 - **核心**: 多智能体协调、技能系统、上下文压缩
 - **版本**: v3.3.0
 - **状态**: 生产就绪
 
-### LingMinOpt
+### lingminopt
 - **定位**: 通用自优化框架
 - **核心**: 参数优化、搜索策略、评估器
 - **版本**: v0.1.0
 - **状态**: 初始发布
 
-### LingResearch
+### lingresearch
 - **定位**: 自主 AI 研究项目
 - **核心**: 灵感来自 Karpathy 的 autoresearch
 - **依赖**: torch, numpy
@@ -201,9 +201,9 @@ git push gitea main
 
 **我是 guangda，拥有三个项目：**
 
-1. **LingFlow** - AI 工作流引擎（成熟项目）
-2. **LingMinOpt** - 通用优化框架（新发布）
-3. **LingResearch** - 自主研究项目（活跃开发）
+1. **lingflow** - AI 工作流引擎（成熟项目）
+2. **lingminopt** - 通用优化框架（新发布）
+3. **lingresearch** - 自主研究项目（活跃开发）
 
 **所有项目配置一致，归属明确，准备就绪！** 🚀
 

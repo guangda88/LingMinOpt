@@ -1,4 +1,4 @@
-# LingMinOpt v0.2.0 优化会话记录
+# lingminopt v0.2.0 优化会话记录
 
 **日期**: 2026-04-06
 **任务**: 按优先级实施优化，严格测试，通过后提交代码
@@ -359,7 +359,7 @@ Error: Invalid project name. Use only letters, numbers, underscores, and hyphens
 #### 4. 测试 run 命令
 ```bash
 cd test-cli-project
-PYTHONPATH=/home/ai/LingMinOpt:$PYTHONPATH python -c "import warnings; warnings.filterwarnings('always'); from lingminopt.cli.commands import cli; cli()" run --config config.json
+PYTHONPATH=/home/ai/lingminopt:$PYTHONPATH python -c "import warnings; warnings.filterwarnings('always'); from lingminopt.cli.commands import cli; cli()" run --config config.json
 ```
 
 **验证**: ✅ 显示警告
@@ -409,7 +409,7 @@ All checks passed!
 
 **提交消息**:
 ```
-feat: LingMinOpt v0.2.0 - Critical fixes and improvements
+feat: lingminopt v0.2.0 - Critical fixes and improvements
 
 CRITICAL fixes:
 - Fixed broken imports in __init__.py - added missing exports for Experiment, OptimizationResult, evaluator classes, and search strategies

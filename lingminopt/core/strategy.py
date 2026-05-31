@@ -2,14 +2,15 @@
 Search strategies for parameter optimization
 """
 
+import logging
+import math
+import random
 from abc import ABC, abstractmethod
 from itertools import product
 from typing import Any, Dict, List, Optional, Type
-import math
-import random
+
 from .models import Experiment
-from .searcher import SearchSpace, ParameterConfig
-import logging
+from .searcher import ParameterConfig, SearchSpace
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +90,9 @@ class GridSearch(SearchStrategy):
                 param_values[name] = config.choices
             else:  # continuous
                 param_values[name] = [
-                    config.min_val + (i / max(1, self.grid_points_per_axis - 1)) * (config.max_val - config.min_val)
+                    config.min_val
+                    + (i / max(1, self.grid_points_per_axis - 1))
+                    * (config.max_val - config.min_val)
                     for i in range(self.grid_points_per_axis)
                 ]
 
@@ -181,7 +184,7 @@ class SimulatedAnnealing(SearchStrategy):
         search_space: SearchSpace,
         seed: Optional[int] = None,
         initial_temp: float = 1.0,
-        cooling_rate: float = 0.95
+        cooling_rate: float = 0.95,
     ):
         """
         Initialize simulated annealing.
@@ -402,7 +405,16 @@ class TPESearch(SearchStrategy):
         return density
 
 
-# Strategy factory
+# Strategy registry
+_STRATEGY_REGISTRY: Dict[str, Type[SearchStrategy]] = {
+    "random": RandomSearch,
+    "grid": GridSearch,
+    "bayesian": BayesianSearch,
+    "annealing": SimulatedAnnealing,
+    "tpe": TPESearch,
+}
+
+
 def create_strategy(
     strategy_name: str,
     search_space: SearchSpace,
@@ -421,19 +433,9 @@ def create_strategy(
     Returns:
         SearchStrategy instance
     """
-    strategies = {
-        "random": RandomSearch,
-        "grid": GridSearch,
-        "bayesian": BayesianSearch,
-        "annealing": SimulatedAnnealing,
-        "tpe": TPESearch,
-    }
-
-    if strategy_name not in strategies:
+    if strategy_name not in _STRATEGY_REGISTRY:
         raise ValueError(
             f"Unknown strategy: {strategy_name}. "
-            f"Available strategies: {list(strategies.keys())}"
+            f"Available strategies: {list(_STRATEGY_REGISTRY.keys())}"
         )
-
-    strategy_cls = strategies[strategy_name]
-    return strategy_cls(search_space, seed, **kwargs)  # type: ignore[no-any-return]
+    return _STRATEGY_REGISTRY[strategy_name](search_space, seed, **kwargs)  # type: ignore[no-any-return]

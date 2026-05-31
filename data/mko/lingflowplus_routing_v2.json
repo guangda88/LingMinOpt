@@ -1,0 +1,130 @@
+{
+  "version": "2.0",
+  "generated_by": "lingminopt MKO",
+  "routing_optimization": {
+    "code_model": "llama-3.3-70b",
+    "debug_model": "qwen-plus",
+    "chat_model": "glm-4.7-flash",
+    "strategy": "cost_based",
+    "score": 0.997
+  },
+  "member_overrides": {
+    "lingzhi": {
+      "total_tokens": 1896005,
+      "percentage": 25.2,
+      "out_in_ratio": 10.1,
+      "recommended_max_tokens": 2048,
+      "recommended_chat_model": "glm-4.7-flash",
+      "recommended_code_model": "llama-3.3-70b",
+      "action": "max_tokens=2048硬限制 + 输出截断"
+    },
+    "lingtongask": {
+      "total_tokens": 1200472,
+      "percentage": 16.0,
+      "out_in_ratio": 5.4,
+      "recommended_max_tokens": 2048,
+      "recommended_chat_model": "glm-4.7-flash",
+      "recommended_code_model": "llama-3.3-70b",
+      "action": "max_tokens=2048硬限制 + 输出截断"
+    },
+    "lingflow": {
+      "total_tokens": 879333,
+      "percentage": 11.7,
+      "out_in_ratio": 3.0,
+      "recommended_max_tokens": 8192,
+      "recommended_chat_model": "glm-4.7-flash",
+      "recommended_code_model": "llama-3.3-70b",
+      "action": "非code任务路由到qwen-plus"
+    },
+    "lingclaude": {
+      "total_tokens": 800447,
+      "percentage": 10.6,
+      "out_in_ratio": 3.9,
+      "recommended_max_tokens": 8192,
+      "recommended_chat_model": "glm-4.7-flash",
+      "recommended_code_model": "llama-3.3-70b",
+      "action": "非code任务路由到qwen-plus"
+    },
+    "lingyang": {
+      "total_tokens": 786236,
+      "percentage": 10.5,
+      "out_in_ratio": 1.3,
+      "recommended_max_tokens": 8192,
+      "recommended_chat_model": "glm-4.7-flash",
+      "recommended_code_model": "llama-3.3-70b",
+      "action": "非code任务路由到qwen-plus"
+    },
+    "lingresearch": {
+      "total_tokens": 651871,
+      "percentage": 8.7,
+      "out_in_ratio": 3.4,
+      "recommended_max_tokens": 8192,
+      "recommended_chat_model": "glm-4.7-flash",
+      "recommended_code_model": "llama-3.3-70b",
+      "action": "可选qwen-plus路由"
+    },
+    "lingcreate": {
+      "total_tokens": 485257,
+      "percentage": 6.5,
+      "out_in_ratio": 0.1,
+      "recommended_max_tokens": 8192,
+      "recommended_chat_model": "glm-4.7-flash",
+      "recommended_code_model": "llama-3.3-70b",
+      "action": "可选qwen-plus路由"
+    },
+    "lingweb": {
+      "total_tokens": 362957,
+      "percentage": 4.8,
+      "out_in_ratio": 6.1,
+      "recommended_max_tokens": 16384,
+      "recommended_chat_model": "glm-4.7-flash",
+      "recommended_code_model": "llama-3.3-70b",
+      "action": "维持现状"
+    },
+    "lingmessage": {
+      "total_tokens": 139285,
+      "percentage": 1.9,
+      "out_in_ratio": 9.7,
+      "recommended_max_tokens": 16384,
+      "recommended_chat_model": "glm-4.7-flash",
+      "recommended_code_model": "llama-3.3-70b",
+      "action": "维持现状"
+    },
+    "lingxi": {
+      "total_tokens": 138350,
+      "percentage": 1.8,
+      "out_in_ratio": 7.1,
+      "recommended_max_tokens": 16384,
+      "recommended_chat_model": "glm-4.7-flash",
+      "recommended_code_model": "llama-3.3-70b",
+      "action": "维持现状"
+    },
+    "lingminopt": {
+      "total_tokens": 101284,
+      "percentage": 1.3,
+      "out_in_ratio": 7.3,
+      "recommended_max_tokens": 16384,
+      "recommended_chat_model": "glm-4.7-flash",
+      "recommended_code_model": "llama-3.3-70b",
+      "action": "维持现状"
+    },
+    "zhibridge": {
+      "total_tokens": 57427,
+      "percentage": 0.8,
+      "out_in_ratio": 7.6,
+      "recommended_max_tokens": 16384,
+      "recommended_chat_model": "glm-4.7-flash",
+      "recommended_code_model": "llama-3.3-70b",
+      "action": "维持现状"
+    },
+    "lingflowplus": {
+      "total_tokens": 19836,
+      "percentage": 0.3,
+      "out_in_ratio": 18.5,
+      "recommended_max_tokens": 16384,
+      "recommended_chat_model": "glm-4.7-flash",
+      "recommended_code_model": "llama-3.3-70b",
+      "action": "维持现状"
+    }
+  }
+}

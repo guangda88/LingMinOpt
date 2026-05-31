@@ -4,25 +4,31 @@ Meta Optimizer Tests - 元知识优化模块测试
 
 from __future__ import annotations
 
-import pytest
-from pathlib import Path
 import json
+from pathlib import Path
 from typing import Any
 
+import pytest
+
 from lingminopt.meta_optimizer.data_collector import DataCollector, SessionRecord
-from lingminopt.meta_optimizer.feature_extractor import FeatureExtractor, TaskFeatures, IntentType, TaskComplexity
-from lingminopt.meta_optimizer.search_spaces import (
-    get_prompt_optimization_space,
-    get_routing_optimization_space,
-    get_retry_optimization_space,
-)
 from lingminopt.meta_optimizer.evaluators import (
     PromptEvaluator,
-    RoutingEvaluator,
     RetryEvaluator,
+    RoutingEvaluator,
+)
+from lingminopt.meta_optimizer.feature_extractor import (
+    FeatureExtractor,
+    IntentType,
+    TaskComplexity,
+    TaskFeatures,
 )
 from lingminopt.meta_optimizer.optimizer import MetaOptimizer
 from lingminopt.meta_optimizer.report_generator import ReportGenerator
+from lingminopt.meta_optimizer.search_spaces import (
+    get_prompt_optimization_space,
+    get_retry_optimization_space,
+    get_routing_optimization_space,
+)
 
 
 @pytest.fixture
@@ -58,7 +64,7 @@ def sample_session_data(tmp_path: Path) -> Path:
             ],
             "input_tokens": 100 * i,
             "output_tokens": 200 * i,
-            "model": "gpt-4o",
+            "model": "glm-5.1",
             "agent": "implementation",
             "success": True,
         }
@@ -75,7 +81,7 @@ def sample_session_records() -> list[dict[str, Any]]:
         {
             "session_id": "001",
             "query": "帮我写一个用户登录的API",
-            "model": "gpt-4o",
+            "model": "glm-5.1",
             "agent": "implementation",
             "input_tokens": 100,
             "output_tokens": 200,
@@ -87,7 +93,7 @@ def sample_session_records() -> list[dict[str, Any]]:
         {
             "session_id": "002",
             "query": "修复登录接口的bug",
-            "model": "gpt-4o-mini",
+            "model": "glm-4.7-flash",
             "agent": "debugger",
             "input_tokens": 150,
             "output_tokens": 250,
@@ -99,7 +105,7 @@ def sample_session_records() -> list[dict[str, Any]]:
         {
             "session_id": "003",
             "query": "代码审查",
-            "model": "claude-3.5-sonnet",
+            "model": "qwen-max",
             "agent": "reviewer",
             "input_tokens": 80,
             "output_tokens": 120,
@@ -120,7 +126,7 @@ class TestSessionRecord:
             session_id="001",
             timestamp=1649700000.0,
             query="test",
-            model="gpt-4o",
+            model="glm-5.1",
             agent="implementation",
             input_tokens=100,
             output_tokens=200,
@@ -139,7 +145,7 @@ class TestSessionRecord:
             session_id="001",
             timestamp=timestamp,
             query="test",
-            model="gpt-4o",
+            model="glm-5.1",
             agent="implementation",
             input_tokens=100,
             output_tokens=200,
@@ -197,7 +203,7 @@ class TestTaskFeatures:
         data = {
             "session_id": "001",
             "query": "帮我写一个用户登录的API",
-            "model": "gpt-4o",
+            "model": "glm-5.1",
             "agent": "implementation",
             "input_tokens": 100,
             "output_tokens": 200,
@@ -254,8 +260,7 @@ class TestFeatureExtractor:
         """测试按意图提取特征"""
         extractor = FeatureExtractor()
         features = extractor.extract_features_by_intent(
-            sample_session_records,
-            IntentType.CODE_GENERATION
+            sample_session_records, IntentType.CODE_GENERATION
         )
 
         # 所有提取的特征都应该是指定意图
@@ -299,10 +304,10 @@ class TestSearchSpaces:
         """测试路由优化搜索空间"""
         space = get_routing_optimization_space()
 
-        assert "code_intent_agent" in space.parameters
-        assert "debug_intent_agent" in space.parameters
-        assert "chat_intent_agent" in space.parameters
-        assert "skill_routing_strategy" in space.parameters
+        assert "code_model" in space.parameters
+        assert "debug_model" in space.parameters
+        assert "chat_model" in space.parameters
+        assert "routing_strategy" in space.parameters
 
     def test_retry_optimization_space(self):
         """测试重试优化搜索空间"""
@@ -321,9 +326,9 @@ class TestPromptEvaluator:
         evaluator = PromptEvaluator(sample_session_records)
 
         params = {
-            "model": "gpt-4o",
+            "model": "glm-5.1",
             "temperature": 0.7,
-            "max_tokens": 2048,
+            "max_tokens": 4096,
         }
 
         score = evaluator.evaluate(params)
@@ -334,14 +339,13 @@ class TestPromptEvaluator:
         """测试不同模型的评分"""
         evaluator = PromptEvaluator(sample_session_records)
 
-        params_mini = {"model": "gpt-4o-mini", "temperature": 0.7, "max_tokens": 2048}
-        params_full = {"model": "gpt-4o", "temperature": 0.7, "max_tokens": 2048}
+        params_flash = {"model": "glm-4.7-flash", "temperature": 0.7, "max_tokens": 4096}
+        params_full = {"model": "glm-5.1", "temperature": 0.7, "max_tokens": 4096}
 
-        score_mini = evaluator.evaluate(params_mini)
+        score_flash = evaluator.evaluate(params_flash)
         score_full = evaluator.evaluate(params_full)
 
-        # mini 模型应该有更高的 Token 节省分数（或至少相等）
-        assert score_mini >= score_full
+        assert score_flash < score_full
 
 
 class TestRoutingEvaluator:
@@ -352,10 +356,10 @@ class TestRoutingEvaluator:
         evaluator = RoutingEvaluator(sample_session_records)
 
         params = {
-            "code_intent_agent": "implementation",
-            "debug_intent_agent": "debugger",
-            "chat_intent_agent": "documentation",
-            "skill_routing_strategy": "intent_based",
+            "code_model": "glm-5.1",
+            "debug_model": "glm-4.7-flash",
+            "chat_model": "qwen-plus",
+            "routing_strategy": "intent_based",
         }
 
         score = evaluator.evaluate(params)
@@ -389,9 +393,7 @@ class TestMetaOptimizer:
         optimizer = MetaOptimizer(sample_session_data)
 
         result = optimizer.optimize_prompt(
-            max_experiments=5,
-            search_strategy="random",
-            random_seed=42
+            max_experiments=5, search_strategy="random", random_seed=42
         )
 
         assert "optimization_type" in result
@@ -404,9 +406,7 @@ class TestMetaOptimizer:
         optimizer = MetaOptimizer(sample_session_data)
 
         result = optimizer.optimize_routing(
-            max_experiments=5,
-            search_strategy="random",
-            random_seed=42
+            max_experiments=5, search_strategy="random", random_seed=42
         )
 
         assert "optimization_type" in result
@@ -418,9 +418,7 @@ class TestMetaOptimizer:
         optimizer = MetaOptimizer(sample_session_data)
 
         result = optimizer.optimize_retry(
-            max_experiments=5,
-            search_strategy="random",
-            random_seed=42
+            max_experiments=5, search_strategy="random", random_seed=42
         )
 
         assert "optimization_type" in result
@@ -460,7 +458,7 @@ class TestReportGenerator:
 
         results = {
             "combined_score": 0.85,
-            "prompt_optimization": {"model": "gpt-4o-mini"},
+            "prompt_optimization": {"model": "glm-4.7-flash"},
         }
 
         report_path = generator.generate_json_report(results)

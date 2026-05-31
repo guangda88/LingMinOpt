@@ -2,11 +2,11 @@
 Data models for the optimizer
 """
 
-from dataclasses import dataclass, field
-from typing import Dict, Any, List
-from datetime import datetime
 import json
 import math
+from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Any, Dict, List
 
 
 @dataclass
@@ -32,7 +32,7 @@ class Experiment:
             "params": self.params,
             "score": self.score,
             "timestamp": self.timestamp.isoformat(),
-            "metadata": self.metadata
+            "metadata": self.metadata,
         }
 
     def to_json(self, indent: int = 2) -> str:
@@ -48,7 +48,7 @@ class Experiment:
             params=data["params"],
             score=data["score"],
             timestamp=datetime.fromisoformat(ts) if ts else datetime.now(),
-            metadata=data.get("metadata", {})
+            metadata=data.get("metadata", {}),
         )
 
     def save(self, filepath: str) -> None:
@@ -83,7 +83,7 @@ class OptimizationResult:
             "history": [exp.to_dict() for exp in self.history],
             "total_experiments": self.total_experiments,
             "total_time": self.total_time,
-            "improvement": self.improvement
+            "improvement": self.improvement,
         }
 
     def to_json(self, indent: int = 2) -> str:
@@ -99,7 +99,7 @@ class OptimizationResult:
             history=[Experiment.from_dict(exp) for exp in data.get("history", [])],
             total_experiments=data.get("total_experiments", 0),
             total_time=data.get("total_time", 0.0),
-            improvement=data.get("improvement", 0.0)
+            improvement=data.get("improvement", 0.0),
         )
 
     def save(self, filepath: str) -> None:

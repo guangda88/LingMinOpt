@@ -2,13 +2,14 @@
 Optimization engine
 """
 
-import time
 import logging
+import time
 from datetime import datetime
-from typing import Callable, Dict, Any, Optional, List
-from lingminopt.core.searcher import SearchSpace
-from lingminopt.core.models import Experiment, OptimizationResult
+from typing import Any, Callable, Dict, List, Optional
+
 from lingminopt.config.config import ExperimentConfig
+from lingminopt.core.models import Experiment, OptimizationResult
+from lingminopt.core.searcher import SearchSpace
 from lingminopt.core.strategy import create_strategy
 
 logger = logging.getLogger(__name__)
@@ -48,9 +49,9 @@ class MinimalOptimizer:
 
         # Initialize result
         if self.config.direction == "minimize":
-            initial_best = float('inf')
+            initial_best = float("inf")
         else:
-            initial_best = float('-inf')
+            initial_best = float("-inf")
 
         self.result = OptimizationResult(
             best_score=initial_best,
@@ -58,7 +59,7 @@ class MinimalOptimizer:
             history=[],
             total_experiments=0,
             total_time=0.0,
-            improvement=0.0
+            improvement=0.0,
         )
 
     def run(self) -> OptimizationResult:
@@ -68,11 +69,7 @@ class MinimalOptimizer:
         Returns:
             OptimizationResult with best parameters and history
         """
-        strategy = create_strategy(
-            self.search_strategy,
-            self.search_space,
-            seed=self.seed
-        )
+        strategy = create_strategy(self.search_strategy, self.search_space, seed=self.seed)
 
         start_time = time.time()
         patience_counter = 0
@@ -115,29 +112,28 @@ class MinimalOptimizer:
             else:
                 patience_counter += 1
                 if patience_counter >= self.config.early_stopping_patience:
-                    logger.info(f"Early stopping after {patience_counter} experiments without improvement")
+                    logger.info(
+                        f"Early stopping after {patience_counter} experiments without improvement"
+                    )
                     break
 
-            exp = Experiment(
-                experiment_id=i,
-                params=params,
-                score=score,
-                timestamp=datetime.now()
-            )
+            exp = Experiment(experiment_id=i, params=params, score=score, timestamp=datetime.now())
             self.result.history.append(exp)
             self.result.total_experiments += 1
 
             for cb in self.callbacks:
-                cb({
-                    "experiment_id": i,
-                    "params": params,
-                    "score": score,
-                    "best_score": self.result.best_score,
-                    "best_params": self.result.best_params,
-                    "improved": improved,
-                    "elapsed": time.time() - start_time,
-                    "total_experiments": self.result.total_experiments,
-                })
+                cb(
+                    {
+                        "experiment_id": i,
+                        "params": params,
+                        "score": score,
+                        "best_score": self.result.best_score,
+                        "best_params": self.result.best_params,
+                        "improved": improved,
+                        "elapsed": time.time() - start_time,
+                        "total_experiments": self.result.total_experiments,
+                    }
+                )
 
             if (i + 1) % 10 == 0:
                 logger.info(f"Progress: {i + 1}/{self.config.max_experiments} experiments")
@@ -163,5 +159,5 @@ class MinimalOptimizer:
             "best_score": self.result.best_score,
             "best_params": self.result.best_params,
             "total_time": self.result.total_time,
-            "improvement": self.result.improvement
+            "improvement": self.result.improvement,
         }

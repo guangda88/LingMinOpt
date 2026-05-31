@@ -1,20 +1,23 @@
-"""灵极优 MCP Server — 优化工具 + 反馈闭环。
+"""灵极优 MCP Server — 优化工具 + 反馈闭环 + MKO元知识优化。
 
-工具清单 (12):
+工具清单 (15):
   搜索空间: create_search_space
   优化执行: run_optimization, get_optimization_status
   策略管理: create_strategy_profile
   结果管理: load_results, compare_results, create_experiment_config
   反馈闭环: feedback_from_result, export_training_sample, list_feedback
   一键闭环: optimization_pipeline
+  MKO优化: mko_token_ranking, mko_run, mko_recommendations
   审计日志: list_audit_log
+
+安全: 无exec()/eval()/compile()，使用声明式评估器注册表。
 """
 
 from __future__ import annotations
 
-import ast
 import functools
 import json
+import math
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -22,62 +25,87 @@ from typing import Any, Dict, List
 
 from mcp.server.fastmcp import FastMCP
 
-_FORBIDDEN_AST = (
-    ast.Import, ast.ImportFrom, ast.Global,
-)
-_FORBIDDEN_ATTR_PREFIXES = ("__", "os", "sys", "subprocess", "builtins", "shutil", "pathlib")
-_FORBIDDEN_NAMES = frozenset({
-    "exec", "eval", "compile", "__import__", "open", "input",
-    "globals", "locals", "vars", "dir", "getattr", "setattr", "delattr",
-    "breakpoint", "exit", "quit",
-})
+# ---------------------------------------------------------------------------
+# 声明式评估器注册表（替代exec()）
+# ---------------------------------------------------------------------------
 
 
-def _check_ast_node(node: ast.AST) -> None:
-    if isinstance(node, _FORBIDDEN_AST):
-        raise ValueError(f"Forbidden AST node: {type(node).__name__}")
-    if isinstance(node, ast.Name) and node.id in _FORBIDDEN_NAMES:
-        raise ValueError(f"Forbidden name: {node.id}")
-    if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id in _FORBIDDEN_NAMES:
-        raise ValueError(f"Forbidden call: {node.func.id}")
-    if isinstance(node, ast.Attribute):
-        attr_name = node.attr
-        if isinstance(node.value, ast.Name) and node.value.id in ("os", "sys", "subprocess", "builtins", "shutil", "pathlib"):
-            raise ValueError(f"Forbidden module access: {node.value.id}.{attr_name}")
-        if attr_name.startswith("__"):
-            raise ValueError(f"Forbidden dunder attribute: {attr_name}")
+def _sphere(params: dict) -> float:
+    return sum(v**2 for v in params.values())
 
 
-def _validate_evaluate_code(code: str, max_len: int = 4096) -> str:
-    if len(code) > max_len:
-        raise ValueError(f"evaluate_code exceeds {max_len} chars")
-    indented = f"def _evaluate(params):\n    {code}"
-    try:
-        tree = ast.parse(indented)
-    except SyntaxError as e:
-        raise ValueError(f"Syntax error in evaluate_code: {e}") from e
-    func_def = tree.body[0]
-    if not isinstance(func_def, ast.FunctionDef):
-        raise ValueError("evaluate_code must be a function body")
-    for node in ast.walk(func_def):
-        _check_ast_node(node)
-    return code
+def _rastrigin(params: dict) -> float:
+    n = len(params)
+    return 10 * n + sum(v**2 - 10 * math.cos(2 * math.pi * v) for v in params.values())
 
 
-_SAFE_BUILTINS = {
-    "min": min, "max": max, "abs": abs, "round": round,
-    "len": len, "sum": sum, "pow": pow, "float": float, "int": int,
-    "True": True, "False": False, "None": None,
-    "print": print,
+def _rosenbrock(params: dict) -> float:
+    vals = list(params.values())
+    return sum(
+        (1 - vals[i]) ** 2 + 100 * (vals[i + 1] - vals[i] ** 2) ** 2 for i in range(len(vals) - 1)
+    )
+
+
+def _ackley(params: dict) -> float:
+    vals = list(params.values())
+    n = len(vals)
+    s1 = sum(v**2 for v in vals)
+    s2 = sum(math.cos(2 * math.pi * v) for v in vals)
+    return -20 * math.exp(-0.2 * math.sqrt(s1 / n)) - math.exp(s2 / n) + 20 + math.e
+
+
+def _quadratic(params: dict) -> float:
+    return sum((v - 0.5) ** 2 for v in params.values())
+
+
+def _neg_mean(params: dict) -> float:
+    vals = list(params.values())
+    return -sum(vals) / max(len(vals), 1)
+
+
+_EVALUATOR_REGISTRY: Dict[str, dict] = {
+    "sphere": {"fn": _sphere, "description": "Sphere function (sum of squares). Min=0 at origin."},
+    "rastrigin": {
+        "fn": _rastrigin,
+        "description": "Rastrigin function. Many local minima, global min=0 at origin.",
+    },
+    "rosenbrock": {
+        "fn": _rosenbrock,
+        "description": "Rosenbrock function. Narrow valley, global min=0 at (1,...,1).",
+    },
+    "ackley": {
+        "fn": _ackley,
+        "description": "Ackley function. Many local minima, global min≈0 at origin.",
+    },
+    "quadratic": {
+        "fn": _quadratic,
+        "description": "Quadratic bowl centered at 0.5. Min=0 at all params=0.5.",
+    },
+    "neg_mean": {"fn": _neg_mean, "description": "Negative mean. Maximizes sum of params."},
 }
 
 
-def _build_evaluate_fn(evaluate_code: str) -> Any:
-    validated = _validate_evaluate_code(evaluate_code)
-    local_vars: dict[str, Any] = {}
-    exec(f"def _evaluate(params):\n    {validated}", {"__builtins__": _SAFE_BUILTINS}, local_vars)
-    return local_vars["_evaluate"]
+def _get_evaluator(name: str) -> Any:
+    entry = _EVALUATOR_REGISTRY.get(name)
+    if entry is None:
+        available = ", ".join(sorted(_EVALUATOR_REGISTRY.keys()))
+        raise ValueError(f"Unknown evaluator: {name}. Available: {available}")
+    return entry["fn"]
 
+
+def _validate_data_path(filepath: str) -> Path:
+    resolved = Path(filepath).resolve()
+    allowed = [Path("data").resolve(), Path("results").resolve()]
+    if not any(resolved == d or d in resolved.parents for d in allowed):
+        raise ValueError(f"Path outside allowed directories: {filepath}")
+    if ".." in Path(filepath).parts:
+        raise ValueError(f"Path traversal denied: {filepath}")
+    return resolved
+
+
+# ---------------------------------------------------------------------------
+# 审计日志
+# ---------------------------------------------------------------------------
 
 _FEEDBACK_DIR = Path("data/feedback")
 _TRAINING_EXPORT_DIR = Path("data/training_exports")
@@ -103,16 +131,24 @@ def _audit_wrap(func):
         _audit_log(tool_name, kwargs)
         result = func(*args, **kwargs)
         if isinstance(result, dict):
-            summary_keys = [k for k in ("status", "error", "id", "saved_to", "count") if k in result]
+            summary_keys = [
+                k for k in ("status", "error", "id", "saved_to", "count") if k in result
+            ]
             _audit_log(f"{tool_name}_result", {k: result[k] for k in summary_keys})
         return result
+
     return wrapper
 
 
 mcp = FastMCP(
-    name="LingMinOpt",
-    instructions="灵极优（LingMinOpt）MCP Server — 超参数优化核心能力 + 反馈闭环",
+    name="lingminopt",
+    instructions="灵极优（lingminopt）MCP Server — 超参数优化核心能力 + 反馈闭环",
 )
+
+
+# ---------------------------------------------------------------------------
+# 搜索空间 + 优化执行
+# ---------------------------------------------------------------------------
 
 
 @_audit_wrap
@@ -131,13 +167,13 @@ def tool_create_search_space(config_json: str) -> dict:
 @mcp.tool(name="run_optimization", description="运行优化（灵优）")
 def tool_run_optimization(
     search_space_config: str,
-    evaluate_code: str,
+    evaluator: str = "sphere",
     max_experiments: int = 100,
     strategy: str = "random",
     direction: str = "minimize",
     time_budget: float = 300.0,
 ) -> dict:
-    """运行一次优化任务。evaluate_code 为 Python 函数体，接收 params dict，返回 float 分数。"""
+    """运行一次优化任务。evaluator 为注册表中的评估函数名（sphere/rastrigin/rosenbrock/ackley/quadratic/neg_mean），接收 params dict，返回 float 分数。"""
     from lingminopt import ExperimentConfig, MinimalOptimizer, SearchSpace
 
     space = SearchSpace.from_dict(json.loads(search_space_config))
@@ -146,7 +182,7 @@ def tool_run_optimization(
         direction=direction,
         time_budget=time_budget,
     )
-    evaluate_fn = _build_evaluate_fn(evaluate_code)
+    evaluate_fn = _get_evaluator(evaluator)
     optimizer = MinimalOptimizer(
         evaluate=evaluate_fn,
         search_space=space,
@@ -155,6 +191,16 @@ def tool_run_optimization(
     )
     result = optimizer.run()
     return result.to_dict()
+
+
+@_audit_wrap
+@mcp.tool(name="list_evaluators", description="列出可用评估器（灵列评）")
+def tool_list_evaluators() -> dict:
+    """列出所有已注册的声明式评估器及其描述。"""
+    evaluators = {}
+    for name, entry in sorted(_EVALUATOR_REGISTRY.items()):
+        evaluators[name] = entry["description"]
+    return {"evaluators": evaluators, "count": len(evaluators)}
 
 
 @_audit_wrap
@@ -183,10 +229,13 @@ def tool_create_strategy_profile(
 @_audit_wrap
 @mcp.tool(name="load_results", description="加载优化结果（灵果）")
 def tool_load_results(filepath: str) -> dict:
-    """从JSON文件加载历史优化结果。"""
+    """从JSON文件加载历史优化结果。仅允许data/和results/目录。"""
     from lingminopt import OptimizationResult
 
-    result = OptimizationResult.load(filepath)
+    safe_path = _validate_data_path(filepath)
+    if not safe_path.exists():
+        return {"error": f"File not found: {filepath}"}
+    result = OptimizationResult.load(str(safe_path))
     return result.to_dict()
 
 
@@ -204,8 +253,15 @@ def tool_compare_results(filepath_a: str, filepath_b: str) -> dict:
     """
     from lingminopt import OptimizationResult
 
-    ra = OptimizationResult.load(filepath_a)
-    rb = OptimizationResult.load(filepath_b)
+    safe_a = _validate_data_path(filepath_a)
+    safe_b = _validate_data_path(filepath_b)
+    if not safe_a.exists():
+        return {"error": f"File not found: {filepath_a}"}
+    if not safe_b.exists():
+        return {"error": f"File not found: {filepath_b}"}
+
+    ra = OptimizationResult.load(str(safe_a))
+    rb = OptimizationResult.load(str(safe_b))
 
     all_keys = set(ra.best_params.keys()) | set(rb.best_params.keys())
     param_diff = {}
@@ -292,7 +348,10 @@ def tool_feedback_from_result(
     """
     from lingminopt import OptimizationResult
 
-    result = OptimizationResult.load(result_filepath)
+    safe_path = _validate_data_path(result_filepath)
+    if not safe_path.exists():
+        return {"error": f"File not found: {result_filepath}"}
+    result = OptimizationResult.load(str(safe_path))
 
     if feedback_type not in ("improvement", "regression", "insight", "waste"):
         return {"error": f"Invalid feedback_type: {feedback_type}"}
@@ -345,9 +404,7 @@ def _sample_trajectory(history: list, result: Any, include_metadata: bool) -> Li
     for i, exp in enumerate(history):
         entry = _exp_to_training(exp, result, include_metadata)
         entry["step"] = i
-        entry["is_best_so_far"] = exp.score == min(
-            e.score for e in history[: i + 1]
-        )
+        entry["is_best_so_far"] = exp.score == min(e.score for e in history[: i + 1])
         samples.append(entry)
     return samples
 
@@ -389,7 +446,10 @@ def tool_export_training_sample(
     if sampler is None:
         return {"error": f"Invalid sample_type: {sample_type}"}
 
-    result = OptimizationResult.load(result_filepath)
+    safe_path = _validate_data_path(result_filepath)
+    if not safe_path.exists():
+        return {"error": f"File not found: {result_filepath}"}
+    result = OptimizationResult.load(str(safe_path))
     history = result.history
     if not history:
         return {"error": "No experiments in result history"}
@@ -417,9 +477,7 @@ def tool_export_training_sample(
     }
 
 
-def _exp_to_training(
-    exp: Any, result: Any, include_metadata: bool
-) -> Dict[str, Any]:
+def _exp_to_training(exp: Any, result: Any, include_metadata: bool) -> Dict[str, Any]:
     """Convert an Experiment to a training data dict."""
     entry: Dict[str, Any] = {
         "params": exp.params,
@@ -470,7 +528,7 @@ def tool_list_feedback(
 @mcp.tool(name="optimization_pipeline", description="优化闭环流水线（灵环）")
 def tool_optimization_pipeline(
     search_space_config: str,
-    evaluate_code: str,
+    evaluator: str = "sphere",
     max_experiments: int = 50,
     strategy: str = "random",
     direction: str = "minimize",
@@ -482,7 +540,7 @@ def tool_optimization_pipeline(
 
     Args:
         search_space_config: 搜索空间 JSON 配置
-        evaluate_code: Python 函数体（接收 params，返回 float）
+        evaluator: 注册表中的评估函数名
         max_experiments: 最大实验次数
         strategy: 搜索策略
         direction: minimize/maximize
@@ -501,7 +559,7 @@ def tool_optimization_pipeline(
         direction=direction,
         time_budget=time_budget,
     )
-    evaluate_fn = _build_evaluate_fn(evaluate_code)
+    evaluate_fn = _get_evaluator(evaluator)
     optimizer = MinimalOptimizer(
         evaluate=evaluate_fn,
         search_space=space,
@@ -567,12 +625,240 @@ def tool_list_audit_log(limit: int = 50, tool_filter: str = "") -> dict:
     return {"entries": entries, "count": len(entries)}
 
 
+@_audit_wrap
+@mcp.tool(name="mko_token_ranking", description="灵族Token消耗排名（灵排）")
+def tool_mko_token_ranking(limit: int = 13) -> dict:
+    """从灵族crush.db提取真实会话数据，按token消耗排名并给出优化建议。
+
+    Returns:
+        各成员token消耗排名 + 优化建议
+    """
+    from lingminopt.meta_optimizer.lingbus_collector import LingBusCollector
+
+    collector = LingBusCollector()
+    stats = collector.collect_all_stats()
+    if not stats:
+        return {"members": [], "total_tokens": 0}
+
+    ranked = sorted(
+        stats.values(),
+        key=lambda s: s.estimated_input_tokens + s.estimated_output_tokens,
+        reverse=True,
+    )
+    total_tokens = sum(s.estimated_input_tokens + s.estimated_output_tokens for s in ranked)
+
+    members = []
+    for s in ranked[:limit]:
+        total = s.estimated_input_tokens + s.estimated_output_tokens
+        out_in = s.estimated_output_tokens / max(s.estimated_input_tokens, 1)
+        pct = total / max(total_tokens, 1) * 100
+        if pct > 10:
+            suggestion = "高优: CRUSH.md瘦身 + max_tokens限制 + 输出截断检查"
+        elif pct > 5:
+            suggestion = "中优: 非code任务用qwen-plus路由"
+        else:
+            suggestion = "低优: 维持现状"
+        members.append(
+            {
+                "member": s.member,
+                "total_tokens": total,
+                "percentage": round(pct, 1),
+                "out_in_ratio": round(out_in, 1),
+                "tool_calls": s.total_tool_calls,
+                "suggestion": suggestion,
+            }
+        )
+    return {"members": members, "total_tokens": total_tokens, "count": len(members)}
+
+
+@_audit_wrap
+@mcp.tool(name="mko_run", description="运行MKO元知识优化（灵优MKO）")
+def tool_mko_run(
+    optimization_type: str = "prompt",
+    n_trials: int = 30,
+    data_limit: int = 500,
+) -> dict:
+    """运行MKO优化：基于灵族真实会话数据优化token消耗。
+
+    Args:
+        optimization_type: prompt / routing / retry
+        n_trials: 优化尝试次数
+        data_limit: 从LingBus拉取的数据量
+
+    Returns:
+        最优参数 + token节省估计
+    """
+    from lingminopt import ExperimentConfig
+    from lingminopt.core.optimizer import MinimalOptimizer
+    from lingminopt.meta_optimizer.evaluators import (
+        PromptEvaluator,
+        RetryEvaluator,
+        RoutingEvaluator,
+    )
+    from lingminopt.meta_optimizer.lingbus_collector import LingBusCollector
+    from lingminopt.meta_optimizer.search_spaces import (
+        get_prompt_optimization_space,
+        get_retry_optimization_space,
+        get_routing_optimization_space,
+    )
+
+    collector = LingBusCollector()
+    records = collector.collect_lingbus_messages(limit=data_limit)
+    if not records:
+        return {"error": "No LingBus data available"}
+
+    session_data = [
+        {
+            "query": r.query,
+            "model": r.model,
+            "agent": r.agent,
+            "total_tokens": r.input_tokens + r.output_tokens,
+            "input_tokens": r.input_tokens,
+            "output_tokens": r.output_tokens,
+            "success": r.success,
+            "quality_score": 0.85,
+        }
+        for r in records
+    ]
+
+    if optimization_type == "prompt":
+        space = get_prompt_optimization_space()
+        evaluator = PromptEvaluator(session_data)
+    elif optimization_type == "routing":
+        space = get_routing_optimization_space()
+        evaluator = RoutingEvaluator(session_data)
+    elif optimization_type == "retry":
+        space = get_retry_optimization_space()
+        evaluator = RetryEvaluator(session_data)
+    else:
+        return {"error": f"Unknown optimization_type: {optimization_type}"}
+
+    config = ExperimentConfig(max_experiments=n_trials, direction="maximize")
+    opt = MinimalOptimizer(
+        evaluate=evaluator.evaluate,
+        search_space=space,
+        config=config,
+        search_strategy="bayesian",
+    )
+    result = opt.run()
+
+    return {
+        "optimization_type": optimization_type,
+        "best_score": round(result.best_score, 4),
+        "best_params": result.best_params,
+        "total_experiments": result.total_experiments,
+        "data_points": len(session_data),
+    }
+
+
+@_audit_wrap
+@mcp.tool(name="mko_recommendations", description="MKO全族优化建议（灵建）")
+def tool_mko_recommendations() -> dict:
+    """综合运行prompt/routing/retry三种优化，生成灵族全族token优化建议。
+
+    Returns:
+        三维度最优配置 + 全族节省估计
+    """
+    from lingminopt import ExperimentConfig
+    from lingminopt.core.optimizer import MinimalOptimizer
+    from lingminopt.meta_optimizer.evaluators import (
+        PromptEvaluator,
+        RetryEvaluator,
+        RoutingEvaluator,
+    )
+    from lingminopt.meta_optimizer.lingbus_collector import LingBusCollector
+    from lingminopt.meta_optimizer.search_spaces import (
+        get_prompt_optimization_space,
+        get_retry_optimization_space,
+        get_routing_optimization_space,
+    )
+
+    collector = LingBusCollector()
+    records = collector.collect_lingbus_messages(limit=300)
+    if not records:
+        return {"error": "No LingBus data available"}
+
+    session_data = [
+        {
+            "query": r.query,
+            "model": r.model,
+            "agent": r.agent,
+            "total_tokens": r.input_tokens + r.output_tokens,
+            "input_tokens": r.input_tokens,
+            "output_tokens": r.output_tokens,
+            "success": r.success,
+            "quality_score": 0.85,
+        }
+        for r in records
+    ]
+
+    baseline_tokens = sum(d["total_tokens"] for d in session_data)
+    results = {}
+
+    for name, space_fn, eval_cls in [
+        ("prompt", get_prompt_optimization_space, PromptEvaluator),
+        ("routing", get_routing_optimization_space, RoutingEvaluator),
+        ("retry", get_retry_optimization_space, RetryEvaluator),
+    ]:
+        space = space_fn()
+        evaluator = eval_cls(session_data)
+        cfg = ExperimentConfig(max_experiments=25, direction="maximize")
+        opt = MinimalOptimizer(
+            evaluate=evaluator.evaluate,
+            search_space=space,
+            config=cfg,
+            search_strategy="bayesian",
+        )
+        result = opt.run()
+        results[name] = {
+            "best_score": round(result.best_score, 4),
+            "best_params": result.best_params,
+        }
+
+    model_mult_map = {
+        "glm-5.1": 1.0,
+        "glm-5-turbo": 0.75,
+        "glm-4.7": 0.85,
+        "glm-4.7-flash": 0.6,
+        "qwen-max": 0.8,
+        "qwen-plus": 0.55,
+        "minimax-m2.7": 0.7,
+        "llama-3.3-70b": 0.65,
+    }
+    template_mult_map = {"minimal": 0.7, "standard": 1.0, "detailed": 1.3}
+    best_model = results["prompt"]["best_params"].get("model", "glm-5.1")
+    best_template = results["prompt"]["best_params"].get("system_prompt_template", "standard")
+    mm = model_mult_map.get(best_model, 1.0)
+    tm = template_mult_map.get(best_template, 1.0)
+    optimized = int(baseline_tokens * mm * tm)
+    savings = (1 - optimized / max(baseline_tokens, 1)) * 100
+
+    return {
+        "prompt_optimization": results["prompt"],
+        "routing_optimization": results["routing"],
+        "retry_optimization": results["retry"],
+        "savings_estimate": {
+            "baseline_tokens": baseline_tokens,
+            "optimized_tokens": optimized,
+            "savings_percent": round(savings, 1),
+            "recommended_model": best_model,
+            "recommended_template": best_template,
+        },
+        "data_points": len(session_data),
+        "generated_at": datetime.now().isoformat(),
+    }
+
+
 def main():
     try:
         from lingmessage.registry import register_fastmcp_server
+
         register_fastmcp_server("lingminopt", "灵极优", mcp, "极简优化")
-    except Exception:
-        pass
+    except ImportError as e:
+        import logging
+
+        logger = logging.getLogger("lingminopt")
+        logger.debug(f"lingmessage registry not available: {e}")
     mcp.run()
 
 

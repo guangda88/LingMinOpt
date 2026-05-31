@@ -4,14 +4,15 @@ Generates plots from OptimizationResult objects using matplotlib/seaborn.
 All functions gracefully degrade if visualization dependencies are missing.
 """
 
-from typing import Any, Dict, List, Optional
 import logging
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
 _DEPS_MISSING = False
 try:
     import matplotlib
+
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 except ImportError:
@@ -19,6 +20,7 @@ except ImportError:
 
 try:
     import seaborn as sns
+
     sns.set_style("whitegrid")
 except ImportError:
     pass
@@ -63,10 +65,22 @@ def plot_convergence(
         best_scores.append(current_best)
 
     fig, ax = plt.subplots(figsize=(10, 6))
-    ax.plot(range(1, len(history) + 1), [e.score for e in history],
-            "o", alpha=0.3, label="Experiment score", markersize=4)
-    ax.plot(range(1, len(best_scores) + 1), best_scores,
-            "-", linewidth=2, label="Best score", color="tab:blue")
+    ax.plot(
+        range(1, len(history) + 1),
+        [e.score for e in history],
+        "o",
+        alpha=0.3,
+        label="Experiment score",
+        markersize=4,
+    )
+    ax.plot(
+        range(1, len(best_scores) + 1),
+        best_scores,
+        "-",
+        linewidth=2,
+        label="Best score",
+        color="tab:blue",
+    )
     ax.set_xlabel("Experiment")
     ax.set_ylabel("Score")
     ax.set_title(title)
@@ -108,10 +122,20 @@ def plot_score_distribution(
     scores = [e.score for e in history]
 
     fig, ax = plt.subplots(figsize=(10, 6))
-    ax.hist(scores, bins=min(30, max(5, len(scores) // 3)),
-            edgecolor="black", alpha=0.7, color="tab:blue")
-    ax.axvline(result.best_score, color="red", linestyle="--",
-               linewidth=2, label=f"Best: {result.best_score:.4f}")
+    ax.hist(
+        scores,
+        bins=min(30, max(5, len(scores) // 3)),
+        edgecolor="black",
+        alpha=0.7,
+        color="tab:blue",
+    )
+    ax.axvline(
+        result.best_score,
+        color="red",
+        linestyle="--",
+        linewidth=2,
+        label=f"Best: {result.best_score:.4f}",
+    )
     ax.set_xlabel("Score")
     ax.set_ylabel("Count")
     ax.set_title(title)
@@ -224,9 +248,15 @@ def plot_timeline(
         timestamps.append(ts)
 
     fig, ax = plt.subplots(figsize=(12, 6))
-    ax.scatter(timestamps, [e.score for e in history],
-               c=[e.score for e in history], cmap="RdYlGn_r",
-               s=30, edgecolors="black", linewidth=0.5)
+    ax.scatter(
+        timestamps,
+        [e.score for e in history],
+        c=[e.score for e in history],
+        cmap="RdYlGn_r",
+        s=30,
+        edgecolors="black",
+        linewidth=0.5,
+    )
     ax.set_xlabel("Time")
     ax.set_ylabel("Score")
     ax.set_title(title)
@@ -257,6 +287,7 @@ def generate_report(
         List of saved file paths
     """
     from pathlib import Path
+
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
 

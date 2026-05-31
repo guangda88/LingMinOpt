@@ -2,6 +2,7 @@ import random
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
+
 @dataclass
 class ParameterConfig:
     name: str
@@ -9,6 +10,7 @@ class ParameterConfig:
     choices: Optional[List[Any]] = None
     min_val: float = 0.0
     max_val: float = 1.0
+
 
 class SearchSpace:
     def __init__(self) -> None:
@@ -22,8 +24,12 @@ class SearchSpace:
 
     def add_continuous(self, name: str, min_val: float, max_val: float) -> None:
         if min_val >= max_val:
-            raise ValueError(f"Continuous parameter '{name}' must have min < max (got min={min_val}, max={max_val})")
-        self.parameters[name] = ParameterConfig(name=name, param_type="continuous", min_val=min_val, max_val=max_val)
+            raise ValueError(
+                f"Continuous parameter '{name}' must have min < max (got min={min_val}, max={max_val})"
+            )
+        self.parameters[name] = ParameterConfig(
+            name=name, param_type="continuous", min_val=min_val, max_val=max_val
+        )
 
     def __len__(self) -> int:
         return len(self.parameters)

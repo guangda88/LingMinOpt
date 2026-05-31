@@ -1,8 +1,8 @@
-# LingMinOpt (灵极优)
+# lingminopt (灵极优)
 
-**LingMinOpt** - 灵研极简自优化框架
+**lingminopt** - 灵研极简自优化框架
 
-A universal minimalist self-optimization framework inspired by 灵研 (LingResearch) and autoresearch.
+A universal minimalist self-optimization framework inspired by 灵研 (lingresearch) and autoresearch.
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -140,7 +140,7 @@ lingminopt report --results results.json
 
 ## 🔧 搜索策略
 
-LingMinOpt 包含多种搜索策略：
+lingminopt 包含多种搜索策略：
 
 | 策略 | 描述 | 适用场景 |
 |------|------|----------|
@@ -160,7 +160,7 @@ optimizer = MinimalOptimizer(
 
 ## 🔐 安全性
 
-LingMinOpt 包含多项安全措施保护用户：
+lingminopt 包含多项安全措施保护用户：
 
 ### 输入验证
 
@@ -196,7 +196,7 @@ lingminopt run   # 再运行
 
 ## 📚 应用场景
 
-LingMinOpt 适用于任何具有以下特征的优化问题：
+lingminopt 适用于任何具有以下特征的优化问题：
 
 1. ✅ 可量化指标（清晰的数值评估）
 2. ✅ 快速反馈（几分钟/几小时内得到结果）
@@ -255,7 +255,7 @@ lingminopt/
 
 ## 🎯 模板
 
-LingMinOpt 提供常用场景模板：
+lingminopt 提供常用场景模板：
 
 - `minimal` - 最简起点
 - `ml-optimization` - 机器学习优化
@@ -363,7 +363,7 @@ pytest --cov=lingminopt tests/
 ## 🙏 致谢
 
 - 灵感来自 [Karpathy 的 autoresearch](https://github.com/karpathy/autoresearch)
-- 基于 灵研 (LingResearch) - 极简自主研究的哲学
+- 基于 灵研 (lingresearch) - 极简自主研究的哲学
 - 社区反馈和贡献
 
 ## 📞 联系方式

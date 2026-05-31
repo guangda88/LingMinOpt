@@ -161,9 +161,9 @@ def train_model(model, train_data, val_data, params):
 
 def _get_readme_template(project_name: str, template: str) -> str:
     """Get README.md template content"""
-    return f'''# {project_name}
+    return f"""# {project_name}
 
-Optimization project using LingMinOpt (灵极优).
+Optimization project using lingminopt (灵极优).
 
 ## Getting Started
 
@@ -187,7 +187,7 @@ Results are saved to `results.json` by default.
 This project was created using the '{template}' template.
 
 For more information, visit: https://github.com/yourusername/lingminopt
-'''
+"""
 
 
 def _get_config_template(template: str) -> dict:
@@ -198,18 +198,9 @@ def _get_config_template(template: str) -> dict:
             "max_experiments": 100,
             "early_stopping_patience": 10,
             "improvement_threshold": 0.001,
-            "direction": "minimize"
+            "direction": "minimize",
         },
-        "search_space": {
-            "discrete": {},
-            "continuous": {}
-        },
-        "resources": {
-            "time_budget": 300,
-            "parallel_jobs": 1
-        },
-        "output": {
-            "results_file": "results.json",
-            "log_level": "INFO"
-        }
+        "search_space": {"discrete": {}, "continuous": {}},
+        "resources": {"time_budget": 300, "parallel_jobs": 1},
+        "output": {"results_file": "results.json", "log_level": "INFO"},
     }

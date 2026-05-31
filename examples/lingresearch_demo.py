@@ -1,10 +1,10 @@
 """
-简化版灵研示例 - 演示如何使用 LingMinOpt 进行自主研究
+简化版灵研示例 - 演示如何使用 lingminopt 进行自主研究
 
-完整版 LingResearch 项目请访问：
-https://github.com/guangda88/LingResearch
+完整版 lingresearch 项目请访问：
+https://github.com/guangda88/lingresearch
 
-此示例展示了 LingMinOpt 框架的核心用法：
+此示例展示了 lingminopt 框架的核心用法：
 - 定义搜索空间
 - 定义评估函数
 - 自动化优化流程
@@ -73,11 +73,11 @@ def main():
     logging.basicConfig(level=logging.INFO, format="%(message)s")
 
     logger.info("=" * 70)
-    logger.info("灵研简化示例 - 使用 LingMinOpt 框架")
+    logger.info("灵研简化示例 - 使用 lingminopt 框架")
     logger.info("=" * 70)
     logger.info("")
-    logger.info("完整版 LingResearch 项目：")
-    logger.info("  https://github.com/guangda88/LingResearch")
+    logger.info("完整版 lingresearch 项目：")
+    logger.info("  https://github.com/guangda88/lingresearch")
     logger.info("")
 
     optimizer = MinimalOptimizer(

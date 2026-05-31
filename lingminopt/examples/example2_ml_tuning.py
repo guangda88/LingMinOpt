@@ -13,11 +13,12 @@ We'll optimize:
 
 import logging
 
-from lingminopt import MinimalOptimizer, SearchSpace, ExperimentConfig
+import numpy as np
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-import numpy as np
+
+from lingminopt import ExperimentConfig, MinimalOptimizer, SearchSpace
 
 logger = logging.getLogger("lingminopt.examples.ml_tuning")
 
@@ -27,9 +28,7 @@ X, y = iris.data, iris.target
 scaler = StandardScaler()
 X = scaler.fit_transform(X)
 
-X_train, X_val, y_train, y_val = train_test_split(
-    X, y, test_size=0.2, random_state=42, stratify=y
-)
+X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
 logger.info("Dataset loaded:")
 logger.info("  Features: %d", X.shape[1])
@@ -64,7 +63,7 @@ def create_and_train_nn(params):
         indices = np.random.permutation(len(X_train))
 
         for i in range(0, len(X_train), batch_size):
-            batch_indices = indices[i:i+batch_size]
+            batch_indices = indices[i : i + batch_size]
             X_batch = X_train[batch_indices]
             y_batch = y_train[batch_indices]
 
@@ -143,7 +142,7 @@ config = ExperimentConfig(
     improvement_threshold=0.001,
     time_budget=10.0,
     direction="minimize",
-    random_seed=42
+    random_seed=42,
 )
 
 logger.info("Starting hyperparameter optimization...")
@@ -155,7 +154,7 @@ optimizer = MinimalOptimizer(
     search_space=search_space,
     config=config,
     search_strategy="random",
-    seed=42
+    seed=42,
 )
 
 result = optimizer.run()

@@ -2,25 +2,26 @@
 Command-line interface for lingminopt
 """
 
-import click
 import json
 import os
 import sys
 import warnings
 from pathlib import Path
 
-from ..core import MinimalOptimizer, SearchSpace, OptimizationResult
-from ..config.config import ExperimentConfig
+import click
+
 from .. import __version__
-from .templates import (
-    _get_fixed_template,
-    _get_variable_template,
-    _get_readme_template,
-    _get_config_template,
-)
-from .validators import validate_project_name, validate_config_file
+from ..config.config import ExperimentConfig
+from ..core import MinimalOptimizer, OptimizationResult, SearchSpace
 from .inbox_cmd import _inbox_read, _inbox_reply
-from .meta_optimize import meta_optimize
+from .meta_optimize import meta_optimize, mko
+from .templates import (
+    _get_config_template,
+    _get_fixed_template,
+    _get_readme_template,
+    _get_variable_template,
+)
+from .validators import validate_config_file, validate_project_name
 
 # Setup logging
 logger = None
@@ -29,6 +30,7 @@ logger = None
 def setup_logging(level: str = "INFO"):
     """Setup logging for CLI"""
     import logging
+
     global logger
     logger = logging.getLogger("lingminopt")
     logger.setLevel(getattr(logging, level.upper()))
@@ -48,7 +50,8 @@ def _load_search_space(variable, config_data: dict) -> SearchSpace:
 
 def _build_experiment_config(config_data: dict, max_experiments: int | None) -> ExperimentConfig:
     return ExperimentConfig(
-        max_experiments=max_experiments or config_data.get("optimizer", {}).get("max_experiments", 100),
+        max_experiments=max_experiments
+        or config_data.get("optimizer", {}).get("max_experiments", 100),
         improvement_threshold=config_data.get("optimizer", {}).get("improvement_threshold", 0.001),
         time_budget=config_data.get("resources", {}).get("time_budget", 300.0),
         early_stopping_patience=config_data.get("optimizer", {}).get("early_stopping_patience", 10),
@@ -76,7 +79,7 @@ def cli():
     "--template",
     type=click.Choice(["ml-optimization", "database-optimization", "game-optimization", "minimal"]),
     default="minimal",
-    help="Template to use"
+    help="Template to use",
 )
 @click.option("--force", is_flag=True, help="Overwrite existing directory")
 def init(project_name, template, force):
@@ -85,7 +88,9 @@ def init(project_name, template, force):
         project_name = validate_project_name(project_name)
 
         if os.path.exists(project_name) and not force:
-            click.echo(f"Error: Directory '{project_name}' already exists. Use --force to overwrite.")
+            click.echo(
+                f"Error: Directory '{project_name}' already exists. Use --force to overwrite."
+            )
             sys.exit(1)
 
         os.makedirs(project_name, exist_ok=True)
@@ -115,10 +120,7 @@ def init(project_name, template, force):
 
 @cli.command()
 @click.option(
-    "--config",
-    type=click.Path(exists=True),
-    default="config.json",
-    help="Configuration file"
+    "--config", type=click.Path(exists=True), default="config.json", help="Configuration file"
 )
 @click.option("--max-experiments", type=int, help="Override max experiments")
 @click.option("--verbose", is_flag=True, help="Enable verbose output")
@@ -129,7 +131,7 @@ def run(config, max_experiments, verbose):
     try:
         config_data = validate_config_file(config)
 
-        variable_path = Path(os.getcwd()) / 'variable.py'
+        variable_path = Path(os.getcwd()) / "variable.py"
         if not variable_path.exists():
             click.echo("Error: variable.py not found in current directory")
             sys.exit(1)
@@ -137,7 +139,7 @@ def run(config, max_experiments, verbose):
         warnings.warn(
             "Loading user code from variable.py. Only run code from trusted sources.",
             UserWarning,
-            stacklevel=2
+            stacklevel=2,
         )
 
         sys.path.insert(0, os.getcwd())
@@ -160,9 +162,9 @@ def run(config, max_experiments, verbose):
         results_file = config_data.get("output", {}).get("results_file", "results.json")
         result.save(results_file)
 
-        click.echo("\n" + "="*60)
+        click.echo("\n" + "=" * 60)
         click.echo("Optimization Complete!")
-        click.echo("="*60)
+        click.echo("=" * 60)
         click.echo(f"Best score: {result.best_score:.6f}")
         click.echo(f"Best params: {result.best_params}")
         click.echo(f"Improvement: {result.improvement:.6f}")
@@ -176,24 +178,22 @@ def run(config, max_experiments, verbose):
         click.echo(f"Error running optimization: {e}", err=True)
         if verbose:
             import traceback
+
             traceback.print_exc()
         sys.exit(1)
 
 
 @cli.command()
 @click.option(
-    "--results",
-    type=click.Path(exists=True),
-    default="results.json",
-    help="Results file"
+    "--results", type=click.Path(exists=True), default="results.json", help="Results file"
 )
 def report(results):
     """Generate optimization report"""
     result = OptimizationResult.load(results)
 
-    click.echo("\n" + "="*60)
+    click.echo("\n" + "=" * 60)
     click.echo("Optimization Report")
-    click.echo("="*60)
+    click.echo("=" * 60)
 
     click.echo(f"\nBest Score: {result.best_score:.6f}")
     click.echo("Best Parameters:")
@@ -208,13 +208,17 @@ def report(results):
     click.echo(f"{'ID':<5} {'Score':<12} {'Timestamp'}")
     click.echo("-" * 50)
     for exp in result.history:
-        click.echo(f"{exp.experiment_id:<5} {exp.score:<12.6f} {exp.timestamp.strftime('%Y-%m-%d %H:%M:%S')}")
+        click.echo(
+            f"{exp.experiment_id:<5} {exp.score:<12.6f} {exp.timestamp.strftime('%Y-%m-%d %H:%M:%S')}"
+        )
 
 
 cli.add_command(meta_optimize)
+cli.add_command(mko)
+
 
 @cli.command()
-@click.option("--agent", default="lingjiyou", help="Agent ID to check messages for")
+@click.option("--agent", default="lingminopt", help="Agent ID to check messages for")
 @click.option("--threads/--no-threads", default=True, help="Show active threads")
 @click.option("--unread/--all", default=True, help="Only show unread messages")
 @click.option("--reply", default=None, help="Reply to a thread by ID")
@@ -223,7 +227,7 @@ cli.add_command(meta_optimize)
 def inbox(agent, threads, unread, reply, message, db_url):
     """灵信收件箱 — 查看和回复灵信消息
 
-    Connect to LingMessage PostgreSQL database to read active threads
+    Connect to lingmessage PostgreSQL database to read active threads
     and recent messages, or reply to a specific thread.
 
     Requires LINGMESSAGE_DB_URL environment variable or --db-url flag.

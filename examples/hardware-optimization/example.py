@@ -1,13 +1,13 @@
 """
 示例：硬件/编译器优化
 
-使用 LingMinOpt 优化编译器标志和配置参数。
+使用 lingminopt 优化编译器标志和配置参数。
 
 目标：最小化程序执行时间
 """
 
 import sys
-sys.path.insert(0, '/home/ai/LingMinOpt')
+sys.path.insert(0, '/home/ai/lingminopt')
 
 from lingminopt import MinimalOptimizer, SearchSpace, ExperimentConfig
 import time

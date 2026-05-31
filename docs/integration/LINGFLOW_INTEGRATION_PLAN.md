@@ -1,6 +1,6 @@
-# LingFlow + LingMinOpt 集成方案
+# lingflow + lingminopt 集成方案
 
-**目标**: 将 LingFlow 的代码优化过程迁移到 LingMinOpt 框架下
+**目标**: 将 lingflow 的代码优化过程迁移到 lingminopt 框架下
 
 **日期**: 2026-03-23
 **状态**: 📋 讨论阶段
@@ -9,7 +9,7 @@
 
 ## 📋 当前状况
 
-### LingFlow 的代码优化机制
+### lingflow 的代码优化机制
 
 ```
 code-analysis → code-optimizer → code-refactor
@@ -45,7 +45,7 @@ code-analysis → code-optimizer → code-refactor
 
 ### 方案 1: 代码配置优化 ⭐ 推荐
 
-**核心思想**: 将代码优化参数化，让 LingMinOpt 搜索最优配置。
+**核心思想**: 将代码优化参数化，让 lingminopt 搜索最优配置。
 
 #### 搜索空间
 
@@ -149,9 +149,9 @@ def calculate_optimization_score(test_pass_rate, complexity_improvement,
 
 ---
 
-### 方案 2: LingFlow 技能增强
+### 方案 2: lingflow 技能增强
 
-**核心思想**: 创建新的 LingFlow 技能，内部使用 LingMinOpt。
+**核心思想**: 创建新的 lingflow 技能，内部使用 lingminopt。
 
 #### 新技能: code-optimizer-auto
 
@@ -217,7 +217,7 @@ def execute_skill(params):
 
 ### 方案 3: 独立优化工具
 
-**核心思想**: 创建独立的工具，在 LingFlow 外部使用。
+**核心思想**: 创建独立的工具，在 lingflow 外部使用。
 
 #### 工具结构
 
@@ -251,13 +251,13 @@ python run_optimizer.py
 ```
 
 #### 优点
-- ✅ 完全独立，不影响 LingFlow
-- ✅ 类似 LingResearch 的工作流
+- ✅ 完全独立，不影响 lingflow
+- ✅ 类似 lingresearch 的工作流
 - ✅ 易于测试和迭代
-- ✅ 可复用 LingMinOpt 框架
+- ✅ 可复用 lingminopt 框架
 
 #### 缺点
-- ⚠️ 需要手动集成到 LingFlow
+- ⚠️ 需要手动集成到 lingflow
 - ⚠️ 需要额外的工具链
 
 ---
@@ -287,37 +287,37 @@ cd /home/ai
 mkdir lingflow-optimizer
 cd lingflow-optimizer
 
-# 使用 LingMinOpt 初始化模板
+# 使用 lingminopt 初始化模板
 lingminopt init . --template minimal
 
 # 实现代码优化逻辑
-# - prepare.py: 配置 LingFlow 的测试和分析工具
+# - prepare.py: 配置 lingflow 的测试和分析工具
 # - variable.py: 定义搜索空间和评估函数
 # - run_optimizer.py: 运行优化
 ```
 
-**目标**: 验证 LingMinOpt 是否适合代码优化场景
+**目标**: 验证 lingminopt 是否适合代码优化场景
 
 **时间**: 1-2 天
 
 ---
 
-### 阶段 2: 集成到 LingFlow（方案2）
+### 阶段 2: 集成到 lingflow（方案2）
 
-如果验证成功，创建新技能集成到 LingFlow：
+如果验证成功，创建新技能集成到 lingflow：
 
 ```bash
 # 创建 code-optimizer-auto 技能
-cd /home/ai/LingFlow/skills
+cd /home/ai/lingflow/skills
 mkdir code-optimizer-auto
 cd code-optimizer-auto
 
 # 实现
 # - SKILL.md: 技能描述
-# - implementation.py: 使用 LingMinOpt 的实现
+# - implementation.py: 使用 lingminopt 的实现
 ```
 
-**目标**: 将自动化优化集成到 LingFlow 工作流
+**目标**: 将自动化优化集成到 lingflow 工作流
 
 **时间**: 2-3 天
 
@@ -329,7 +329,7 @@ cd code-optimizer-auto
 
 ```bash
 # 修改 code-optimizer 技能
-cd /home/ai/LingFlow/skills/code-optimizer
+cd /home/ai/lingflow/skills/code-optimizer
 
 # 添加配置参数
 # - 添加参数化优化支持
@@ -398,7 +398,7 @@ cd /home/ai/LingFlow/skills/code-optimizer
 1. 扩展搜索空间（更多参数）
 2. 改进评估函数（多指标）
 3. 添加代码回滚机制
-4. 集成 LingFlow 的测试和分析工具
+4. 集成 lingflow 的测试和分析工具
 
 **成功标准**:
 - 可以找到比手动优化更好的配置
@@ -407,7 +407,7 @@ cd /home/ai/LingFlow/skills/code-optimizer
 
 ---
 
-### 第三步: 集成到 LingFlow（2-3天）
+### 第三步: 集成到 lingflow（2-3天）
 
 1. 创建 code-optimizer-auto 技能
 2. 将优化逻辑封装到技能中
@@ -442,7 +442,7 @@ cd /home/ai/LingFlow/skills/code-optimizer
 
 1. **优先级**: 哪个方案最适合当前需求？
 2. **时间预算**: 可以投入多少开发时间？
-3. **风险承受度**: 是否愿意修改现有 LingFlow 代码？
+3. **风险承受度**: 是否愿意修改现有 lingflow 代码？
 4. **验证标准**: 如何定义优化是否成功？
 
 ---
@@ -452,7 +452,7 @@ cd /home/ai/LingFlow/skills/code-optimizer
 **建议**: 从方案3（独立工具）开始
 
 1. 创建快速原型（1天）
-2. 验证 LingMinOpt 对代码优化的适用性
+2. 验证 lingminopt 对代码优化的适用性
 3. 根据结果决定后续集成方式
 
 **是否开始实施？**

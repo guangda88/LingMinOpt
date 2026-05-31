@@ -1,0 +1,218 @@
+{
+  "_meta": {
+    "generated_by": "lingminopt MKO",
+    "generated_at": "2026-05-29",
+    "total_tokens": 7507165,
+    "members": 13
+  },
+  "routing_rules": {
+    "lingzhi": {
+      "code_model": "glm-5.1",
+      "chat_model": "glm-4.7-flash",
+      "max_tokens": 2048,
+      "priority": "high",
+      "current_tokens": 1896005,
+      "percentage": 25.3,
+      "out_in_ratio": 10.1,
+      "degradation_chain": [
+        "glm-5.1",
+        "glm-5-turbo",
+        "glm-4.7",
+        "glm-4.7-flash"
+      ],
+      "fallback_model": "qwen-max"
+    },
+    "lingtongask": {
+      "code_model": "glm-5.1",
+      "chat_model": "glm-4.7-flash",
+      "max_tokens": 2048,
+      "priority": "high",
+      "current_tokens": 1197238,
+      "percentage": 15.9,
+      "out_in_ratio": 5.4,
+      "degradation_chain": [
+        "glm-5.1",
+        "glm-5-turbo",
+        "glm-4.7",
+        "glm-4.7-flash"
+      ],
+      "fallback_model": "qwen-max"
+    },
+    "lingflow": {
+      "code_model": "glm-5.1",
+      "chat_model": "qwen-plus",
+      "max_tokens": 8192,
+      "priority": "high",
+      "current_tokens": 877612,
+      "percentage": 11.7,
+      "out_in_ratio": 3.0,
+      "degradation_chain": [
+        "glm-5.1",
+        "glm-5-turbo",
+        "glm-4.7",
+        "glm-4.7-flash"
+      ],
+      "fallback_model": "qwen-max"
+    },
+    "lingclaude": {
+      "code_model": "glm-5.1",
+      "chat_model": "qwen-plus",
+      "max_tokens": 8192,
+      "priority": "high",
+      "current_tokens": 799356,
+      "percentage": 10.6,
+      "out_in_ratio": 3.9,
+      "degradation_chain": [
+        "glm-5.1",
+        "glm-5-turbo",
+        "glm-4.7",
+        "glm-4.7-flash"
+      ],
+      "fallback_model": "qwen-max"
+    },
+    "lingyang": {
+      "code_model": "glm-5.1",
+      "chat_model": "qwen-plus",
+      "max_tokens": 8192,
+      "priority": "high",
+      "current_tokens": 785964,
+      "percentage": 10.5,
+      "out_in_ratio": 1.3,
+      "degradation_chain": [
+        "glm-5.1",
+        "glm-5-turbo",
+        "glm-4.7",
+        "glm-4.7-flash"
+      ],
+      "fallback_model": "qwen-max"
+    },
+    "lingresearch": {
+      "code_model": "glm-5.1",
+      "chat_model": "qwen-plus",
+      "max_tokens": 8192,
+      "priority": "medium",
+      "current_tokens": 649055,
+      "percentage": 8.6,
+      "out_in_ratio": 3.4,
+      "degradation_chain": [
+        "glm-5.1",
+        "glm-5-turbo",
+        "glm-4.7",
+        "glm-4.7-flash"
+      ],
+      "fallback_model": "qwen-max"
+    },
+    "lingcreate": {
+      "code_model": "glm-5.1",
+      "chat_model": "qwen-plus",
+      "max_tokens": 8192,
+      "priority": "medium",
+      "current_tokens": 485257,
+      "percentage": 6.5,
+      "out_in_ratio": 0.1,
+      "degradation_chain": [
+        "glm-5.1",
+        "glm-5-turbo",
+        "glm-4.7",
+        "glm-4.7-flash"
+      ],
+      "fallback_model": "qwen-max"
+    },
+    "lingweb": {
+      "code_model": "glm-5.1",
+      "chat_model": "glm-4.7-flash",
+      "max_tokens": 16384,
+      "priority": "low",
+      "current_tokens": 362957,
+      "percentage": 4.8,
+      "out_in_ratio": 6.1,
+      "degradation_chain": [
+        "glm-5.1",
+        "glm-5-turbo",
+        "glm-4.7",
+        "glm-4.7-flash"
+      ],
+      "fallback_model": "qwen-max"
+    },
+    "lingmessage": {
+      "code_model": "glm-5.1",
+      "chat_model": "glm-4.7-flash",
+      "max_tokens": 16384,
+      "priority": "low",
+      "current_tokens": 139285,
+      "percentage": 1.9,
+      "out_in_ratio": 9.7,
+      "degradation_chain": [
+        "glm-5.1",
+        "glm-5-turbo",
+        "glm-4.7",
+        "glm-4.7-flash"
+      ],
+      "fallback_model": "qwen-max"
+    },
+    "lingxi": {
+      "code_model": "glm-5.1",
+      "chat_model": "glm-4.7-flash",
+      "max_tokens": 16384,
+      "priority": "low",
+      "current_tokens": 138350,
+      "percentage": 1.8,
+      "out_in_ratio": 7.1,
+      "degradation_chain": [
+        "glm-5.1",
+        "glm-5-turbo",
+        "glm-4.7",
+        "glm-4.7-flash"
+      ],
+      "fallback_model": "qwen-max"
+    },
+    "lingminopt": {
+      "code_model": "glm-5.1",
+      "chat_model": "glm-4.7-flash",
+      "max_tokens": 16384,
+      "priority": "low",
+      "current_tokens": 99328,
+      "percentage": 1.3,
+      "out_in_ratio": 7.3,
+      "degradation_chain": [
+        "glm-5.1",
+        "glm-5-turbo",
+        "glm-4.7",
+        "glm-4.7-flash"
+      ],
+      "fallback_model": "qwen-max"
+    },
+    "zhibridge": {
+      "code_model": "glm-5.1",
+      "chat_model": "glm-4.7-flash",
+      "max_tokens": 16384,
+      "priority": "low",
+      "current_tokens": 57356,
+      "percentage": 0.8,
+      "out_in_ratio": 7.6,
+      "degradation_chain": [
+        "glm-5.1",
+        "glm-5-turbo",
+        "glm-4.7",
+        "glm-4.7-flash"
+      ],
+      "fallback_model": "qwen-max"
+    },
+    "lingflowplus": {
+      "code_model": "glm-5.1",
+      "chat_model": "glm-4.7-flash",
+      "max_tokens": 16384,
+      "priority": "low",
+      "current_tokens": 19402,
+      "percentage": 0.3,
+      "out_in_ratio": 18.6,
+      "degradation_chain": [
+        "glm-5.1",
+        "glm-5-turbo",
+        "glm-4.7",
+        "glm-4.7-flash"
+      ],
+      "fallback_model": "qwen-max"
+    }
+  }
+}

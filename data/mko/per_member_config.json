@@ -1,0 +1,229 @@
+{
+  "lingflow": {
+    "total_tokens": 863759,
+    "out_in_ratio": 3.1,
+    "percentage": 11.5,
+    "real_models": {
+      "glm-5.1": 14123,
+      "deepseek-v4-flash": 1356,
+      "glm-5": 903,
+      "glm-4.7": 654,
+      "glm-5-turbo": 37
+    },
+    "recommended": {
+      "code_model": "glm-5.1",
+      "chat_model": "qwen-plus",
+      "max_tokens": 4096
+    },
+    "action": "max_tokens限制 + 非code路由qwen-plus"
+  },
+  "lingclaude": {
+    "total_tokens": 798707,
+    "out_in_ratio": 3.9,
+    "percentage": 10.7,
+    "real_models": {
+      "glm-5.1": 13999,
+      "glm-4.7": 66,
+      "glm-5-turbo": 44,
+      "glm-4.7-flash": 31,
+      "glm-5": 28
+    },
+    "recommended": {
+      "code_model": "glm-5.1",
+      "chat_model": "qwen-plus",
+      "max_tokens": 4096
+    },
+    "action": "max_tokens限制 + 非code路由qwen-plus"
+  },
+  "lingresearch": {
+    "total_tokens": 645516,
+    "out_in_ratio": 3.4,
+    "percentage": 8.6,
+    "real_models": {
+      "glm-5.1": 14405,
+      "glm-4.7": 674,
+      "glm-5": 216,
+      "glm-4.7-flash": 58,
+      "glm-5-turbo": 50
+    },
+    "recommended": {
+      "code_model": "glm-5.1",
+      "chat_model": "qwen-plus",
+      "max_tokens": 4096
+    },
+    "action": "max_tokens限制 + 非code路由qwen-plus"
+  },
+  "lingzhi": {
+    "total_tokens": 1896005,
+    "out_in_ratio": 10.1,
+    "percentage": 25.3,
+    "real_models": {
+      "glm-5.1": 21279,
+      "glm-4.7": 1361,
+      "glm-4.7-flash": 54,
+      "glm-5": 26,
+      "glm-5-turbo": 6
+    },
+    "recommended": {
+      "code_model": "glm-4.7-flash",
+      "chat_model": "qwen-plus",
+      "max_tokens": 2048
+    },
+    "action": "max_tokens硬限制 + CRUSH.md瘦身 + 输出截断"
+  },
+  "lingtongask": {
+    "total_tokens": 1197238,
+    "out_in_ratio": 5.4,
+    "percentage": 16.0,
+    "real_models": {
+      "glm-5.1": 11660,
+      "glm-4.7": 382,
+      "glm-5-turbo": 294,
+      "glm-4.6": 224,
+      "claude-haiku-4-5-20251001": 55
+    },
+    "recommended": {
+      "code_model": "glm-4.7-flash",
+      "chat_model": "qwen-plus",
+      "max_tokens": 2048
+    },
+    "action": "max_tokens硬限制 + CRUSH.md瘦身 + 输出截断"
+  },
+  "lingflowplus": {
+    "total_tokens": 19392,
+    "out_in_ratio": 18.6,
+    "percentage": 0.3,
+    "real_models": {
+      "glm-5.1": 632,
+      "glm-4.7-flash": 7
+    },
+    "recommended": {
+      "code_model": "glm-4.7-flash",
+      "chat_model": "qwen-plus",
+      "max_tokens": 2048
+    },
+    "action": "max_tokens硬限制 + CRUSH.md瘦身 + 输出截断"
+  },
+  "lingxi": {
+    "total_tokens": 136807,
+    "out_in_ratio": 7.1,
+    "percentage": 1.8,
+    "real_models": {
+      "glm-5.1": 3001,
+      "glm-4.7": 147,
+      "glm-4.6": 96,
+      "glm-5": 7,
+      "deepseek-v4-flash": 3
+    },
+    "recommended": {
+      "code_model": "glm-4.7-flash",
+      "chat_model": "qwen-plus",
+      "max_tokens": 2048
+    },
+    "action": "max_tokens硬限制 + CRUSH.md瘦身 + 输出截断"
+  },
+  "lingmessage": {
+    "total_tokens": 137230,
+    "out_in_ratio": 9.7,
+    "percentage": 1.8,
+    "real_models": {
+      "glm-5.1": 2542,
+      "glm-4.7": 90,
+      "glm-4.7-flash": 15,
+      "deepseek-v4-flash": 1
+    },
+    "recommended": {
+      "code_model": "glm-4.7-flash",
+      "chat_model": "qwen-plus",
+      "max_tokens": 2048
+    },
+    "action": "max_tokens硬限制 + CRUSH.md瘦身 + 输出截断"
+  },
+  "lingweb": {
+    "total_tokens": 362819,
+    "out_in_ratio": 6.1,
+    "percentage": 4.8,
+    "real_models": {
+      "glm-5.1": 7003,
+      "glm-5": 402,
+      "glm-5-turbo": 95,
+      "glm-4.7-flash": 5,
+      "deepseek-ai/deepseek-v4-pro": 2
+    },
+    "recommended": {
+      "code_model": "glm-4.7-flash",
+      "chat_model": "qwen-plus",
+      "max_tokens": 2048
+    },
+    "action": "max_tokens硬限制 + CRUSH.md瘦身 + 输出截断"
+  },
+  "lingminopt": {
+    "total_tokens": 99217,
+    "out_in_ratio": 7.3,
+    "percentage": 1.3,
+    "real_models": {
+      "glm-5.1": 2314,
+      "glm-4.6": 134,
+      "glm-4.7": 18
+    },
+    "recommended": {
+      "code_model": "glm-4.7-flash",
+      "chat_model": "qwen-plus",
+      "max_tokens": 2048
+    },
+    "action": "max_tokens硬限制 + CRUSH.md瘦身 + 输出截断"
+  },
+  "lingyang": {
+    "total_tokens": 785783,
+    "out_in_ratio": 1.3,
+    "percentage": 10.5,
+    "real_models": {
+      "glm-5.1": 11193,
+      "glm-5": 785,
+      "glm-4.7-flash": 173,
+      "glm-4.7": 69,
+      "deepseek-v4-flash": 54
+    },
+    "recommended": {
+      "code_model": "glm-5.1",
+      "chat_model": "qwen-plus",
+      "max_tokens": 8192
+    },
+    "action": "非code任务路由qwen-plus"
+  },
+  "lingcreate": {
+    "total_tokens": 484066,
+    "out_in_ratio": 0.1,
+    "percentage": 6.5,
+    "real_models": {
+      "glm-5.1": 1895,
+      "glm-4.7-flash": 139,
+      "glm-5": 14,
+      "deepseek-ai/deepseek-v4-flash": 1
+    },
+    "recommended": {
+      "code_model": "glm-5.1",
+      "chat_model": "glm-4.7-flash",
+      "max_tokens": 16384
+    },
+    "action": "维持现状"
+  },
+  "zhibridge": {
+    "total_tokens": 57280,
+    "out_in_ratio": 7.6,
+    "percentage": 0.8,
+    "real_models": {
+      "glm-5.1": 1434,
+      "glm-4.6": 150,
+      "glm-4.7": 39,
+      "deepseek-ai/deepseek-v4-pro": 13,
+      "glm-4.7-flash": 2
+    },
+    "recommended": {
+      "code_model": "glm-4.7-flash",
+      "chat_model": "qwen-plus",
+      "max_tokens": 2048
+    },
+    "action": "max_tokens硬限制 + CRUSH.md瘦身 + 输出截断"
+  }
+}

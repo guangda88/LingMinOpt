@@ -1,14 +1,14 @@
-# LingMinOpt MCP 封装评估
+# lingminopt MCP 封装评估
 
 **日期**: 2026-04-07
 **版本**: v0.2.0
-**评估目标**: 评估将 LingMinOpt 所有功能封装为 MCP (Model Context Protocol) 服务的必要性和可行性
+**评估目标**: 评估将 lingminopt 所有功能封装为 MCP (Model Context Protocol) 服务的必要性和可行性
 
 ---
 
 ## 一、MCP 概述
 
-MCP (Model Context Protocol) 是 Anthropic 提出的标准化协议，允许 AI 模型通过统一的 JSON-RPC 接口调用外部工具。封装为 MCP 服务后，任何支持 MCP 的 AI 客户端（如 Claude Desktop、Cursor、Crush 等）可以直接调用 LingMinOpt 的优化能力，无需编写 Python 代码。
+MCP (Model Context Protocol) 是 Anthropic 提出的标准化协议，允许 AI 模型通过统一的 JSON-RPC 接口调用外部工具。封装为 MCP 服务后，任何支持 MCP 的 AI 客户端（如 Claude Desktop、Cursor、Crush 等）可以直接调用 lingminopt 的优化能力，无需编写 Python 代码。
 
 **MCP 核心概念**:
 - **Tool**: 可被 AI 调用的函数，有明确的输入/输出 schema
@@ -145,7 +145,7 @@ MCP (Model Context Protocol) 是 Anthropic 提出的标准化协议，允许 AI 
 | 维度 | 评估 | 说明 |
 |------|------|------|
 | **协议兼容** | ✅ 完全可行 | MCP 是 JSON-RPC 协议，Python 有 `mcp` 官方 SDK |
-| **类型映射** | ✅ 可行 | LingMinOpt 的输入输出都是基本类型（dict, float, int, str），可直接映射为 JSON Schema |
+| **类型映射** | ✅ 可行 | lingminopt 的输入输出都是基本类型（dict, float, int, str），可直接映射为 JSON Schema |
 | **状态管理** | ⚠️ 需要设计 | MinimalOptimizer 是有状态的，MCP 是无状态调用，需要会话管理机制 |
 | **回调函数** | ⚠️ 主要挑战 | `evaluate` 是 Python callable，MCP 无法直接传递函数。需要替代方案 |
 | **长时间运行** | ⚠️ 需要设计 | 优化可能运行很长时间，需要异步/进度报告机制 |
@@ -318,7 +318,7 @@ def save_results(result_data: dict, filepath: str) -> str:
 ### 可行性评分: ⭐⭐⭐ (高)
 
 1. **技术成熟**: MCP Python SDK 已稳定，类型映射无障碍
-2. **架构适配**: LingMinOpt 的 API 设计简洁，封装成本低
+2. **架构适配**: lingminopt 的 API 设计简洁，封装成本低
 3. **主要挑战可控**: 评估函数传递和状态管理都有成熟解决方案
 
 ### 建议路线

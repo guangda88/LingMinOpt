@@ -8,11 +8,11 @@ from pathlib import Path
 import pytest
 
 from lingminopt import (
-    MinimalOptimizer,
-    SearchSpace,
     Experiment,
-    OptimizationResult,
     ExperimentConfig,
+    MinimalOptimizer,
+    OptimizationResult,
+    SearchSpace,
     TPESearch,
     create_strategy,
 )
@@ -34,8 +34,7 @@ class TestTPESearchStrategy:
         space.add_continuous("x", -5, 5)
         tpe = TPESearch(space, seed=42)
         history = [
-            Experiment(experiment_id=i, params={"x": float(i)}, score=float(i))
-            for i in range(10)
+            Experiment(experiment_id=i, params={"x": float(i)}, score=float(i)) for i in range(10)
         ]
         params = tpe.suggest_next(history)
         assert "x" in params
@@ -89,21 +88,23 @@ class TestVisualizationModule:
 
     def test_import(self):
         from lingminopt.utils.visualization import (  # noqa: F401
-            plot_convergence,
-            plot_score_distribution,
-            plot_param_importance,
-            plot_timeline,
             generate_report,
+            plot_convergence,
+            plot_param_importance,
+            plot_score_distribution,
+            plot_timeline,
         )
 
     def test_plot_convergence_no_history(self):
         from lingminopt.utils.visualization import plot_convergence
+
         result = OptimizationResult(best_score=0.0, best_params={})
         fig = plot_convergence(result)
         assert fig is None
 
     def test_plot_convergence_with_history(self, tmp_path):
         from lingminopt.utils.visualization import plot_convergence
+
         history = [
             Experiment(experiment_id=i, params={"x": float(i)}, score=float(10 - i))
             for i in range(10)
@@ -118,13 +119,12 @@ class TestVisualizationModule:
 
     def test_plot_distribution(self, tmp_path):
         from lingminopt.utils.visualization import plot_score_distribution
+
         history = [
             Experiment(experiment_id=i, params={"x": float(i)}, score=float(i * 0.5))
             for i in range(20)
         ]
-        result = OptimizationResult(
-            best_score=0.0, best_params={"x": 0.0}, history=history
-        )
+        result = OptimizationResult(best_score=0.0, best_params={"x": 0.0}, history=history)
         save_path = str(tmp_path / "dist.png")
         fig = plot_score_distribution(result, save_path=save_path)
         assert fig is not None
@@ -132,6 +132,7 @@ class TestVisualizationModule:
 
     def test_plot_importance(self, tmp_path):
         from lingminopt.utils.visualization import plot_param_importance
+
         history = [
             Experiment(
                 experiment_id=i,
@@ -150,6 +151,7 @@ class TestVisualizationModule:
 
     def test_generate_report(self, tmp_path):
         from lingminopt.utils.visualization import generate_report
+
         history = [
             Experiment(
                 experiment_id=i,
@@ -159,9 +161,7 @@ class TestVisualizationModule:
             )
             for i in range(10)
         ]
-        result = OptimizationResult(
-            best_score=0.0, best_params={"x": 0.0}, history=history
-        )
+        result = OptimizationResult(best_score=0.0, best_params={"x": 0.0}, history=history)
         saved = generate_report(result, output_dir=str(tmp_path))
         assert len(saved) >= 3
         for path in saved:
@@ -181,10 +181,13 @@ class TestMCPFeedbackTools:
         result = OptimizationResult(
             best_score=0.0, best_params={"x": 10.0}, history=history, total_experiments=5
         )
-        result_path = str(tmp_path / "result.json")
+        data_dir = tmp_path / "data"
+        data_dir.mkdir()
+        result_path = str(data_dir / "result.json")
         result.save(result_path)
 
         import os
+
         old_cwd = os.getcwd()
         os.chdir(str(tmp_path))
         try:
@@ -206,10 +209,13 @@ class TestMCPFeedbackTools:
         result = OptimizationResult(
             best_score=0.0, best_params={"x": 10.0}, history=history, total_experiments=20
         )
-        result_path = str(tmp_path / "result.json")
+        data_dir = tmp_path / "data"
+        data_dir.mkdir()
+        result_path = str(data_dir / "result.json")
         result.save(result_path)
 
         import os
+
         old_cwd = os.getcwd()
         os.chdir(str(tmp_path))
         try:
@@ -227,20 +233,114 @@ class TestCompareResults:
         from lingminopt.mcp_server import tool_compare_results
 
         r1 = OptimizationResult(
-            best_score=5.0, best_params={"x": 1.0, "y": 2.0},
-            total_experiments=10, total_time=1.0,
+            best_score=5.0,
+            best_params={"x": 1.0, "y": 2.0},
+            total_experiments=10,
+            total_time=1.0,
         )
         r2 = OptimizationResult(
-            best_score=3.0, best_params={"x": 1.5, "y": 2.0},
-            total_experiments=20, total_time=2.0,
+            best_score=3.0,
+            best_params={"x": 1.5, "y": 2.0},
+            total_experiments=20,
+            total_time=2.0,
         )
-        p1 = str(tmp_path / "r1.json")
-        p2 = str(tmp_path / "r2.json")
+        data_dir = tmp_path / "data"
+        data_dir.mkdir()
+        p1 = str(data_dir / "r1.json")
+        p2 = str(data_dir / "r2.json")
         r1.save(p1)
         r2.save(p2)
 
-        result = tool_compare_results(p1, p2)
+        import os
+
+        old_cwd = os.getcwd()
+        os.chdir(str(tmp_path))
+        try:
+            result = tool_compare_results(p1, p2)
+        finally:
+            os.chdir(old_cwd)
         assert result["score"]["delta"] == -2.0
         assert result["params_changed"] == 1
         assert result["param_diff"]["x"]["a"] == 1.0
         assert result["param_diff"]["x"]["b"] == 1.5
+
+
+class TestEvaluatorRegistry:
+    """Test declarative evaluator registry (post-exec() removal)."""
+
+    def test_all_evaluators_callable(self):
+        from lingminopt.mcp_server import _EVALUATOR_REGISTRY
+
+        for name, entry in _EVALUATOR_REGISTRY.items():
+            fn = entry["fn"]
+            result = fn({"x": 1.0, "y": 2.0})
+            assert isinstance(result, float), f"{name} did not return float"
+
+    def test_sphere_at_origin(self):
+        from lingminopt.mcp_server import _sphere
+
+        assert _sphere({"x": 0.0}) == 0.0
+        assert _sphere({"x": 1.0, "y": 2.0}) == 5.0
+
+    def test_rastrigin_at_origin(self):
+        from lingminopt.mcp_server import _rastrigin
+
+        assert _rastrigin({"x": 0.0}) == 0.0
+
+    def test_rosenbrock_at_ones(self):
+        from lingminopt.mcp_server import _rosenbrock
+
+        assert _rosenbrock({"x": 1.0, "y": 1.0}) == 0.0
+
+    def test_ackley_at_origin(self):
+        from lingminopt.mcp_server import _ackley
+
+        result = _ackley({"x": 0.0})
+        assert abs(result) < 1e-10
+
+    def test_quadratic_at_half(self):
+        from lingminopt.mcp_server import _quadratic
+
+        assert _quadratic({"x": 0.5}) == 0.0
+
+    def test_neg_mean(self):
+        from lingminopt.mcp_server import _neg_mean
+
+        assert _neg_mean({"x": 2.0, "y": 4.0}) == -3.0
+        assert _neg_mean({}) == 0.0
+
+    def test_get_evaluator_valid(self):
+        from lingminopt.mcp_server import _get_evaluator
+
+        fn = _get_evaluator("sphere")
+        assert callable(fn)
+        assert fn({"x": 3.0}) == 9.0
+
+    def test_get_evaluator_invalid_raises(self):
+        from lingminopt.mcp_server import _get_evaluator
+
+        with pytest.raises(ValueError, match="Unknown evaluator"):
+            _get_evaluator("nonexistent")
+
+    def test_no_exec_in_mcp_server(self):
+        import ast
+
+        source = Path(__file__).parent.parent / "mcp_server.py"
+        tree = ast.parse(source.read_text())
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Call):
+                if isinstance(node.func, ast.Name) and node.func.id in (
+                    "exec",
+                    "eval",
+                    "compile",
+                ):
+                    pytest.fail(f"Found {node.func.id}() call in mcp_server.py")
+
+    def test_list_evaluators_tool(self):
+        from lingminopt.mcp_server import tool_list_evaluators
+
+        result = tool_list_evaluators()
+        assert "evaluators" in result
+        assert result["count"] == 6
+        assert "sphere" in result["evaluators"]
+        assert "rastrigin" in result["evaluators"]

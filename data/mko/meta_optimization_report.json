@@ -1,0 +1,25 @@
+{
+  "target_member": "灵族",
+  "generated_at": "2026-05-30T00:30:55.775363",
+  "prompt_optimization": {
+    "model": "glm-5.1",
+    "temperature": 0.6121883853314366,
+    "max_tokens": 2048,
+    "system_prompt_template": "minimal"
+  },
+  "routing_optimization": {
+    "code_model": "glm-5.1",
+    "debug_model": "qwen-plus",
+    "chat_model": "glm-4.7-flash",
+    "routing_strategy": "cost_based"
+  },
+  "retry_optimization": {
+    "primary_retry_limit": 5,
+    "backoff_base": 1.2295785599334093,
+    "backoff_max": 34.699075335876614,
+    "degraded_call_threshold": 20,
+    "degraded_time_threshold": 42.44996510097471,
+    "degradation_strategy": "timeout_increase",
+    "fallback_model": "llama-3.3-70b"
+  }
+}

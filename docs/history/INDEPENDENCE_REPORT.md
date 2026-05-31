@@ -1,18 +1,18 @@
-# LingMinOpt 独立化完成报告
+# lingminopt 独立化完成报告
 
 **日期**: 2026-03-23
 **状态**: ✅ 完成
 
 ## 📋 任务概述
 
-将 LingMinOpt 框架从 LingFlow 项目中完全独立出来，建立独立的项目和 Git 仓库。
+将 lingminopt 框架从 lingflow 项目中完全独立出来，建立独立的项目和 Git 仓库。
 
 ## ✅ 完成的工作
 
 ### 1. 项目独立
 
-- ✅ 创建独立目录 `/home/ai/LingMinOpt/`
-- ✅ 移除所有对 LingFlow 的依赖
+- ✅ 创建独立目录 `/home/ai/lingminopt/`
+- ✅ 移除所有对 lingflow 的依赖
 - ✅ 配置独立的 `setup.py` 和 `pyproject.toml`
 - ✅ 创建 `.gitignore` 文件
 
@@ -22,22 +22,22 @@
 - ✅ 创建初始提交（27 files, 4982 lines）
 - ✅ 配置 Git 用户信息
 - ✅ 添加两个远程仓库：
-  - `origin`: git@github.com:guangda88/LingMinOpt.git
-  - `gitea`: http://zhinenggitea.iepose.cn/guangda/LingMinOpt.git
+  - `origin`: git@github.com:guangda88/lingminopt.git
+  - `gitea`: http://zhinenggitea.iepose.cn/guangda/lingminopt.git
 
-### 3. LingResearch 处理
+### 3. lingresearch 处理
 
-**问题**: LingResearch（灵研）既是独立项目，又是 LingMinOpt 的示例
+**问题**: lingresearch（灵研）既是独立项目，又是 lingminopt 的示例
 
 **解决方案**:
 
-1. **简化示例** - 在 LingMinOpt 中保留简化版演示
-   - 文件: `/home/ai/LingMinOpt/examples/lingresearch_demo.py`
+1. **简化示例** - 在 lingminopt 中保留简化版演示
+   - 文件: `/home/ai/lingminopt/examples/lingresearch_demo.py`
    - 内容: 模拟训练的简化示例（0.1秒/实验）
    - 目的: 演示框架用法
 
 2. **完整项目** - 保持独立
-   - 位置: `/home/ai/LingResearch/`
+   - 位置: `/home/ai/lingresearch/`
    - Git: `guangda88/lingresearch`
    - 状态: 独立项目，未修改
 
@@ -47,21 +47,21 @@
 
 ### 4. 清理工作
 
-- ✅ 从 LingFlow 中删除 `minopt/` 目录
-- ✅ 从 LingMinOpt/examples 中删除完整的 `lingresearch/` 目录
+- ✅ 从 lingflow 中删除 `minopt/` 目录
+- ✅ 从 lingminopt/examples 中删除完整的 `lingresearch/` 目录
 - ✅ 重命名简化示例为 `lingresearch_demo.py`
 - ✅ 更新示例文档
 
 ### 5. 验证测试
 
 - ✅ 测试套件通过: 26/26 tests (100%)
-- ✅ LingResearch 示例运行成功
+- ✅ lingresearch 示例运行成功
 - ✅ 导入测试通过
 
 ## 📁 最终项目结构
 
 ```
-LingMinOpt/
+lingminopt/
 ├── lingminopt/              # 核心包
 │   ├── core/               # 优化引擎
 │   │   ├── optimizer.py    # 主引擎
@@ -82,7 +82,7 @@ LingMinOpt/
 │   ├── database-optimization/     # 数据库优化
 │   ├── hardware-optimization/     # 硬件优化
 │   ├── README.md                  # 示例说明
-│   └── LINGRESEARCH.md           # LingResearch 说明
+│   └── LINGRESEARCH.md           # lingresearch 说明
 ├── setup.py                # 安装配置
 ├── pyproject.toml          # 项目配置
 ├── README.md              # 项目文档
@@ -97,16 +97,16 @@ LingMinOpt/
 
 ```
 ┌─────────────────────────────────┐
-│   LingResearch (独立应用)       │
-│   /home/ai/LingResearch/     │
+│   lingresearch (独立应用)       │
+│   /home/ai/lingresearch/     │
 │   - 真实的自主研究             │
-│   - 依赖 LingMinOpt (未来)      │
+│   - 依赖 lingminopt (未来)      │
 │   - 独立 Git 仓库              │
 └─────────────────────────────────┘
               ↓ 可选依赖
 ┌─────────────────────────────────┐
-│   LingMinOpt (框架库)           │
-│   /home/ai/LingMinOpt/         │
+│   lingminopt (框架库)           │
+│   /home/ai/lingminopt/         │
 │   - 通用优化引擎               │
 │   - 可 pip 安装                │
 │   - 独立 Git 仓库              │
@@ -124,13 +124,13 @@ LingMinOpt/
 
 | 仓库 | 用途 | 远程仓库 | 状态 |
 |------|------|----------|------|
-| LingMinOpt | 通用优化框架 | github + gitea | ✅ 独立完成 |
-| LingResearch | 自主研究项目 | github + gitea | ✅ 保持独立 |
-| LingFlow | AI 工作流引擎 | github + gitea | ✅ 已清理 |
+| lingminopt | 通用优化框架 | github + gitea | ✅ 独立完成 |
+| lingresearch | 自主研究项目 | github + gitea | ✅ 保持独立 |
+| lingflow | AI 工作流引擎 | github + gitea | ✅ 已清理 |
 
 ## 📊 统计数据
 
-### LingMinOpt
+### lingminopt
 
 - **文件数**: 27
 - **代码行数**: 4,982
@@ -138,19 +138,19 @@ LingMinOpt/
 - **示例数量**: 6 个完整示例 + 2 个内部示例
 - **搜索策略**: 4 种 (random, grid, bayesian, annealing)
 
-### LingResearch
+### lingresearch
 
 - **状态**: 未修改
-- **位置**: `/home/ai/LingResearch/`
+- **位置**: `/home/ai/lingresearch/`
 - **远程**: github + gitea (保持不变)
-- **关系**: 独立项目，可依赖 LingMinOpt
+- **关系**: 独立项目，可依赖 lingminopt
 
 ## 🚀 下一步操作
 
 ### 推送到远程仓库
 
 ```bash
-cd /home/ai/LingMinOpt
+cd /home/ai/lingminopt
 
 # 推送到 GitHub
 git push -u origin master
@@ -159,32 +159,32 @@ git push -u origin master
 git push -u gitea master
 
 # (可选) 创建版本标签
-git tag -a v0.1.0 -m "LingMinOpt v0.1.0 - Initial Release"
+git tag -a v0.1.0 -m "lingminopt v0.1.0 - Initial Release"
 git push origin v0.1.0
 git push gitea v0.1.0
 ```
 
-### (可选) LingResearch 集成
+### (可选) lingresearch 集成
 
-如果想让 LingResearch 使用 LingMinOpt：
+如果想让 lingresearch 使用 lingminopt：
 
 ```bash
-cd /home/ai/LingResearch
+cd /home/ai/lingresearch
 
 # 添加依赖到 pyproject.toml
 # dependencies = ["lingminopt>=0.1.0"]
 
-# 安装 LingMinOpt
-pip install -e /home/ai/LingMinOpt
+# 安装 lingminopt
+pip install -e /home/ai/lingminopt
 
-# 重构 variable.py 使用 LingMinOpt 框架
+# 重构 variable.py 使用 lingminopt 框架
 ```
 
 ## 📝 关键决策
 
-### 1. 为什么 LingResearch 保持独立？
+### 1. 为什么 lingresearch 保持独立？
 
-- **专业性**: LingResearch 是完整的自主研究项目，包含真实数据和模型
+- **专业性**: lingresearch 是完整的自主研究项目，包含真实数据和模型
 - **灵活性**: 可以独立演进，不受框架版本限制
 - **清晰性**: 明确区分"框架"和"应用"
 
@@ -198,7 +198,7 @@ pip install -e /home/ai/LingMinOpt
 
 - **主仓库**: GitHub (国际访问)
 - **备份仓库**: Gitea (国内访问)
-- **与 LingFlow 保持一致**: 使用相同的双仓库策略
+- **与 lingflow 保持一致**: 使用相同的双仓库策略
 
 ## ⚠️ 注意事项
 
@@ -207,7 +207,7 @@ pip install -e /home/ai/LingMinOpt
 由于系统 Python 环境限制，推荐使用虚拟环境：
 
 ```bash
-cd /home/ai/LingMinOpt
+cd /home/ai/lingminopt
 python -m venv venv
 source venv/bin/activate
 pip install -e .
@@ -216,7 +216,7 @@ pip install -e .
 或者使用 PYTHONPATH：
 
 ```bash
-export PYTHONPATH=/home/ai/LingMinOpt:$PYTHONPATH
+export PYTHONPATH=/home/ai/lingminopt:$PYTHONPATH
 python examples/lingresearch_demo.py
 ```
 
@@ -225,8 +225,8 @@ python examples/lingresearch_demo.py
 所有示例都需要设置 PYTHONPATH：
 
 ```bash
-cd /home/ai/LingMinOpt
-PYTHONPATH=/home/ai/LingMinOpt:$PYTHONPATH python examples/lingresearch_demo.py
+cd /home/ai/lingminopt
+PYTHONPATH=/home/ai/lingminopt:$PYTHONPATH python examples/lingresearch_demo.py
 ```
 
 ### 3. 推送权限
@@ -235,15 +235,15 @@ PYTHONPATH=/home/ai/LingMinOpt:$PYTHONPATH python examples/lingresearch_demo.py
 
 ## 🎉 总结
 
-LingMinOpt 已成功从 LingFlow 中独立出来：
+lingminopt 已成功从 lingflow 中独立出来：
 
-1. ✅ **完全独立**: 所有代码、配置、文档都在 `/home/ai/LingMinOpt/`
+1. ✅ **完全独立**: 所有代码、配置、文档都在 `/home/ai/lingminopt/`
 2. ✅ **Git 仓库**: 初始化完成，远程仓库已配置
-3. ✅ **LingResearch**: 简化示例 + 独立项目双重方案
-4. ✅ **清理完成**: LingFlow 中的 minopt 目录已删除
+3. ✅ **lingresearch**: 简化示例 + 独立项目双重方案
+4. ✅ **清理完成**: lingflow 中的 minopt 目录已删除
 5. ✅ **测试通过**: 所有测试和示例验证正常
 
-**LingMinOpt 现在可以作为一个独立的 Python 包发布和使用！**
+**lingminopt 现在可以作为一个独立的 Python 包发布和使用！**
 
 ---
 

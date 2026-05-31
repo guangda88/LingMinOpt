@@ -1,4 +1,4 @@
-# LingMinOpt 项目完成总结
+# lingminopt 项目完成总结
 
 **日期**: 2026-03-23
 **版本**: v0.1.0
@@ -8,11 +8,11 @@
 
 ## 📋 完成任务
 
-### 1. ✅ 从 LingFlow 独立
+### 1. ✅ 从 lingflow 独立
 
-- 创建独立项目目录: `/home/ai/LingMinOpt/`
-- 移除所有 LingFlow 依赖
-- 清理 LingFlow 中的 minopt 目录
+- 创建独立项目目录: `/home/ai/lingminopt/`
+- 移除所有 lingflow 依赖
+- 清理 lingflow 中的 minopt 目录
 - 配置独立的打包文件 (setup.py, pyproject.toml)
 
 ### 2. ✅ Git 仓库配置
@@ -20,14 +20,14 @@
 - 初始化 Git 仓库
 - 配置 Git 用户: guangda88 / liuqingabc@163.com
 - 配置双远程仓库:
-  - GitHub: git@github.com:guangda88/LingMinOpt.git
-  - Gitea: http://zhinenggitea.iepose.cn/guangda/LingMinOpt.git
+  - GitHub: git@github.com:guangda88/lingminopt.git
+  - Gitea: http://zhinenggitea.iepose.cn/guangda/lingminopt.git
 
-### 3. ✅ LingResearch 处理
+### 3. ✅ lingresearch 处理
 
 - 创建简化示例: `examples/lingresearch_demo.py`
-- 保留完整独立项目: `/home/ai/LingResearch/`
-- 重命名目录: zhinengresearch → LingResearch
+- 保留完整独立项目: `/home/ai/lingresearch/`
+- 重命名目录: zhinengresearch → lingresearch
 - 更新所有文档引用
 
 ### 4. ✅ 项目完整性
@@ -54,10 +54,10 @@
 ```bash
 f3fa1c9 docs: add dual remote repository verification
 755a22d docs: add project ownership verification
-835419b docs: add LingResearch rename report
-15c0dfe docs: rename zhinengresearch to LingResearch
+835419b docs: add lingresearch rename report
+15c0dfe docs: rename zhinengresearch to lingresearch
 10a72bd docs: add independence completion report
-3ea61c5 Initial commit: LingMinOpt (灵极优) v0.1.0
+3ea61c5 Initial commit: lingminopt (灵极优) v0.1.0
 ```
 
 **总提交数**: 6
@@ -68,13 +68,13 @@ f3fa1c9 docs: add dual remote repository verification
 ## 🌐 远程仓库
 
 ### GitHub
-- **仓库**: https://github.com/guangda88/LingMinOpt
-- **远程**: git@github.com:guangda88/LingMinOpt.git
+- **仓库**: https://github.com/guangda88/lingminopt
+- **远程**: git@github.com:guangda88/lingminopt.git
 - **状态**: 📦 待推送
 
 ### Gitea
-- **仓库**: http://zhinenggitea.iepose.cn/guangda/LingMinOpt
-- **远程**: http://zhinenggitea.iepose.cn/guangda/LingMinOpt.git
+- **仓库**: http://zhinenggitea.iepose.cn/guangda/lingminopt
+- **远程**: http://zhinenggitea.iepose.cn/guangda/lingminopt.git
 - **状态**: 📦 待推送
 
 ---
@@ -82,7 +82,7 @@ f3fa1c9 docs: add dual remote repository verification
 ## 📦 项目结构
 
 ```
-LingMinOpt/
+lingminopt/
 ├── lingminopt/              # 核心包
 │   ├── core/               # 优化引擎
 │   │   ├── optimizer.py    # 主引擎 (180 lines)
@@ -132,7 +132,7 @@ LingMinOpt/
      │              │              │
      ▼              ▼              ▼
 ┌──────────┐  ┌──────────┐  ┌──────────┐
-│LingFlow  │  │LingMinOpt│  │LingResearch│
+│lingflow  │  │lingminopt│  │lingresearch│
 │工作流引擎 │  │ 优化框架  │  │ 自主研究  │
 │ v3.3.0   │  │ v0.1.0   │  │ 活跃中    │
 │ ✅ 生产   │  │ ✅ 就绪   │  │ 领先5    │
@@ -143,18 +143,18 @@ LingMinOpt/
 
 ## 🚀 推送操作
 
-### 1. 推送 LingMinOpt
+### 1. 推送 lingminopt
 
 ```bash
-cd /home/ai/LingMinOpt
+cd /home/ai/lingminopt
 git push -u origin master
 git push -u gitea master
 ```
 
-### 2. 推送 LingResearch
+### 2. 推送 lingresearch
 
 ```bash
-cd /home/ai/LingResearch
+cd /home/ai/lingresearch
 git push origin main
 git push gitea main
 ```
@@ -203,7 +203,7 @@ lingminopt report --results results.json
 
 ## 📝 许可证
 
-MIT License - 与 LingFlow 和 LingResearch 保持一致
+MIT License - 与 lingflow 和 lingresearch 保持一致
 
 ---
 
@@ -211,19 +211,19 @@ MIT License - 与 LingFlow 和 LingResearch 保持一致
 
 灵感来自:
 - Karpathy 的 autoresearch
-- 灵研 (LingResearch) 的极简主义哲学
-- LingFlow 的多智能体协调思想
+- 灵研 (lingresearch) 的极简主义哲学
+- lingflow 的多智能体协调思想
 
 ---
 
 ## 🎉 总结
 
-**LingMinOpt 已完全独立并准备发布！**
+**lingminopt 已完全独立并准备发布！**
 
-✅ 从 LingFlow 独立
+✅ 从 lingflow 独立
 ✅ Git 仓库配置完成
 ✅ 双远程仓库 (GitHub + Gitea)
-✅ LingResearch 处理完成
+✅ lingresearch 处理完成
 ✅ 测试全部通过
 ✅ 文档完整完善
 ✅ 准备推送到远程

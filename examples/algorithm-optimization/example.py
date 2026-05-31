@@ -1,13 +1,13 @@
 """
 示例：算法优化
 
-使用 LingMinOpt 优化算法的参数和实现细节。
+使用 lingminopt 优化算法的参数和实现细节。
 
 目标：最小化算法的执行时间
 """
 
 import sys
-sys.path.insert(0, '/home/ai/LingMinOpt')
+sys.path.insert(0, '/home/ai/lingminopt')
 
 from lingminopt import MinimalOptimizer, SearchSpace, ExperimentConfig
 import time

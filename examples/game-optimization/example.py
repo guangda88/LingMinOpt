@@ -1,13 +1,13 @@
 """
 示例：游戏策略优化
 
-使用 LingMinOpt 优化简单的游戏 AI 策略。
+使用 lingminopt 优化简单的游戏 AI 策略。
 
 目标：最大化胜率
 """
 
 import sys
-sys.path.insert(0, '/home/ai/LingMinOpt')
+sys.path.insert(0, '/home/ai/lingminopt')
 
 from lingminopt import MinimalOptimizer, SearchSpace, ExperimentConfig
 import numpy as np

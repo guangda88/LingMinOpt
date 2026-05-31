@@ -1,4 +1,4 @@
-# 🟡 灵极优 (LingMinOpt) — 安全策略
+# 🟡 灵极优 (lingminopt) — 安全策略
 
 > 风险等级: **MEDIUM** | 角色: 优化引擎 — 搜索空间、优化执行、策略配置、实验管理
 
@@ -6,7 +6,7 @@
 
 | 项目 | 值 |
 |------|------|
-| Agent ID | `LingMinOpt` |
+| Agent ID | `lingminopt` |
 | 角色 | 优化引擎 — 搜索空间、优化执行、策略配置、实验管理 |
 | 风险等级 | MEDIUM |
 | 工具 | 10 个 MCP 工具（搜索空间、优化、策略配置、实验、反馈） |
@@ -45,8 +45,8 @@
 | SEC-DATA-001 | 数据完整性 | 验证数据必须实际经过验证 |
 | SEC-MON-001 | 监控 & 响应 | 审计日志 + 异常检测 |
 
-完整基线文档：`/data/lingfamily/LingFlow_plus/docs/security_baseline_v1.py`
-安全巡检脚本：`/data/lingfamily/LingFlow_plus/docs/security_patrol.py`
+完整基线文档：`/data/lingfamily/lingflowplus/docs/security_baseline_v1.py`
+安全巡检脚本：`/data/lingfamily/lingflowplus/docs/security_patrol.py`
 
 
 ## OWASP LLM Top 10 映射
@@ -67,5 +67,5 @@
 
 ---
 
-*生成时间: 2026-04-12 | 由灵通+ (LingFlow+) 自动生成*
+*生成时间: 2026-04-12 | 由灵通+ (lingflow+) 自动生成*
 *下次审查: 2026-07-12 或重大变更时*

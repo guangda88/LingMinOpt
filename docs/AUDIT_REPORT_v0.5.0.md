@@ -1,4 +1,4 @@
-# LingMinOpt v0.5.0 审计报告
+# lingminopt v0.5.0 审计报告
 
 **审计日期**: 2026-04-16  
 **审计方式**: 手动触发 + 自动化钩子  
@@ -33,9 +33,9 @@
 
 | 文件 | 导入 | 依赖仓库 |
 |------|------|----------|
-| `lingminopt/mcp_server.py` | `lingmessage` | LingMessage |
+| `lingminopt/mcp_server.py` | `lingmessage` | lingmessage |
 
-**说明**: MCP Server 导入了 LingMessage 的模块，这是合理的跨仓库依赖。
+**说明**: MCP Server 导入了 lingmessage 的模块，这是合理的跨仓库依赖。
 
 ### L3 灵依交叉审计
 - **状态**: ✅ 请求已发送

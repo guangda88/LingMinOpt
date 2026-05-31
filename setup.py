@@ -7,7 +7,7 @@ setup(
     name="lingminopt",
     version="0.1.0",
     author="Guangda",
-    description="LingMinOpt - A universal minimalist self-optimization framework inspired by 灵研",
+    description="lingminopt - A universal minimalist self-optimization framework inspired by 灵研",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/yourusername/lingminopt",

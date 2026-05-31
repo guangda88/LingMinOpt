@@ -1,16 +1,16 @@
-from lingminopt.core.searcher import SearchSpace
-from lingminopt.core.optimizer import MinimalOptimizer
-from lingminopt.core.models import OptimizationResult, Experiment
+from lingminopt.config.config import ExperimentConfig
 from lingminopt.core.evaluator import EvaluatorBase, FunctionEvaluator, TimedEvaluator
+from lingminopt.core.models import Experiment, OptimizationResult
+from lingminopt.core.optimizer import MinimalOptimizer
+from lingminopt.core.searcher import SearchSpace
 from lingminopt.core.strategy import (
-    SearchStrategy,
-    RandomSearch,
-    GridSearch,
     BayesianSearch,
+    GridSearch,
+    RandomSearch,
+    SearchStrategy,
     SimulatedAnnealing,
     create_strategy,
 )
-from lingminopt.config.config import ExperimentConfig
 from lingminopt.utils.logger import setup_logger
 
 __all__ = [

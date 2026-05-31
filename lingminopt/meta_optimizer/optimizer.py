@@ -4,22 +4,25 @@ Meta Optimizer - 元知识优化器封装
 
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Any
 import logging
+from pathlib import Path
+from typing import TYPE_CHECKING, Any
 
-from lingminopt import MinimalOptimizer, ExperimentConfig
-from lingminopt.meta_optimizer.search_spaces import (
-    get_prompt_optimization_space,
-    get_routing_optimization_space,
-    get_retry_optimization_space,
-)
+from lingminopt import ExperimentConfig, MinimalOptimizer
+from lingminopt.meta_optimizer.data_collector import DataCollector
 from lingminopt.meta_optimizer.evaluators import (
     PromptEvaluator,
-    RoutingEvaluator,
     RetryEvaluator,
+    RoutingEvaluator,
 )
-from lingminopt.meta_optimizer.data_collector import DataCollector
+from lingminopt.meta_optimizer.search_spaces import (
+    get_prompt_optimization_space,
+    get_retry_optimization_space,
+    get_routing_optimization_space,
+)
+
+if TYPE_CHECKING:
+    from lingminopt.meta_optimizer.lingbus_collector import LingBusCollector
 
 logger = logging.getLogger(__name__)
 
@@ -27,15 +30,34 @@ logger = logging.getLogger(__name__)
 class MetaOptimizer:
     """元知识优化器"""
 
-    def __init__(self, session_dir: str | Path):
-        """
-        初始化优化器
+    def __init__(
+        self,
+        session_dir: str | Path | None = None,
+        lingbus_collector: LingBusCollector | None = None,
+    ):
+        self.session_dir = Path(session_dir) if session_dir else None
+        self.collector = DataCollector(session_dir) if session_dir else None
+        self.lingbus_collector = lingbus_collector
 
-        Args:
-            session_dir: LingClaude 会话目录路径
-        """
-        self.session_dir = Path(session_dir)
-        self.collector = DataCollector(session_dir)
+    def _collect_records(self, random_seed: int | None = None) -> list[dict]:
+        if self.lingbus_collector:
+            records = self.lingbus_collector.collect_lingbus_messages(limit=500)
+            return [
+                {
+                    "query": r.query,
+                    "model": r.model,
+                    "agent": r.agent,
+                    "total_tokens": r.input_tokens + r.output_tokens,
+                    "input_tokens": r.input_tokens,
+                    "output_tokens": r.output_tokens,
+                    "success": r.success,
+                    "quality_score": 0.85,
+                }
+                for r in records
+            ]
+        if self.collector:
+            return self.collector.sample_tasks(n=200, random_seed=random_seed)
+        raise ValueError("No data source: provide session_dir or lingbus_collector")
 
     def optimize_prompt(
         self,
@@ -59,12 +81,10 @@ class MetaOptimizer:
         logger.info("Starting prompt optimization...")
 
         # 收集数据
-        records = self.collector.sample_tasks(n=200, random_seed=random_seed)
+        records = self._collect_records(random_seed)
 
-        # 定义搜索空间
         search_space = get_prompt_optimization_space()
 
-        # 定义评估函数
         evaluator = PromptEvaluator(records)
 
         def evaluate(params: dict[str, Any]) -> float:
@@ -124,13 +144,10 @@ class MetaOptimizer:
         """
         logger.info("Starting routing optimization...")
 
-        # 收集数据
-        records = self.collector.sample_tasks(n=200, random_seed=random_seed)
+        records = self._collect_records(random_seed)
 
-        # 定义搜索空间
         search_space = get_routing_optimization_space()
 
-        # 定义评估函数
         evaluator = RoutingEvaluator(records)
 
         def evaluate(params: dict[str, Any]) -> float:
@@ -190,13 +207,10 @@ class MetaOptimizer:
         """
         logger.info("Starting retry optimization...")
 
-        # 收集数据
-        records = self.collector.sample_tasks(n=200, random_seed=random_seed)
+        records = self._collect_records(random_seed)
 
-        # 定义搜索空间
         search_space = get_retry_optimization_space()
 
-        # 定义评估函数
         evaluator = RetryEvaluator(records)
 
         def evaluate(params: dict[str, Any]) -> float:
@@ -280,12 +294,12 @@ class MetaOptimizer:
 
         # 计算综合分数
         combined_score = (
-            prompt_result["best_score"] +
-            routing_result["best_score"] +
-            retry_result["best_score"]
+            prompt_result["best_score"] + routing_result["best_score"] + retry_result["best_score"]
         ) / 3
 
-        logger.info(f"Comprehensive meta optimization complete: combined_score={combined_score:.4f}")
+        logger.info(
+            f"Comprehensive meta optimization complete: combined_score={combined_score:.4f}"
+        )
 
         return {
             "combined_score": combined_score,
@@ -298,13 +312,13 @@ class MetaOptimizer:
                 "retry": retry_result,
             },
             "total_experiments": (
-                prompt_result["total_experiments"] +
-                routing_result["total_experiments"] +
-                retry_result["total_experiments"]
+                prompt_result["total_experiments"]
+                + routing_result["total_experiments"]
+                + retry_result["total_experiments"]
             ),
             "total_time": (
-                prompt_result["total_time"] +
-                routing_result["total_time"] +
-                retry_result["total_time"]
+                prompt_result["total_time"]
+                + routing_result["total_time"]
+                + retry_result["total_time"]
             ),
         }

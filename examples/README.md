@@ -1,14 +1,14 @@
-# LingMinOpt 应用场景示例
+# lingminopt 应用场景示例
 
-本目录包含 LingMinOpt 框架在各种场景下的应用示例。
+本目录包含 lingminopt 框架在各种场景下的应用示例。
 
 ## 示例列表
 
-### 1. 灵研 (LingResearch) - 自主 AI 研究
+### 1. 灵研 (lingresearch) - 自主 AI 研究
 
 **文件**: `lingresearch_demo.py`
 
-**描述**: 简化的灵研（LingResearch）示例，演示如何使用 LingMinOpt 框架进行自主研究。
+**描述**: 简化的灵研（lingresearch）示例，演示如何使用 lingminopt 框架进行自主研究。
 
 **特性**:
 - 简化版灵研核心概念
@@ -23,9 +23,9 @@ python lingresearch_demo.py
 
 **目标**: 最小化验证集的 BPC (bits per character)
 
-**说明**: 这是 LingMinOpt 框架的一个简化演示。完整的 LingResearch 项目请查看：
+**说明**: 这是 lingminopt 框架的一个简化演示。完整的 lingresearch 项目请查看：
 - **完整项目**: https://github.com/guangda88/lingresearch
-- **本地路径**: `/home/ai/LingResearch/`
+- **本地路径**: `/home/ai/lingresearch/`
 
 完整项目包含：
 - 真实的训练数据和模型
@@ -39,7 +39,7 @@ python lingresearch_demo.py
 
 **目录**: `ml-optimization/`
 
-**描述**: 使用 LingMinOpt 优化机器学习模型的超参数。
+**描述**: 使用 lingminopt 优化机器学习模型的超参数。
 
 **特性**:
 - 随机森林超参数优化
@@ -177,10 +177,10 @@ python example.py
 
 ## 如何使用这些示例
 
-### 步骤 1: 安装 LingMinOpt
+### 步骤 1: 安装 lingminopt
 
 ```bash
-cd /home/ai/LingMinOpt
+cd /home/ai/lingminopt
 pip install -e .
 ```
 
@@ -311,8 +311,8 @@ print(f"Best params: {result.best_params}")
 
 ## 获取帮助
 
-- 查看主 README: `/home/ai/LingMinOpt/README.md`
-- 查看文档: `/home/ai/LingMinOpt/docs/`
+- 查看主 README: `/home/ai/lingminopt/README.md`
+- 查看文档: `/home/ai/lingminopt/docs/`
 - 提交问题: GitHub Issues
 
 ---

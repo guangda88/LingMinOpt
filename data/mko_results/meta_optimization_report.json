@@ -1,0 +1,35 @@
+{
+  "combined_score": 0.9679403457662282,
+  "prompt_optimization": {
+    "model": "qwen-max",
+    "temperature": 0.6128286931923066,
+    "max_tokens": 16384,
+    "system_prompt_template": "standard"
+  },
+  "routing_optimization": {
+    "code_model": "glm-4.7",
+    "debug_model": "qwen-plus",
+    "chat_model": "qwen-plus",
+    "routing_strategy": "capability_based"
+  },
+  "retry_optimization": {
+    "primary_retry_limit": 3,
+    "backoff_base": 1.4151191735181448,
+    "backoff_max": 24.81864327600171,
+    "degraded_call_threshold": 10,
+    "degraded_time_threshold": 47.69562019958481,
+    "degradation_strategy": "hybrid",
+    "fallback_model": "qwen-max"
+  },
+  "detailed_results": {
+    "prompt": {
+      "optimization_type": "prompt",
+      "best_params": {
+        "model": "qwen-max",
+        "temperature": 0.6128286931923066,
+        "max_tokens": 16384,
+        "system_prompt_template": "standard"
+      },
+      "best_score": 0.960080522792355,
+      "history": [
+        

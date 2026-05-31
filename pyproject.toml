@@ -5,9 +5,9 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "lingminopt"
 version = "0.5.0"
-description = "LingMinOpt (灵极优) — A universal minimalist self-optimization framework"
+description = "lingminopt (灵极优) — A universal minimalist self-optimization framework"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
     {name = "Guangda"},
@@ -60,24 +60,24 @@ bayesian = [
 lingminopt = "lingminopt.cli.commands:cli"
 
 [project.urls]
-Homepage = "https://github.com/zhineng-knowledge-system/LingMinOpt"
-Documentation = "https://github.com/zhineng-knowledge-system/LingMinOpt/blob/main/README.md"
-Repository = "https://github.com/zhineng-knowledge-system/LingMinOpt"
-"Bug Tracker" = "https://github.com/zhineng-knowledge-system/LingMinOpt/issues"
+Homepage = "https://github.com/zhineng-knowledge-system/lingminopt"
+Documentation = "https://github.com/zhineng-knowledge-system/lingminopt/blob/main/README.md"
+Repository = "https://github.com/zhineng-knowledge-system/lingminopt"
+"Bug Tracker" = "https://github.com/zhineng-knowledge-system/lingminopt/issues"
 
 [tool.setuptools]
 packages = ["lingminopt", "lingminopt.core", "lingminopt.config", "lingminopt.utils", "lingminopt.cli", "lingminopt.tests", "lingminopt.meta_optimizer"]
 
 [tool.black]
 line-length = 100
-target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
+target-version = ['py310', 'py311', 'py312']
 
 [tool.isort]
 profile = "black"
 line_length = 100
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.12"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true

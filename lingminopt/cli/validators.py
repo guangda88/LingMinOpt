@@ -8,11 +8,11 @@ from pathlib import Path
 
 
 def validate_project_name(name: str) -> str:
-    if not re.match(r'^[a-zA-Z0-9_-]+$', name):
+    if not re.match(r"^[a-zA-Z0-9_-]+$", name):
         raise ValueError(
             "Invalid project name. Use only letters, numbers, underscores, and hyphens."
         )
-    if name in ['.', '..'] or '/' in name or '\\' in name:
+    if name in [".", ".."] or "/" in name or "\\" in name:
         raise ValueError("Path traversal not allowed")
     if len(name) > 100:
         raise ValueError("Project name too long (max 100 characters)")
@@ -22,9 +22,9 @@ def validate_project_name(name: str) -> str:
 def _validate_output_config(output_config: dict) -> None:
     if "results_file" in output_config:
         results_file = output_config["results_file"]
-        if '..' in results_file or Path(results_file).is_absolute():
+        if ".." in results_file or Path(results_file).is_absolute():
             raise ValueError("Invalid results_file: path traversal not allowed")
-        if not results_file.endswith('.json'):
+        if not results_file.endswith(".json"):
             raise ValueError("results_file must be a JSON file")
 
 
@@ -40,7 +40,7 @@ def validate_config_file(filepath: str) -> dict:
             data = json.load(f)
     except json.JSONDecodeError as e:
         raise ValueError(f"Invalid JSON in config file: {e}")
-    except Exception as e:
+    except (OSError, PermissionError) as e:
         raise ValueError(f"Error reading config file: {e}")
 
     if not isinstance(data, dict):

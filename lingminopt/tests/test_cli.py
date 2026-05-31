@@ -4,15 +4,15 @@ CLI tests for lingminopt
 
 import json
 import os
+from unittest.mock import AsyncMock, patch
 
 import pytest
 from click.testing import CliRunner
-from unittest.mock import patch, AsyncMock
 
 from lingminopt.cli.commands import (
     cli,
-    validate_project_name,
     validate_config_file,
+    validate_project_name,
 )
 
 
@@ -54,10 +54,14 @@ class TestValidateProjectName:
 class TestValidateConfigFile:
     def test_valid_config(self, tmp_path):
         config_file = tmp_path / "config.json"
-        config_file.write_text(json.dumps({
-            "optimizer": {"direction": "minimize", "max_experiments": 50},
-            "output": {"results_file": "results.json"},
-        }))
+        config_file.write_text(
+            json.dumps(
+                {
+                    "optimizer": {"direction": "minimize", "max_experiments": 50},
+                    "output": {"results_file": "results.json"},
+                }
+            )
+        )
         data = validate_config_file(str(config_file))
         assert data["optimizer"]["direction"] == "minimize"
 
@@ -73,33 +77,49 @@ class TestValidateConfigFile:
 
     def test_path_traversal_results_file(self, tmp_path):
         config_file = tmp_path / "config.json"
-        config_file.write_text(json.dumps({
-            "output": {"results_file": "../../../tmp/evil.json"},
-        }))
+        config_file.write_text(
+            json.dumps(
+                {
+                    "output": {"results_file": "../../../tmp/evil.json"},
+                }
+            )
+        )
         with pytest.raises(ValueError, match="path traversal"):
             validate_config_file(str(config_file))
 
     def test_absolute_path_results_file(self, tmp_path):
         config_file = tmp_path / "config.json"
-        config_file.write_text(json.dumps({
-            "output": {"results_file": "/tmp/results.json"},
-        }))
+        config_file.write_text(
+            json.dumps(
+                {
+                    "output": {"results_file": "/tmp/results.json"},
+                }
+            )
+        )
         with pytest.raises(ValueError, match="path traversal"):
             validate_config_file(str(config_file))
 
     def test_non_json_results_file(self, tmp_path):
         config_file = tmp_path / "config.json"
-        config_file.write_text(json.dumps({
-            "output": {"results_file": "results.txt"},
-        }))
+        config_file.write_text(
+            json.dumps(
+                {
+                    "output": {"results_file": "results.txt"},
+                }
+            )
+        )
         with pytest.raises(ValueError, match="JSON file"):
             validate_config_file(str(config_file))
 
     def test_invalid_direction(self, tmp_path):
         config_file = tmp_path / "config.json"
-        config_file.write_text(json.dumps({
-            "optimizer": {"direction": "optimize"},
-        }))
+        config_file.write_text(
+            json.dumps(
+                {
+                    "optimizer": {"direction": "optimize"},
+                }
+            )
+        )
         with pytest.raises(ValueError, match="direction"):
             validate_config_file(str(config_file))
 
@@ -154,8 +174,9 @@ class TestCLIInit:
 
 class TestCLIReport:
     def test_report_with_valid_results(self, tmp_path):
-        from lingminopt.core.models import Experiment, OptimizationResult
         from datetime import datetime
+
+        from lingminopt.core.models import Experiment, OptimizationResult
 
         experiments = [
             Experiment(experiment_id=1, params={"x": 1.0}, score=1.0, timestamp=datetime.now()),
@@ -203,14 +224,16 @@ class TestCLIInbox:
         env = {k: v for k, v in os.environ.items() if k != "LINGMESSAGE_DB_URL"}
         result = runner.invoke(cli, ["inbox", "--db-url", "postgresql://test"], env=env)
         assert result.exit_code == 0
-        mock_read.assert_called_once_with("postgresql://test", "lingjiyou", True, True)
+        mock_read.assert_called_once_with("postgresql://test", "lingminopt", True, True)
 
     @patch("lingminopt.cli.commands._inbox_read")
     def test_inbox_read_with_agent(self, mock_read):
         runner = CliRunner()
         env = {k: v for k, v in os.environ.items() if k != "LINGMESSAGE_DB_URL"}
         result = runner.invoke(
-            cli, ["inbox", "--agent", "lingminopt", "--db-url", "postgresql://test"], env=env,
+            cli,
+            ["inbox", "--agent", "lingminopt", "--db-url", "postgresql://test"],
+            env=env,
         )
         assert result.exit_code == 0
         mock_read.assert_called_once_with("postgresql://test", "lingminopt", True, True)
@@ -220,29 +243,42 @@ class TestCLIInbox:
         runner = CliRunner()
         env = {k: v for k, v in os.environ.items() if k != "LINGMESSAGE_DB_URL"}
         result = runner.invoke(
-            cli, ["inbox", "--no-threads", "--db-url", "postgresql://test"], env=env,
+            cli,
+            ["inbox", "--no-threads", "--db-url", "postgresql://test"],
+            env=env,
         )
         assert result.exit_code == 0
-        mock_read.assert_called_once_with("postgresql://test", "lingjiyou", False, True)
+        mock_read.assert_called_once_with("postgresql://test", "lingminopt", False, True)
 
     @patch("lingminopt.cli.commands._inbox_reply")
     def test_inbox_reply_success(self, mock_reply):
         runner = CliRunner()
         env = {k: v for k, v in os.environ.items() if k != "LINGMESSAGE_DB_URL"}
         result = runner.invoke(
-            cli, ["inbox", "--db-url", "postgresql://test", "--reply", "5", "--message", "ok"],
+            cli,
+            ["inbox", "--db-url", "postgresql://test", "--reply", "5", "--message", "ok"],
             env=env,
         )
         assert result.exit_code == 0
-        mock_reply.assert_called_once_with("postgresql://test", "lingjiyou", "5", "ok")
+        mock_reply.assert_called_once_with("postgresql://test", "lingminopt", "5", "ok")
 
     @patch("lingminopt.cli.commands._inbox_reply")
     def test_inbox_reply_with_agent(self, mock_reply):
         runner = CliRunner()
         env = {k: v for k, v in os.environ.items() if k != "LINGMESSAGE_DB_URL"}
         result = runner.invoke(
-            cli, ["inbox", "--agent", "lingminopt", "--db-url", "postgresql://test",
-                  "--reply", "3", "--message", "hello"],
+            cli,
+            [
+                "inbox",
+                "--agent",
+                "lingminopt",
+                "--db-url",
+                "postgresql://test",
+                "--reply",
+                "3",
+                "--message",
+                "hello",
+            ],
             env=env,
         )
         assert result.exit_code == 0

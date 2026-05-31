@@ -10,12 +10,12 @@ import tempfile
 import pytest
 
 from lingminopt import (
+    Experiment,
+    GridSearch,
     MinimalOptimizer,
     SearchSpace,
-    Experiment,
-    create_strategy,
-    GridSearch,
     SimulatedAnnealing,
+    create_strategy,
     setup_logger,
 )
 
@@ -223,9 +223,14 @@ class TestOptimizerCallbacks:
 
         call_order = []
 
-        def cb1(info): call_order.append(1)
-        def cb2(info): call_order.append(2)
-        def cb3(info): call_order.append(3)
+        def cb1(info):
+            call_order.append(1)
+
+        def cb2(info):
+            call_order.append(2)
+
+        def cb3(info):
+            call_order.append(3)
 
         optimizer = MinimalOptimizer(
             evaluate=lambda p: p["x"] ** 2,
@@ -255,9 +260,7 @@ class TestCreateStrategyKwargsForwarding:
         space = SearchSpace()
         space.add_continuous("x", 0, 10)
 
-        strategy = create_strategy(
-            "annealing", space, initial_temp=5.0, cooling_rate=0.9
-        )
+        strategy = create_strategy("annealing", space, initial_temp=5.0, cooling_rate=0.9)
         assert isinstance(strategy, SimulatedAnnealing)
         assert strategy.initial_temp == 5.0
         assert strategy.cooling_rate == 0.9
@@ -316,19 +319,23 @@ class TestPackageExports:
     def test_create_strategy_exported(self):
         """create_strategy should be importable from lingminopt."""
         from lingminopt import create_strategy
+
         assert callable(create_strategy)
 
     def test_setup_logger_exported(self):
         """setup_logger should be importable from lingminopt."""
         from lingminopt import setup_logger
+
         assert callable(setup_logger)
 
     def test_search_strategy_base_exported(self):
         """SearchStrategy base class should be importable."""
         from lingminopt import SearchStrategy
+
         assert SearchStrategy is not None
 
     def test_version_updated(self):
         """__version__ should reflect v0.5.0."""
         from lingminopt import __version__
+
         assert __version__ == "0.5.0"

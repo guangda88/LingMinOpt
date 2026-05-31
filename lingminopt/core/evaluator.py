@@ -2,10 +2,10 @@
 Evaluator base class and implementations
 """
 
-from abc import ABC, abstractmethod
-from typing import Callable, Dict, Any
-import time
 import logging
+import time
+from abc import ABC, abstractmethod
+from typing import Any, Callable, Dict
 
 logger = logging.getLogger(__name__)
 

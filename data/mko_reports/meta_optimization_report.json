@@ -1,0 +1,163 @@
+{
+  "prompt_optimization": {
+    "model": "glm-5.1",
+    "temperature": 0.5986490347717696,
+    "max_tokens": 4096,
+    "system_prompt_template": "standard"
+  },
+  "routing_optimization": {
+    "code_model": "llama-3.3-70b",
+    "debug_model": "qwen-plus",
+    "chat_model": "qwen-plus",
+    "routing_strategy": "cost_based"
+  },
+  "retry_optimization": {
+    "primary_retry_limit": 3,
+    "backoff_base": 2.9606023513911204,
+    "backoff_max": 46.01782203788254,
+    "degraded_call_threshold": 10,
+    "degraded_time_threshold": 73.6326594194798,
+    "degradation_strategy": "hybrid",
+    "fallback_model": "minimax-m2.7"
+  },
+  "combined_score": 0.8301357790299925,
+  "total_experiments": 60,
+  "total_time": 0.004825115203857422,
+  "detailed_results": {
+    "prompt": {
+      "best_score": 0.5791115317787285,
+      "total_experiments": 16,
+      "total_time": 0.0015256404876708984
+    },
+    "routing": {
+      "best_score": 1.0,
+      "total_experiments": 16,
+      "total_time": 0.0015904903411865234
+    },
+    "retry": {
+      "best_score": 0.9112958053112488,
+      "total_experiments": 28,
+      "total_time": 0.001708984375
+    }
+  },
+  "member_token_analysis": {
+    "lingflow": {
+      "total_tokens": 861436,
+      "input_tokens": 210938,
+      "output_tokens": 650498,
+      "messages": 44846,
+      "tool_calls": 14962,
+      "sessions": 418,
+      "out_in_ratio": 3.1
+    },
+    "lingclaude": {
+      "total_tokens": 781944,
+      "input_tokens": 160556,
+      "output_tokens": 621388,
+      "messages": 43379,
+      "tool_calls": 12578,
+      "sessions": 505,
+      "out_in_ratio": 3.9
+    },
+    "lingresearch": {
+      "total_tokens": 640985,
+      "input_tokens": 146706,
+      "output_tokens": 494279,
+      "messages": 40960,
+      "tool_calls": 13724,
+      "sessions": 436,
+      "out_in_ratio": 3.4
+    },
+    "lingzhi": {
+      "total_tokens": 1896005,
+      "input_tokens": 171417,
+      "output_tokens": 1724588,
+      "messages": 54466,
+      "tool_calls": 21273,
+      "sessions": 115,
+      "out_in_ratio": 10.1
+    },
+    "lingtongask": {
+      "total_tokens": 1192946,
+      "input_tokens": 187601,
+      "output_tokens": 1005345,
+      "messages": 33578,
+      "tool_calls": 11304,
+      "sessions": 616,
+      "out_in_ratio": 5.4
+    },
+    "lingflowplus": {
+      "total_tokens": 17643,
+      "input_tokens": 887,
+      "output_tokens": 16756,
+      "messages": 1674,
+      "tool_calls": 594,
+      "sessions": 10,
+      "out_in_ratio": 18.9
+    },
+    "lingxi": {
+      "total_tokens": 136547,
+      "input_tokens": 16911,
+      "output_tokens": 119636,
+      "messages": 9628,
+      "tool_calls": 2879,
+      "sessions": 114,
+      "out_in_ratio": 7.1
+    },
+    "lingmessage": {
+      "total_tokens": 137230,
+      "input_tokens": 12850,
+      "output_tokens": 124380,
+      "messages": 6902,
+      "tool_calls": 2329,
+      "sessions": 89,
+      "out_in_ratio": 9.7
+    },
+    "lingweb": {
+      "total_tokens": 362819,
+      "input_tokens": 50983,
+      "output_tokens": 311836,
+      "messages": 27308,
+      "tool_calls": 6875,
+      "sessions": 328,
+      "out_in_ratio": 6.1
+    },
+    "lingminopt": {
+      "total_tokens": 96271,
+      "input_tokens": 11698,
+      "output_tokens": 84573,
+      "messages": 6029,
+      "tool_calls": 1986,
+      "sessions": 75,
+      "out_in_ratio": 7.2
+    },
+    "lingyang": {
+      "total_tokens": 785639,
+      "input_tokens": 336127,
+      "output_tokens": 449512,
+      "messages": 36396,
+      "tool_calls": 10928,
+      "sessions": 600,
+      "out_in_ratio": 1.3
+    },
+    "lingcreate": {
+      "total_tokens": 484066,
+      "input_tokens": 426032,
+      "output_tokens": 58034,
+      "messages": 5706,
+      "tool_calls": 1725,
+      "sessions": 193,
+      "out_in_ratio": 0.1
+    },
+    "zhibridge": {
+      "total_tokens": 57280,
+      "input_tokens": 6657,
+      "output_tokens": 50623,
+      "messages": 4107,
+      "tool_calls": 1475,
+      "sessions": 46,
+      "out_in_ratio": 7.6
+    }
+  },
+  "total_tokens_all": 7450811
+}

@@ -4,11 +4,11 @@ Report Generator - 生成元知识优化报告
 
 from __future__ import annotations
 
-from pathlib import Path
-from datetime import datetime
-from typing import Any
-import logging
 import json
+import logging
+from datetime import datetime
+from pathlib import Path
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +30,7 @@ class ReportGenerator:
         self,
         optimization_results: dict[str, Any],
         filename: str = "meta_optimization_report.md",
+        member_stats: dict | None = None,
     ) -> Path:
         """
         生成 Markdown 格式的优化报告
@@ -44,7 +45,7 @@ class ReportGenerator:
         output_path = self.output_dir / filename
 
         with open(output_path, "w", encoding="utf-8") as f:
-            f.write(self._format_markdown(optimization_results))
+            f.write(self._format_markdown(optimization_results, member_stats))
 
         logger.info(f"Generated markdown report: {output_path}")
 
@@ -116,13 +117,41 @@ class ReportGenerator:
 
         return output_path
 
-    def _format_markdown(self, results: dict[str, Any]) -> str:
+    def _format_markdown(self, results: dict[str, Any], member_stats: dict | None = None) -> str:
         """格式化为 Markdown"""
         md = []
-        md.append("# 元知识优化报告")
+        target = results.get("target_member", "灵族")
+        md.append(f"# 元知识优化报告 — {target}")
         md.append("")
         md.append(f"**生成时间**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        md.append(f"**数据来源**: 灵族crush.db + LingBus")
         md.append("")
+
+        if member_stats:
+            md.append("## 按成员Token消耗排名")
+            md.append("")
+            md.append("| 成员 | 总Token | 占比 | 输出/输入比 | 工具调用 | 优先级 |")
+            md.append("|------|---------|------|-------------|----------|--------|")
+            for m, s in sorted(
+                member_stats.items(),
+                key=lambda x: x[1].estimated_input_tokens + x[1].estimated_output_tokens,
+                reverse=True,
+            ):
+                total = s.estimated_input_tokens + s.estimated_output_tokens
+                ratio = s.estimated_output_tokens / max(s.estimated_input_tokens, 1)
+                pct = (
+                    total
+                    / sum(
+                        ss.estimated_input_tokens + ss.estimated_output_tokens
+                        for ss in member_stats.values()
+                    )
+                    * 100
+                )
+                priority = "高" if pct > 10 else ("中" if pct > 5 else "低")
+                md.append(
+                    f"| {m} | {total:,} | {pct:.1f}% | {ratio:.1f}x | {s.total_tool_calls:,} | {priority}优 |"
+                )
+            md.append("")
 
         # 综合结果
         if "combined_score" in results:
@@ -178,7 +207,8 @@ class ReportGenerator:
         # 建议
         md.append("## 优化建议")
         md.append("")
-        md.append("1. **应用配置**: 将上述最优参数应用到 LingClaude 配置文件")
+        target = results.get("target_member", "灵族成员")
+        md.append(f"1. **应用配置**: 将上述最优参数应用到 {target} 的 Proxy 路由配置")
         md.append("2. **监控效果**: 观察 Token 使用量、响应时间、成功率的变化")
         md.append("3. **定期优化**: 每周或每月重新运行优化以适应业务变化")
         md.append("4. **A/B 测试**: 在生产环境中进行 A/B 测试验证效果")
@@ -186,7 +216,7 @@ class ReportGenerator:
 
         md.append("---")
         md.append("")
-        md.append("*由 LingMinOpt (灵极优) 自动生成*")
+        md.append("*由 lingminopt (灵极优) 自动生成*")
 
         return "\n".join(md)
 
@@ -233,7 +263,9 @@ class ReportGenerator:
 
         md.append("| 指标 | 优化前 | 优化后 | 提升 |")
         md.append("|------|--------|--------|------|")
-        md.append(f"| 综合得分 | {baseline_score:.4f} | {optimized_score:.4f} | {improvement:+.4f} ({improvement_percent:+.1f}%) |")
+        md.append(
+            f"| 综合得分 | {baseline_score:.4f} | {optimized_score:.4f} | {improvement:+.4f} ({improvement_percent:+.1f}%) |"
+        )
         md.append("")
 
         # 实验次数和耗时
@@ -255,7 +287,9 @@ class ReportGenerator:
         md.append("")
 
         for task in ["prompt", "routing", "retry"]:
-            if task in baseline_results.get("detailed_results", {}) and task in optimized_results.get("detailed_results", {}):
+            if task in baseline_results.get(
+                "detailed_results", {}
+            ) and task in optimized_results.get("detailed_results", {}):
                 baseline_task = baseline_results["detailed_results"][task]
                 optimized_task = optimized_results["detailed_results"][task]
 
@@ -267,9 +301,15 @@ class ReportGenerator:
                 md.append("")
                 md.append("| 指标 | 优化前 | 优化后 | 提升 |")
                 md.append("|------|--------|--------|------|")
-                md.append(f"| 得分 | {baseline_task_score:.4f} | {optimized_task_score:.4f} | {task_improvement:+.4f} |")
-                md.append(f"| 实验次数 | {baseline_task.get('total_experiments', 0)} | {optimized_task.get('total_experiments', 0)} |")
-                md.append(f"| 耗时 (秒) | {baseline_task.get('total_time', 0):.2f} | {optimized_task.get('total_time', 0):.2f} |")
+                md.append(
+                    f"| 得分 | {baseline_task_score:.4f} | {optimized_task_score:.4f} | {task_improvement:+.4f} |"
+                )
+                md.append(
+                    f"| 实验次数 | {baseline_task.get('total_experiments', 0)} | {optimized_task.get('total_experiments', 0)} |"
+                )
+                md.append(
+                    f"| 耗时 (秒) | {baseline_task.get('total_time', 0):.2f} | {optimized_task.get('total_time', 0):.2f} |"
+                )
                 md.append("")
 
         with open(output_path, "w", encoding="utf-8") as f:

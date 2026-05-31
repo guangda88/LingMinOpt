@@ -1,13 +1,13 @@
 """
 示例：机器学习超参数优化
 
-使用 LingMinOpt 优化机器学习模型的超参数。
+使用 lingminopt 优化机器学习模型的超参数。
 
 目标：最小化验证集的损失
 """
 
 import sys
-sys.path.insert(0, '/home/ai/LingMinOpt')
+sys.path.insert(0, '/home/ai/lingminopt')
 
 from lingminopt import MinimalOptimizer, SearchSpace, ExperimentConfig
 from sklearn.datasets import make_classification

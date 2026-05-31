@@ -50,9 +50,7 @@ def setup_logger(
 
     if log_file:
         effective_file_level = file_level if file_level is not None else logging.DEBUG
-        file_handler = RotatingFileHandler(
-            log_file, maxBytes=max_bytes, backupCount=backup_count
-        )
+        file_handler = RotatingFileHandler(log_file, maxBytes=max_bytes, backupCount=backup_count)
         file_handler.setLevel(effective_file_level)
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)

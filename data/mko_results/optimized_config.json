@@ -1,0 +1,25 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2026-05-29T20:55:38.288877",
+  "prompt_optimization": {
+    "model": "glm-5.1",
+    "temperature": 0.5418556314081898,
+    "max_tokens": 16384,
+    "system_prompt_template": "minimal"
+  },
+  "routing_optimization": {
+    "code_model": "glm-5.1",
+    "debug_model": "glm-5.1",
+    "chat_model": "glm-4.7-flash",
+    "routing_strategy": "cost_based"
+  },
+  "retry_optimization": {
+    "primary_retry_limit": 5,
+    "backoff_base": 3.425872759160777,
+    "backoff_max": 20.603147627082205,
+    "degraded_call_threshold": 10,
+    "degraded_time_threshold": 84.23718927911578,
+    "degradation_strategy": "timeout_increase",
+    "fallback_model": "llama-3.3-70b"
+  }
+}

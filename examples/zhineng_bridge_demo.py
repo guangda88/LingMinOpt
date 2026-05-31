@@ -22,7 +22,7 @@ from evaluator import evaluate_websocket_params, evaluate_performance_params
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 
 logger.info("=" * 70)
-logger.info("智桥落地案例 - 使用 LingMinOpt 框架")
+logger.info("智桥落地案例 - 使用 lingminopt 框架")
 logger.info("=" * 70)
 logger.info("")
 

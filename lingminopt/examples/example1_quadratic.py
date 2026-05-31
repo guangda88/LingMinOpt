@@ -9,7 +9,7 @@ The global minimum is at x = 2, y = -3 with value 0.
 
 import logging
 
-from lingminopt import MinimalOptimizer, SearchSpace, ExperimentConfig
+from lingminopt import ExperimentConfig, MinimalOptimizer, SearchSpace
 
 logger = logging.getLogger("lingminopt.examples.quadratic")
 
@@ -18,7 +18,7 @@ def objective(params):
     """Objective function to minimize."""
     x = params["x"]
     y = params["y"]
-    return (x - 2)**2 + (y + 3)**2
+    return (x - 2) ** 2 + (y + 3) ** 2
 
 
 search_space = SearchSpace()
@@ -26,18 +26,11 @@ search_space.add_continuous("x", -10, 10)
 search_space.add_continuous("y", -10, 10)
 
 config = ExperimentConfig(
-    max_experiments=50,
-    improvement_threshold=0.01,
-    time_budget=1.0,
-    direction="minimize"
+    max_experiments=50, improvement_threshold=0.01, time_budget=1.0, direction="minimize"
 )
 
 optimizer = MinimalOptimizer(
-    evaluate=objective,
-    search_space=search_space,
-    config=config,
-    search_strategy="random",
-    seed=42
+    evaluate=objective, search_space=search_space, config=config, search_strategy="random", seed=42
 )
 
 logger.info("Starting optimization...")

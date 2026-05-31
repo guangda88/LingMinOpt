@@ -1,0 +1,50 @@
+{
+  "version": "1.0",
+  "generated_by": "lingminopt MKO",
+  "description": "Per-member routing recommendations based on token consumption analysis",
+  "total_tokens_analyzed": 7558200,
+  "members_analyzed": 12,
+  "routing_optimization_score": 1.0,
+  "caller_route_overrides": {
+    "lingzhi": "fast_response",
+    "lingtongask": "fast_response",
+    "lingweb": "fast_response",
+    "lingmessage": "fast_response",
+    "lingxi": "fast_response",
+    "lingminopt": "fast_response"
+  },
+  "caller_max_output_tokens": {
+    "lingzhi": 2048,
+    "lingtongask": 4096,
+    "lingflow": 8192,
+    "lingclaude": 8192,
+    "lingyang": 8192,
+    "lingweb": 4096,
+    "lingmessage": 2048,
+    "lingxi": 4096,
+    "lingminopt": 4096,
+    "zhibridge": 4096
+  },
+  "summary": {
+    "P0_critical": [
+      "lingzhi",
+      "lingmessage"
+    ],
+    "P1_high": [
+      "lingtongask",
+      "lingweb",
+      "lingxi",
+      "lingminopt",
+      "zhibridge"
+    ],
+    "P2_medium": [
+      "lingflow",
+      "lingclaude",
+      "lingyang"
+    ],
+    "P3_low": [
+      "lingresearch",
+      "lingcreate"
+    ]
+  }
+}

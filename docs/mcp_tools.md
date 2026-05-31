@@ -1,40 +1,59 @@
-# LingMinOpt MCP Tools & P0 Progress
+# lingminopt MCP Tools
 
-> 从 AGENTS.md 迁出，2026-05-06 瘦身。
+> 从 AGENTS.md 迁出，2026-05-06 瘦身。2026-05-31 P0修复后更新。
 
-## 灵信线程 #328 — MCP封装进度
+## MCP Server 工具清单 (16工具)
 
-### P0 进度 (6/7 完成, 1 评估后跳过)
-
-| # | P0 项 | 状态 | MCP工具名 |
-|---|-------|------|-----------|
-| 1 | 知识检索 (search+ask) | ✅ | `knowledge_search`, `ask_question` |
-| 2 | 训练数据生成 | ✅ | `generate_training_data` |
-| 3 | 自优化引擎 | ✅ | `optimization_status`, `analyze_optimization`, `execute_optimization`, `optimization_dashboard`, `trigger_audit`, `audit_history`, `error_analysis`, `log_error`, `submit_feedback` |
-| 4 | 文件读写沙箱 | ⏭️ | Crush 已覆盖 |
-| 5 | 数据库查询 | ✅ | `safe_db_query` (白名单表) |
-| 6 | 领域路由查询 | ✅ | `domain_query` |
-| 7 | 命令执行白名单 | ⏭️ | Crush 已覆盖 |
-
-### 反馈闭环 ✅
-
-LingMinOpt MCP Server (`lingminopt/mcp_server.py`) 工具:
+### 搜索空间 + 优化执行
 
 | 工具 | 功能 |
 |------|------|
-| `feedback_from_result` | 从优化结果生成结构化反馈，持久化到 `data/feedback/` |
-| `export_training_sample` | 将优化历史导出为训练数据 (best_only/top_k/all/trajectory) |
-| `list_feedback` | 列出已保存的反馈记录 |
-| `optimization_pipeline` | 一键闭环：优化→反馈→训练数据导出 |
+| `create_search_space` | 创建搜索空间 |
+| `run_optimization` | 运行优化（声明式评估器，按名称调用） |
+| `list_evaluators` | 列出可用评估器（sphere/rastrigin/rosenbrock/ackley/quadratic/neg_mean） |
+| `get_optimization_status` | 优化状态查询 |
+| `create_strategy_profile` | 创建优化策略 |
+
+### 结果管理
+
+| 工具 | 功能 |
+|------|------|
+| `load_results` | 加载优化结果（路径校验，限data/和results/） |
 | `compare_results` | 对比两次优化结果 |
+| `create_experiment_config` | 创建实验配置 |
 
-闭环流程: `run_optimization` → `feedback_from_result` → `export_training_sample` → `generate_training_data`
+### 反馈闭环
 
-### 可用资源
+| 工具 | 功能 |
+|------|------|
+| `feedback_from_result` | 从优化结果生成结构化反馈 |
+| `export_training_sample` | 导出训练样本 (best_only/top_k/all/trajectory) |
+| `list_feedback` | 列出反馈记录 |
+| `optimization_pipeline` | 一键闭环：优化→反馈→训练数据导出 |
 
-- MCP Server (灵知): `/home/ai/zhineng-knowledge-system/mcp_servers/zhineng_server.py` (37工具)
-- MCP Server (灵极优): `/home/ai/LingMinOpt/lingminopt/mcp_server.py` (11工具)
-- 训练数据: `/home/ai/zhineng-knowledge-system/data/training/` (16K条)
-- 反馈数据: `data/feedback/` (LingMinOpt本地)
-- MCP报告: `/home/ai/zhineng-knowledge-system/docs/reports/MCP_ENCAPSULATION_ASSESSMENT.md`
-- 灵信线程: #328
+### MKO元知识优化
+
+| 工具 | 功能 |
+|------|------|
+| `mko_token_ranking` | 灵族Token消耗排名 |
+| `mko_run` | 运行MKO优化 (prompt/routing/retry) |
+| `mko_recommendations` | 全族优化建议 |
+
+### 审计
+
+| 工具 | 功能 |
+|------|------|
+| `list_audit_log` | 查看审计日志 |
+
+## 安全架构
+
+- **无exec()/eval()/compile()** — 评估函数通过声明式注册表调用
+- **路径校验** — `_validate_data_path()` 限制在 data/ 和 results/ 目录
+- **AST沙箱已移除** — 因不再需要动态代码执行
+
+## 可用资源
+
+- MCP Server: `/home/ai/lingminopt/lingminopt/mcp_server.py` (16工具)
+- 反馈数据: `data/feedback/`
+- MKO数据: `data/mko/`
+- 审计日志: `data/audit_log.jsonl`

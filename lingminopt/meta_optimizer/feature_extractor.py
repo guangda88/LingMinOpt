@@ -4,16 +4,17 @@ Feature Extractor - 从会话记录中提取特征用于优化
 
 from __future__ import annotations
 
-from typing import Any
+import logging
 from dataclasses import dataclass
 from enum import Enum
-import logging
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
 
 class IntentType(str, Enum):
     """意图类型"""
+
     CODE_GENERATION = "code_generation"
     CODE_REFACTORING = "code_refactoring"
     BUG_FIXING = "bug_fixing"
@@ -26,6 +27,7 @@ class IntentType(str, Enum):
 
 class TaskComplexity(str, Enum):
     """任务复杂度"""
+
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -34,6 +36,7 @@ class TaskComplexity(str, Enum):
 @dataclass
 class TaskFeatures:
     """任务特征"""
+
     # 基础信息
     session_id: str
     query: str
@@ -103,26 +106,41 @@ class TaskFeatures:
         # 关键词映射
         intent_keywords = {
             IntentType.CODE_GENERATION: [
-                "写", "实现", "创建", "生成", "添加", "build", "create", "generate", "implement", "write"
+                "写",
+                "实现",
+                "创建",
+                "生成",
+                "添加",
+                "build",
+                "create",
+                "generate",
+                "implement",
+                "write",
             ],
             IntentType.CODE_REFACTORING: [
-                "重构", "优化", "改进", "refactor", "optimize", "improve", "restructure"
+                "重构",
+                "优化",
+                "改进",
+                "refactor",
+                "optimize",
+                "improve",
+                "restructure",
             ],
             IntentType.BUG_FIXING: [
-                "修复", "解决", "bug", "错误", "异常", "fix", "debug", "error", "exception"
+                "修复",
+                "解决",
+                "bug",
+                "错误",
+                "异常",
+                "fix",
+                "debug",
+                "error",
+                "exception",
             ],
-            IntentType.CODE_REVIEW: [
-                "审查", "review", "检查", "检查代码", "代码审查"
-            ],
-            IntentType.ARCHITECTURE_DESIGN: [
-                "设计", "架构", "design", "architecture", "structure"
-            ],
-            IntentType.TESTING: [
-                "测试", "test", "单元测试", "集成测试"
-            ],
-            IntentType.DOCUMENTATION: [
-                "文档", "document", "说明", "注释"
-            ],
+            IntentType.CODE_REVIEW: ["审查", "review", "检查", "检查代码", "代码审查"],
+            IntentType.ARCHITECTURE_DESIGN: ["设计", "架构", "design", "architecture", "structure"],
+            IntentType.TESTING: ["测试", "test", "单元测试", "集成测试"],
+            IntentType.DOCUMENTATION: ["文档", "document", "说明", "注释"],
         }
 
         # 计算匹配分数
@@ -156,9 +174,23 @@ class TaskFeatures:
     def _is_code_related(query: str) -> bool:
         """判断是否与代码相关"""
         code_keywords = [
-            "代码", "函数", "类", "模块", "变量", "参数",
-            "code", "function", "class", "module", "variable", "parameter",
-            "import", "def ", "class ", "self.", "return",
+            "代码",
+            "函数",
+            "类",
+            "模块",
+            "变量",
+            "参数",
+            "code",
+            "function",
+            "class",
+            "module",
+            "variable",
+            "parameter",
+            "import",
+            "def ",
+            "class ",
+            "self.",
+            "return",
         ]
         query_lower = query.lower()
         return any(keyword in query_lower for keyword in code_keywords)
@@ -167,8 +199,17 @@ class TaskFeatures:
     def _has_file_operations(query: str) -> bool:
         """判断是否涉及文件操作"""
         file_keywords = [
-            "文件", "读取", "写入", "删除", "创建",
-            "file", "read", "write", "delete", "create", "save",
+            "文件",
+            "读取",
+            "写入",
+            "删除",
+            "创建",
+            "file",
+            "read",
+            "write",
+            "delete",
+            "create",
+            "save",
         ]
         query_lower = query.lower()
         return any(keyword in query_lower for keyword in file_keywords)
@@ -177,7 +218,13 @@ class TaskFeatures:
     def _has_test_operations(query: str) -> bool:
         """判断是否涉及测试操作"""
         test_keywords = [
-            "测试", "单元测试", "集成测试", "test", "unit test", "integration test", "pytest"
+            "测试",
+            "单元测试",
+            "集成测试",
+            "test",
+            "unit test",
+            "integration test",
+            "pytest",
         ]
         query_lower = query.lower()
         return any(keyword in query_lower for keyword in test_keywords)
