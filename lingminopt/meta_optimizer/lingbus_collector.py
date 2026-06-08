@@ -22,7 +22,7 @@ LINGCLAN_MEMBERS = [
     "lingresearch",
     "lingzhi",
     "lingtongask",
-    "lingflowplus",
+    "lingflow_plus",
     "lingxi",
     "lingmessage",
     "lingweb",
