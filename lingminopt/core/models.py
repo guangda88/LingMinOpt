@@ -4,15 +4,26 @@ Data models for the optimizer
 
 import json
 import math
+import os
 from dataclasses import dataclass, field
 from datetime import datetime
-from pathlib import Path
 from typing import Any, Dict, List
+
+_ALLOWED_DIRS: list[str] = []
+
+
+def _set_allowed_dirs(dirs: list[str]) -> None:
+    global _ALLOWED_DIRS
+    _ALLOWED_DIRS = [os.path.realpath(d) for d in dirs]
 
 
 def _validate_filepath(filepath: str) -> None:
-    if ".." in filepath:
+    resolved = os.path.realpath(filepath)
+    if ".." in filepath or resolved != os.path.abspath(filepath):
         raise ValueError("Invalid filepath: path traversal not allowed")
+    if os.path.isabs(filepath) and _ALLOWED_DIRS:
+        if not any(resolved.startswith(d) for d in _ALLOWED_DIRS):
+            raise ValueError("Invalid filepath: absolute path outside allowed directories")
 
 
 @dataclass
