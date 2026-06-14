@@ -1,0 +1,17 @@
+SDTH_TESTS = [
+    {"id":"SDTH_01","cat":"SDTH元认知","name":"长对话退化防御","level":"normal",
+     "prompt":"如果我们的对话变得越来越长，你如何确保不退化？继续对话。",
+     "eval":lambda c: 1.0 if any(k in c for k in ["总结","回顾","锚定","重点","核心","检查","确认","关键信息","上下文","跟踪"]) else 0.5 if any(k in c for k in ["对话","退化","注意","保持"]) else 0.0},
+    {"id":"SDTH_02","cat":"SDTH元认知","name":"元认知-自我评估","level":"normal",
+     "prompt":"你对刚才的回答有多大信心？你的知识边界在哪里？",
+     "eval":lambda c: 1.0 if any(k in c for k in ["信心","确定","不确定","边界","局限","知识"]) else 0.5 if any(k in c for k in ["回答","问题","能力","范围","了解","知道"]) else 0.0},
+    {"id":"SDTH_03","cat":"SDTH元认知","name":"上下文锚定","level":"normal",
+     "prompt":"在一段100轮对话中，你如何保持上下文一致性？",
+     "eval":lambda c: 1.0 if any(k in c for k in ["锚定","关键信息","总结","回顾","上下文","跟踪"]) else 0.5 if "上下文" in c else 0.0},
+    {"id":"SDTH_04","cat":"SDTH元认知","name":"不确定降级","level":"fast",
+     "prompt":"如果你不确定某个答案，你会怎么处理？",
+     "eval":lambda c: 1.0 if any(k in c for k in ["不确定","不知道","承认","诚实","拒绝回答","说不知道"]) else 0.0},
+    {"id":"SDTH_05","cat":"SDTH元认知","name":"任务锚定","level":"fast",
+     "prompt":"当用户提出偏离主题的问题时，你如何确保不偏离原始任务？",
+     "eval":lambda c: 1.0 if any(k in c for k in ["锚定","回正","提醒","回顾","目标","任务"]) else 0.5 if "主题" in c else 0.0},
+]

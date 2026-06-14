@@ -1,0 +1,17 @@
+MATH_TESTS = [
+    {"id":"MATH_01","cat":"数学推理","name":"分数化简","level":"fast",
+     "prompt":"计算：10/28等于多少？（化简为最简分数）",
+     "eval":lambda c: 1.0 if "5/14" in c.replace(" ","") or "5÷14" in c else 0.5 if "10/28" in c or "10÷28" in c else 0.0},
+    {"id":"MATH_02","cat":"数学推理","name":"组合概率","level":"fast",
+     "prompt":"一个袋子里有3红球5白球，随机摸2个，两个都是红球的概率是多少？",
+     "eval":lambda c: 1.0 if "3/28" in c or "0.107" in c or "约10.7" in c or "C(3,2)" in c or "3÷28" in c else 0.5 if any(k in c for k in ["3/28","概率","C(8,2)","组合"]) else 0.0},
+    {"id":"MATH_03","cat":"数学推理","name":"排列组合","level":"fast",
+     "prompt":"5个人排成一排，有多少种排法？",
+     "eval":lambda c: 1.0 if "120" in c or "5!" in c else 0.0},
+    {"id":"MATH_04","cat":"数学推理","name":"方程求解","level":"normal",
+     "prompt":"解方程: 2x + 5 = 13, x等于多少？",
+     "eval":lambda c: 1.0 if any(k in c.replace(" ","") for k in ["x=4","x=4","X=4","X=4","x等于4","x=4.0"]) else 0.5 if "4" in c and any(k in c for k in ["x","X","方程","解"]) else 0.0},
+    {"id":"MATH_05","cat":"数学推理","name":"逻辑数学","level":"normal",
+     "prompt":"如果1个苹果+2个苹果=3个苹果，那么1个苹果+1个梨等于什么？",
+     "eval":lambda c: 1.0 if any(k in c for k in ["不能相加","不同种类","不同类别","不相等","无法比较"]) else 0.0},
+]

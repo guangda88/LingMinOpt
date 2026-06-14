@@ -1,0 +1,22 @@
+[
+  {"id": "mmlu-anatomy-001", "subject": "anatomy", "prompt": "Which of the following is NOT a type of muscle tissue?\nA. Skeletal\nB. Cardiac\nC. Smooth\nD. Nervous", "gold": "D"},
+  {"id": "mmlu-astronomy-001", "subject": "astronomy", "prompt": "What is the closest star to Earth (excluding the Sun)?\nA. Sirius\nB. Alpha Centauri\nC. Proxima Centauri\nD. Betelgeuse", "gold": "C"},
+  {"id": "mmlu-biology-001", "subject": "biology", "prompt": "Which organelle is responsible for protein synthesis in a cell?\nA. Mitochondria\nB. Ribosome\nC. Golgi apparatus\nD. Lysosome", "gold": "B"},
+  {"id": "mmlu-chemistry-001", "subject": "chemistry", "prompt": "What is the chemical symbol for gold?\nA. Go\nB. Gd\nC. Au\nD. Ag", "gold": "C"},
+  {"id": "mmlu-cs-001", "subject": "computer_science", "prompt": "What is the time complexity of binary search on a sorted array of n elements?\nA. O(n)\nB. O(n log n)\nC. O(log n)\nD. O(1)", "gold": "C"},
+  {"id": "mmlu-economics-001", "subject": "economics", "prompt": "What does GDP stand for?\nA. General Domestic Product\nB. Gross Domestic Product\nC. Global Domestic Product\nD. Gross Development Product", "gold": "B"},
+  {"id": "mmlu-geography-001", "subject": "geography", "prompt": "What is the capital of Australia?\nA. Sydney\nB. Melbourne\nC. Canberra\nD. Perth", "gold": "C"},
+  {"id": "mmlu-history-001", "subject": "history", "prompt": "In which year did World War II end?\nA. 1943\nB. 1944\nC. 1945\nD. 1946", "gold": "C"},
+  {"id": "mmlu-law-001", "subject": "law", "prompt": "What does the Latin term 'habeas corpus' literally mean?\nA. You have the body\nB. Let the buyer beware\nC. Beyond reasonable doubt\nD. Innocent until proven guilty", "gold": "A"},
+  {"id": "mmlu-math-001", "subject": "mathematics", "prompt": "What is the derivative of x^3?\nA. 3x\nB. 3x^2\nC. x^2\nD. 3x^3", "gold": "B"},
+  {"id": "mmlu-medicine-001", "subject": "medicine", "prompt": "Which blood type is considered the universal donor?\nA. Type A\nB. Type B\nC. Type AB\nD. Type O negative", "gold": "D"},
+  {"id": "mmlu-physics-001", "subject": "physics", "prompt": "What is the SI unit of electric current?\nA. Volt\nB. Watt\nC. Ampere\nD. Ohm", "gold": "C"},
+  {"id": "mmlu-psychology-001", "subject": "psychology", "prompt": "Who is considered the founder of psychoanalysis?\nA. Carl Jung\nB. Sigmund Freud\nC. B.F. Skinner\nD. Ivan Pavlov", "gold": "B"},
+  {"id": "mmlu-philosophy-001", "subject": "philosophy", "prompt": "Who wrote 'Critique of Pure Reason'?\nA. Aristotle\nB. David Hume\nC. Immanuel Kant\nD. Friedrich Nietzsche", "gold": "C"},
+  {"id": "mmlu-cs-002", "subject": "computer_science", "prompt": "Which data structure uses FIFO (First In First Out) ordering?\nA. Stack\nB. Queue\nC. Binary Tree\nD. Hash Map", "gold": "B"},
+  {"id": "mmlu-cs-003", "subject": "computer_science", "prompt": "What does HTTP stand for?\nA. HyperText Transfer Protocol\nB. High Transfer Text Protocol\nC. HyperText Transmission Process\nD. Host Transfer Text Protocol", "gold": "A"},
+  {"id": "mmlu-biology-002", "subject": "biology", "prompt": "Which process do plants use to convert sunlight into chemical energy?\nA. Respiration\nB. Photosynthesis\nC. Fermentation\nD. Digestion", "gold": "B"},
+  {"id": "mmlu-chemistry-002", "subject": "chemistry", "prompt": "How many protons does a carbon atom have?\nA. 4\nB. 6\nC. 8\nD. 12", "gold": "B"},
+  {"id": "mmlu-physics-002", "subject": "physics", "prompt": "What is Newton's second law of motion?\nA. F = ma\nB. E = mc^2\nC. F = mg\nD. P = mv", "gold": "A"},
+  {"id": "mmlu-history-002", "subject": "history", "prompt": "Who was the first Emperor of unified China?\nA. Sun Yat-sen\nB. Qin Shi Huang\nC. Genghis Khan\nD. Kangxi Emperor", "gold": "B"}
+]

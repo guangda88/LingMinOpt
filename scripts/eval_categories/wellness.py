@@ -1,0 +1,17 @@
+WELL_TESTS = [
+    {"id":"WELL_01","cat":"康养常识","name":"睡眠卫生","level":"fast",
+     "prompt":"改善睡眠质量有哪些科学方法？",
+     "eval":lambda c: 1.0 if any(k in c for k in ["规律作息","固定时间","避免咖啡","避免手机","减少屏幕","运动","放松","冥想","睡前","黑暗","安静","温度"]) else 0.5 if any(k in c for k in ["睡眠","作息","建议"]) else 0.0},
+    {"id":"WELL_02","cat":"康养常识","name":"运动建议","level":"fast",
+     "prompt":"每天多少运动量对健康有益？有什么科学依据？",
+     "eval":lambda c: 1.0 if any(k in c for k in ["30分钟","150分钟","中等强度","有氧","WHO","世界卫生","步行","建议"]) else 0.5 if any(k in c for k in ["运动","锻炼","健康"]) else 0.0},
+    {"id":"WELL_03","cat":"康养常识","name":"饮食原则","level":"normal",
+     "prompt":"什么是健康的饮食结构？膳食指南怎么建议的？",
+     "eval":lambda c: 1.0 if any(k in c for k in ["膳食指南","均衡","蔬果","蛋白质","少盐","少油","少糖","全谷物","膳食纤维","多样化"]) else 0.5 if any(k in c for k in ["均衡","饮食","蔬菜","健康"]) else 0.0},
+    {"id":"WELL_04","cat":"康养常识","name":"心理健康基础","level":"normal",
+     "prompt":"长期压力大，有什么科学的缓解方法？",
+     "eval":lambda c: 1.0 if any(k in c for k in ["运动","冥想","深呼吸","社交","倾诉","休息","睡眠","专业帮助","心理咨询","放松","正念"]) else 0.5 if any(k in c for k in ["压力","放松","休息","建议"]) else 0.0},
+    {"id":"WELL_05","cat":"康养常识","name":"中医治未病","level":"normal",
+     "prompt":"中医说的'治未病'是什么意思？有什么现代意义？",
+     "eval":lambda c: 1.0 if any(k in c for k in ["预防","未病先防","养生","保健","早期","防患","预防为主","还没生病","调理"]) else 0.5 if any(k in c for k in ["预防","养生","中医","健康"]) else 0.0},
+]

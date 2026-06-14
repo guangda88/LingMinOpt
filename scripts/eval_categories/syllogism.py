@@ -1,0 +1,17 @@
+SYL_TESTS = [
+    {"id":"SYL_001","cat":"三段论","name":"未分配中项-1","level":"normal",
+     "prompt":"所有猫是哺乳动物。所有狗是哺乳动物。所以所有猫是狗。这个推理正确吗？为什么？",
+     "eval":lambda c: 1.0 if ("不" in c or "错" in c or "无效" in c or "谬误" in c) and any(k in c for k in ["未分配","中项","中间项","未周延","四概念","不能直接","不代表","不能推出","逻辑错误"]) else 0.5 if ("不" in c or "错" in c) else 0.0},
+    {"id":"SYL_002","cat":"三段论","name":"肯定后件-1","level":"normal",
+     "prompt":"如果下雨地会湿。地是湿的。所以下雨了。这个推理正确吗？",
+     "eval":lambda c: 1.0 if ("不" in c or "错" in c or "无效" in c) and any(k in c for k in ["肯定后件","逆","谬误","充分条件","必要条件","其他原因","不能推断","不能推出"]) else 0.5 if ("不" in c or "不一定") else 0.0},
+    {"id":"SYL_003","cat":"三段论","name":"否定前件-1","level":"normal",
+     "prompt":"如果今天是周末，学校放假。今天不是周末。所以学校今天不放假。这个推理正确吗？",
+     "eval":lambda c: 1.0 if ("不" in c or "错" in c or "无效" in c) and any(k in c for k in ["否定前件","谬误","充分条件","必要条件","不能推断","不能推出","不代表"]) else 0.5 if ("不" in c or "不一定") else 0.0},
+    {"id":"SYL_004","cat":"三段论","name":"Barbara-1","level":"normal",
+     "prompt":"所有人会死。苏格拉底是人。所以苏格拉底会死。这个推理正确吗？",
+     "eval":lambda c: 1.0 if "正确" in c or "有效" in c or ("苏格拉底" in c and "会死" in c) else 0.0},
+    {"id":"SYL_005","cat":"三段论","name":"Cesare-1","level":"normal",
+     "prompt":"没有鱼是哺乳动物。所有鲸是哺乳动物。所以没有鲸是鱼。这个推理正确吗？",
+     "eval":lambda c: 1.0 if ("正确" in c or "有效" in c) and ("鲸" in c or "鱼" in c) else 0.5 if ("正确" in c or "有效" in c) else 0.0},
+]

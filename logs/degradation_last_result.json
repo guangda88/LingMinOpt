@@ -1,0 +1,9 @@
+{
+  "degraded": false,
+  "prev_score": 0.994,
+  "curr_score": 0.994,
+  "delta": 0.0,
+  "delta_pp": 0.0,
+  "note": "cron eval matches production baseline (eval_kb4096_v3)",
+  "timestamp": "2026-06-13T23:08:30"
+}

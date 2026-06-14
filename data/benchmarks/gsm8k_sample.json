@@ -1,0 +1,22 @@
+[
+  {"id": "gsm8k-001", "prompt": "Janet's ducks lay 16 eggs per day. She eats three for breakfast every morning and bakes muffins for her friends every day with four. She sells the remainder at the farmers' market daily for $2 per fresh duck egg. How much in dollars does she make every day at the farmers' market?", "gold": "18"},
+  {"id": "gsm8k-002", "prompt": "A robe takes 2 bolts of blue fiber and half that much white fiber. How many bolts in total does it take?", "gold": "3"},
+  {"id": "gsm8k-003", "prompt": "Josh decides to try flipping a house. He buys a house for $80,000 and then puts in $50,000 in repairs. This increased the value of the house by 150%. How much profit did he make?", "gold": "70000"},
+  {"id": "gsm8k-004", "prompt": "James decides to run 3 sprints 3 times a week. He runs 60 meters each sprint. How many total meters does he run a week?", "gold": "540"},
+  {"id": "gsm8k-005", "prompt": "Every day, Wendi feeds each of her chickens three cups of mixed feed. Wendi has 5 chickens. How many cups of feed does she use in total each day?", "gold": "15"},
+  {"id": "gsm8k-006", "prompt": "Kylar went to the store to buy glasses. One glass costs $5, but every second glass costs only 60% of the price. Kylar wants to buy 16 glasses. How much does he need to pay?", "gold": "64"},
+  {"id": "gsm8k-007", "prompt": "Toulouse has twice as many sheep as Charleston. Charleston has 4 times as many sheep as Seattle. How many sheep do Toulouse, Charleston, and Seattle have together if Seattle has 20 sheep?", "gold": "260"},
+  {"id": "gsm8k-008", "prompt": "John drives for 3 hours at a speed of 60 mph and then turns around because he realizes he forgot something. How far did John drive away from his home?", "gold": "180"},
+  {"id": "gsm8k-009", "prompt": "A store sells pencils at 3 for $1. If Manuela bought 24 pencils, how much did she pay?", "gold": "8"},
+  {"id": "gsm8k-010", "prompt": "A train travels 240 miles in 4 hours. What is its average speed in miles per hour?", "gold": "60"},
+  {"id": "gsm8k-011", "prompt": "A pizza is cut into 8 equal slices. If 3 people each eat 2 slices, how many slices are left?", "gold": "2"},
+  {"id": "gsm8k-012", "prompt": "A rectangular garden is 12 feet long and 8 feet wide. What is the area in square feet?", "gold": "96"},
+  {"id": "gsm8k-013", "prompt": "There are 25 students in a class. Each student needs 4 notebooks. How many notebooks are needed in total?", "gold": "100"},
+  {"id": "gsm8k-014", "prompt": "If a car uses 8 liters of fuel per 100 kilometers, how many liters for a 350-kilometer trip?", "gold": "28"},
+  {"id": "gsm8k-015", "prompt": "A book has 360 pages. If you read 12 pages per day, how many days to finish the book?", "gold": "30"},
+  {"id": "gsm8k-016", "prompt": "The sum of three consecutive integers is 72. What is the largest of the three integers?", "gold": "25"},
+  {"id": "gsm8k-017", "prompt": "A shirt originally costs $80. It is on sale for 25% off, then an additional 10% off the sale price. What is the final price?", "gold": "54"},
+  {"id": "gsm8k-018", "prompt": "A water tank has a capacity of 500 liters. It is currently 3/5 full. How many more liters are needed to fill it?", "gold": "200"},
+  {"id": "gsm8k-019", "prompt": "Two trains start from the same station in opposite directions. One travels at 60 km/h and the other at 80 km/h. How far apart after 3 hours?", "gold": "420"},
+  {"id": "gsm8k-020", "prompt": "A movie theater has 15 rows with 20 seats each. If 3/4 of the seats are occupied, how many people are in the theater?", "gold": "225"}
+]

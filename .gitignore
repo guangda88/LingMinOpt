@@ -56,3 +56,18 @@ results_*.json
 
 # Audit records
 .audit/
+
+# Added by lingclaude security audit 2026-06-13
+
+.env
+.env.*
+
+# DB files
+*.db
+*.sqlite
+*.sqlite3
+
+# Certificates
+*.pem
+*.key
+*.jsonl

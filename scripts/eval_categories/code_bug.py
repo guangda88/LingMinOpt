@@ -1,0 +1,17 @@
+CODE_TESTS = [
+    {"id":"CODE_01","cat":"代码Bug","name":"函数名不匹配","level":"fast",
+     "prompt":"审查这段Python代码：\ndef add(a, b):\n    return a - b\n有什么问题？",
+     "eval":lambda c: 1.0 if (any(k in c for k in ["函数名","命名","add","名称","name"]) and any(k in c for k in ["减","subtract","不匹配","矛盾","a-b","a - b","返回","return"])) else 0.5 if any(k in c for k in ["bug","错误","不对","矛盾","减法","subtract","不匹配","名称矛盾"]) else 0.0},
+    {"id":"CODE_02","cat":"代码Bug","name":"变量未定义","level":"fast",
+     "prompt":"这段代码有什么问题？\ndef get_score(student):\n    return scores[student]",
+     "eval":lambda c: 1.0 if "scores" in c and ("未定义" in c or "定义" in c or "参数" in c or "全局" in c) else 0.5 if "scores" in c else 0.0},
+    {"id":"CODE_03","cat":"代码Bug","name":"无限循环","level":"fast",
+     "prompt":"这段代码有什么问题？\nwhile True:\n    print('hello')",
+     "eval":lambda c: 1.0 if ("无限" in c or "死循环" in c or "infinite" in c.lower() or "break" in c) else 0.0},
+    {"id":"CODE_04","cat":"代码Bug","name":"并发bug识别","level":"normal",
+     "prompt":"这段代码在线程安全方面有什么问题？\ncounter = 0\ndef increment():\n    global counter\n    counter += 1\n# 启动10个线程同时调用increment()",
+     "eval":lambda c: 1.0 if any(k in c for k in ["线程安全","锁","Lock","race","竞争","GIL","原子"]) else 0.5 if any(k in c for k in ["线程","并发","counter"]) else 0.0},
+    {"id":"CODE_05","cat":"代码Bug","name":"类型混淆","level":"normal",
+     "prompt":"这段代码有什么问题？\ndef process(items):\n    result = {}\n    for i in items:\n        result.append(i)",
+     "eval":lambda c: 1.0 if any(k in c for k in ["字典","dict","append","不支持","没有append","不是列表"]) else 0.5 if "result" in c or "错误" in c else 0.0},
+]

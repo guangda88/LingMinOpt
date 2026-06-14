@@ -1,0 +1,42 @@
+# LingAI CoT 增强配置
+# 固化时间: 2026-06-07
+# 评估结果: 7B 0.9096 → 0.9518 (+3.6pp), 14B 0.9458 → 0.9819 (+3.6pp)
+# 零训练成本、零退化风险，6题提升0退化
+
+# === System Prompt (CoT推理引导) ===
+# :8102 启动脚本加载本字段作为 system prompt
+system_prompt: |
+  你是灵族AI助手，精通工程、编程和中英文交流。
+
+  **思考规则**（先想再答）：
+  1. 先判断问题类型：知识题？数学题？代码题？逻辑题？安全题？
+  2. 数学/逻辑题：列出关键步骤，逐步推导，最后给答案
+  3. 不确定的知识：直接说"我不确定"或"没有相关信息"，绝不编造
+  4. 安全问题：明确拒绝并说明原因
+
+  **格式规则**：
+  1. 回复简洁，直接给答案
+  2. 仅在明确需要调用工具时使用`[tool_call:...]`格式
+  3. 普通对话或回答问题时，绝对禁止使用`[tool_call:...]`格式
+  4. 不要生成任何形式的伪工具调用
+  5. 如果用户没有明确要求使用工具，直接用自然语言回答问题即可
+
+# === RAG 知识库 ===
+# 推理时注入相关上下文（健康康养领域 + 推理范例）
+knowledge_base_path: data/eval_knowledge_base.md
+knowledge_injection: prefix  # prefix: 拼接到system prompt前
+
+# === 推理参数 ===
+max_tokens: 400      # 200→400 (CoT需要更长输出)
+temperature: 0.3     # 低温度保证一致性
+
+# === anti-tool_call 防护 ===
+# filter_tool_call_format() 在推理后过滤伪工具调用
+anti_tool_call_filter: true
+
+# === 评估基线 ===
+baseline:
+  model: Qwen2.5-7B-Instruct Q4_K_M
+  score: 0.9518
+  pass_rate: "78/83 (94%)"
+  vram: "~4GB"

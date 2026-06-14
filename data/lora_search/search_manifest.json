@@ -1,0 +1,281 @@
+{
+  "strategy": "smart",
+  "total_configs": 20,
+  "valid_configs": 15,
+  "base_template": {
+    "base_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+    "load_in_4bit": true,
+    "bnb_4bit_quant_type": "nf4",
+    "bnb_4bit_compute_dtype": "bfloat16",
+    "bnb_4bit_use_double_quant": true,
+    "target_modules": "q_proj,k_proj,v_proj,o_proj,gate_proj,up_proj,down_proj",
+    "task_type": "CAUSAL_LM",
+    "lr_scheduler": "cosine",
+    "warmup_steps": 50,
+    "weight_decay": 0.01,
+    "gradient_checkpointing": true
+  },
+  "constraints": {
+    "alpha_typically_2x_rank": true,
+    "effective_batch_eq_batch_x_accum": 16,
+    "gpu_memory_gb": 24,
+    "model_params_b": 7
+  },
+  "configs": [
+    {
+      "id": 0,
+      "params": {
+        "rank": 8,
+        "lr": 1e-05,
+        "alpha": 16,
+        "dropout": 0.05,
+        "batch_size": 4,
+        "grad_accumulation": 8,
+        "epochs": 3,
+        "max_seq_length": 4096,
+        "_id": 0
+      },
+      "estimated_mem_gb": 11.5,
+      "output_dir": "/home/ai/lingminopt/data/lora_search/config_000",
+      "status": "pending"
+    },
+    {
+      "id": 1,
+      "params": {
+        "rank": 8,
+        "lr": 2e-05,
+        "alpha": 16,
+        "dropout": 0.05,
+        "batch_size": 4,
+        "grad_accumulation": 8,
+        "epochs": 3,
+        "max_seq_length": 4096,
+        "_id": 1
+      },
+      "estimated_mem_gb": 11.5,
+      "output_dir": "/home/ai/lingminopt/data/lora_search/config_001",
+      "status": "pending"
+    },
+    {
+      "id": 2,
+      "params": {
+        "rank": 8,
+        "lr": 5e-05,
+        "alpha": 16,
+        "dropout": 0.05,
+        "batch_size": 4,
+        "grad_accumulation": 8,
+        "epochs": 3,
+        "max_seq_length": 4096,
+        "_id": 2
+      },
+      "estimated_mem_gb": 11.5,
+      "output_dir": "/home/ai/lingminopt/data/lora_search/config_002",
+      "status": "pending"
+    },
+    {
+      "id": 3,
+      "params": {
+        "rank": 8,
+        "lr": 0.0001,
+        "alpha": 16,
+        "dropout": 0.05,
+        "batch_size": 4,
+        "grad_accumulation": 8,
+        "epochs": 3,
+        "max_seq_length": 4096,
+        "_id": 3
+      },
+      "estimated_mem_gb": 11.5,
+      "output_dir": "/home/ai/lingminopt/data/lora_search/config_003",
+      "status": "pending"
+    },
+    {
+      "id": 4,
+      "params": {
+        "rank": 8,
+        "lr": 0.0003,
+        "alpha": 16,
+        "dropout": 0.05,
+        "batch_size": 4,
+        "grad_accumulation": 8,
+        "epochs": 3,
+        "max_seq_length": 4096,
+        "_id": 4
+      },
+      "estimated_mem_gb": 11.5,
+      "output_dir": "/home/ai/lingminopt/data/lora_search/config_004",
+      "status": "pending"
+    },
+    {
+      "id": 5,
+      "params": {
+        "rank": 16,
+        "lr": 1e-05,
+        "alpha": 32,
+        "dropout": 0.05,
+        "batch_size": 4,
+        "grad_accumulation": 8,
+        "epochs": 3,
+        "max_seq_length": 4096,
+        "_id": 5
+      },
+      "estimated_mem_gb": 11.5,
+      "output_dir": "/home/ai/lingminopt/data/lora_search/config_005",
+      "status": "pending"
+    },
+    {
+      "id": 6,
+      "params": {
+        "rank": 16,
+        "lr": 2e-05,
+        "alpha": 32,
+        "dropout": 0.05,
+        "batch_size": 4,
+        "grad_accumulation": 8,
+        "epochs": 3,
+        "max_seq_length": 4096,
+        "_id": 6
+      },
+      "estimated_mem_gb": 11.5,
+      "output_dir": "/home/ai/lingminopt/data/lora_search/config_006",
+      "status": "pending"
+    },
+    {
+      "id": 7,
+      "params": {
+        "rank": 16,
+        "lr": 5e-05,
+        "alpha": 32,
+        "dropout": 0.05,
+        "batch_size": 4,
+        "grad_accumulation": 8,
+        "epochs": 3,
+        "max_seq_length": 4096,
+        "_id": 7
+      },
+      "estimated_mem_gb": 11.5,
+      "output_dir": "/home/ai/lingminopt/data/lora_search/config_007",
+      "status": "pending"
+    },
+    {
+      "id": 8,
+      "params": {
+        "rank": 16,
+        "lr": 0.0001,
+        "alpha": 32,
+        "dropout": 0.05,
+        "batch_size": 4,
+        "grad_accumulation": 8,
+        "epochs": 3,
+        "max_seq_length": 4096,
+        "_id": 8
+      },
+      "estimated_mem_gb": 11.5,
+      "output_dir": "/home/ai/lingminopt/data/lora_search/config_008",
+      "status": "pending"
+    },
+    {
+      "id": 9,
+      "params": {
+        "rank": 16,
+        "lr": 0.0003,
+        "alpha": 32,
+        "dropout": 0.05,
+        "batch_size": 4,
+        "grad_accumulation": 8,
+        "epochs": 3,
+        "max_seq_length": 4096,
+        "_id": 9
+      },
+      "estimated_mem_gb": 11.5,
+      "output_dir": "/home/ai/lingminopt/data/lora_search/config_009",
+      "status": "pending"
+    },
+    {
+      "id": 10,
+      "params": {
+        "rank": 32,
+        "lr": 1e-05,
+        "alpha": 64,
+        "dropout": 0.05,
+        "batch_size": 4,
+        "grad_accumulation": 8,
+        "epochs": 3,
+        "max_seq_length": 4096,
+        "_id": 10
+      },
+      "estimated_mem_gb": 11.6,
+      "output_dir": "/home/ai/lingminopt/data/lora_search/config_010",
+      "status": "pending"
+    },
+    {
+      "id": 11,
+      "params": {
+        "rank": 32,
+        "lr": 2e-05,
+        "alpha": 64,
+        "dropout": 0.05,
+        "batch_size": 4,
+        "grad_accumulation": 8,
+        "epochs": 3,
+        "max_seq_length": 4096,
+        "_id": 11
+      },
+      "estimated_mem_gb": 11.6,
+      "output_dir": "/home/ai/lingminopt/data/lora_search/config_011",
+      "status": "pending"
+    },
+    {
+      "id": 12,
+      "params": {
+        "rank": 32,
+        "lr": 5e-05,
+        "alpha": 64,
+        "dropout": 0.05,
+        "batch_size": 4,
+        "grad_accumulation": 8,
+        "epochs": 3,
+        "max_seq_length": 4096,
+        "_id": 12
+      },
+      "estimated_mem_gb": 11.6,
+      "output_dir": "/home/ai/lingminopt/data/lora_search/config_012",
+      "status": "pending"
+    },
+    {
+      "id": 13,
+      "params": {
+        "rank": 32,
+        "lr": 0.0001,
+        "alpha": 64,
+        "dropout": 0.05,
+        "batch_size": 4,
+        "grad_accumulation": 8,
+        "epochs": 3,
+        "max_seq_length": 4096,
+        "_id": 13
+      },
+      "estimated_mem_gb": 11.6,
+      "output_dir": "/home/ai/lingminopt/data/lora_search/config_013",
+      "status": "pending"
+    },
+    {
+      "id": 14,
+      "params": {
+        "rank": 32,
+        "lr": 0.0003,
+        "alpha": 64,
+        "dropout": 0.05,
+        "batch_size": 4,
+        "grad_accumulation": 8,
+        "epochs": 3,
+        "max_seq_length": 4096,
+        "_id": 14
+      },
+      "estimated_mem_gb": 11.6,
+      "output_dir": "/home/ai/lingminopt/data/lora_search/config_014",
+      "status": "pending"
+    }
+  ]
+}

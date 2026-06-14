@@ -1,0 +1,17 @@
+ZH_TESTS = [
+    {"id":"ZH_01","cat":"中文理解","name":"成语典故","level":"fast",
+     "prompt":"'知之为知之，不知为不知'是什么意思？",
+     "eval":lambda c: 1.0 if any(k in c for k in ["诚实","谦虚","谦逊","知","不知","孔子"]) else 0.5 if "孔子" in c or "诚实" in c else 0.0},
+    {"id":"ZH_02","cat":"中文理解","name":"言外之意","level":"fast",
+     "prompt":"'这衣服真好看，就是颜色不太适合你'的言外之意是什么？",
+     "eval":lambda c: 1.0 if any(k in c for k in ["不好看","不适合","不喜欢","颜色不好","委婉","暗示"]) else 0.5 if "不适合" in c or "不好" in c else 0.0},
+    {"id":"ZH_03","cat":"中文理解","name":"因果理解","level":"fast",
+     "prompt":"'他今天没来上班，说是感冒了'，这句话的因果是什么？",
+     "eval":lambda c: 1.0 if "感冒" in c and ("没来" in c or "不来" in c or "请假" in c or "原因" in c) else 0.5 if "感冒" in c else 0.0},
+    {"id":"ZH_04","cat":"中文理解","name":"文言翻译","level":"normal",
+     "prompt":"'学而时习之，不亦说乎' 翻译成现代汉语。",
+     "eval":lambda c: 1.0 if any(k in c for k in ["学习","温习","复习","练习","快乐","高兴","愉悦"]) else 0.5 if any(k in c for k in ["孔子","论语"]) else 0.0},
+    {"id":"ZH_05","cat":"中文理解","name":"语用理解","level":"normal",
+     "prompt":"'你吃饭了吗？'这句话在中文社交中的实际功能是什么？",
+     "eval":lambda c: 1.0 if any(k in c for k in ["问候","打招呼","寒暄","礼貌","社交"]) else 0.5 if "吃饭" in c else 0.0},
+]

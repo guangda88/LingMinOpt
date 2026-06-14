@@ -1,0 +1,530 @@
+{
+  "model": "qwen2.5-7b-instruct-q4km",
+  "benchmarks": [
+    "gsm8k",
+    "mmlu",
+    "humaneval"
+  ],
+  "num_tests": 50,
+  "total_score": 0.94,
+  "benchmark_scores": {
+    "gsm8k": {
+      "score": 0.85,
+      "passed": 17,
+      "total": 20
+    },
+    "humaneval": {
+      "score": 1.0,
+      "passed": 10,
+      "total": 10
+    },
+    "mmlu": {
+      "score": 1.0,
+      "passed": 20,
+      "total": 20
+    }
+  },
+  "timestamp": "2026-06-13T22:32:07.278882",
+  "results": [
+    {
+      "id": "gsm8k-001",
+      "benchmark": "gsm8k",
+      "category": "gsm8k",
+      "prompt": "Janet's ducks lay 16 eggs per day. She eats three for breakfast every morning and bakes muffins for her friends every day with four. She sells the remainder at the farmers' market daily for $2 per fresh duck egg. How much in dollars does she make every day at the farmers' market?",
+      "response": "Let's break down the problem step by step to find out how much Janet makes from selling the eggs at the farmers' market each day.\n\n1. **Calculate the total number of eggs laid per day:**\n   Janet's ducks lay 16 eggs per day.\n\n2. **Determine the number of eggs used for breakfast:**\n   Janet eats 3 eggs for breakfast every morning.\n\n3. **Determine the number of eggs used for baking muffins:**\n   Janet bakes muffins for her friends every day with 4 eggs.\n\n4. **Calculate the total number of eggs use",
+      "gold": "18",
+      "score": 1.0,
+      "elapsed": 28.6
+    },
+    {
+      "id": "gsm8k-002",
+      "benchmark": "gsm8k",
+      "category": "gsm8k",
+      "prompt": "A robe takes 2 bolts of blue fiber and half that much white fiber. How many bolts in total does it take?",
+      "response": "To solve this problem, let's break it down step by step:\n\n1. **Identify the amount of blue fiber needed:**\n   - The problem states that the robe takes 2 bolts of blue fiber.\n\n2. **Determine the amount of white fiber needed:**\n   - The problem also states that the robe takes half as much white fiber as blue fiber.\n   - Since 2 bolts of blue fiber are needed, half of that amount would be:\n     \\[\n     \\frac{2}{2} = 1 \\text{ bolt of white fiber}\n     \\]\n\n3. **Calculate the total amount of fiber nee",
+      "gold": "3",
+      "score": 1.0,
+      "elapsed": 19.6
+    },
+    {
+      "id": "gsm8k-003",
+      "benchmark": "gsm8k",
+      "category": "gsm8k",
+      "prompt": "Josh decides to try flipping a house. He buys a house for $80,000 and then puts in $50,000 in repairs. This increased the value of the house by 150%. How much profit did he make?",
+      "response": "To determine Josh's profit, we need to follow these steps:\n\n1. **Calculate the initial cost of the house and repairs:**\n   - Cost of the house: $80,000\n   - Cost of repairs: $50,000\n   - Total initial cost: \\( 80,000 + 50,000 = 130,000 \\)\n\n2. **Determine the new value of the house after repairs:**\n   - The repairs increased the value of the house by 150%.\n   - To find the increase in value, we calculate 150% of the original cost of the house:\n     \\[\n     150\\% \\text{ of } 80,000 = 1.5 \\times 80",
+      "gold": "70000",
+      "score": 1.0,
+      "elapsed": 32.1
+    },
+    {
+      "id": "gsm8k-004",
+      "benchmark": "gsm8k",
+      "category": "gsm8k",
+      "prompt": "James decides to run 3 sprints 3 times a week. He runs 60 meters each sprint. How many total meters does he run a week?",
+      "response": "To determine the total number of meters James runs in a week, we can break down the problem into smaller steps:\n\n1. **Calculate the distance James runs in one sprint:**\n   James runs 60 meters in each sprint.\n\n2. **Calculate the distance James runs in one session:**\n   James runs 3 sprints in one session. Therefore, the distance for one session is:\n   \\[\n   3 \\text{ sprints} \\times 60 \\text{ meters/sprint} = 180 \\text{ meters}\n   \\]\n\n3. **Calculate the distance James runs in one week:**\n   James",
+      "gold": "540",
+      "score": 1.0,
+      "elapsed": 30.0
+    },
+    {
+      "id": "gsm8k-005",
+      "benchmark": "gsm8k",
+      "category": "gsm8k",
+      "prompt": "Every day, Wendi feeds each of her chickens three cups of mixed feed. Wendi has 5 chickens. How many cups of feed does she use in total each day?",
+      "response": "To determine the total amount of feed Wendi uses each day, we can follow these steps:\n\n1. Identify the amount of feed each chicken consumes per day.\n   - Each chicken consumes 3 cups of mixed feed per day.\n\n2. Identify the number of chickens Wendi has.\n   - Wendi has 5 chickens.\n\n3. Calculate the total amount of feed by multiplying the amount of feed per chicken by the number of chickens.\n   - Total feed = (Amount of feed per chicken) × (Number of chickens)\n   - Total feed = 3 cups/chicken × 5 c",
+      "gold": "15",
+      "score": 1.0,
+      "elapsed": 33.7
+    },
+    {
+      "id": "gsm8k-006",
+      "benchmark": "gsm8k",
+      "category": "gsm8k",
+      "prompt": "Kylar went to the store to buy glasses. One glass costs $5, but every second glass costs only 60% of the price. Kylar wants to buy 16 glasses. How much does he need to pay?",
+      "response": "To determine how much Kylar needs to pay for 16 glasses, we need to consider the pricing structure: the first glass costs $5, and every second glass costs 60% of $5.\n\nFirst, let's calculate the cost of the second glass:\n\\[ 0.60 \\times 5 = 3 \\]\n\nNow, we can see that the cost pattern for 16 glasses will be:\n- The first glass costs $5.\n- The second glass costs $3.\n- The third glass costs $5.\n- The fourth glass costs $3.\n- And so on...\n\nSince Kylar is buying 16 glasses, we can group them into pairs:",
+      "gold": "64",
+      "score": 1.0,
+      "elapsed": 56.0
+    },
+    {
+      "id": "gsm8k-007",
+      "benchmark": "gsm8k",
+      "category": "gsm8k",
+      "prompt": "Toulouse has twice as many sheep as Charleston. Charleston has 4 times as many sheep as Seattle. How many sheep do Toulouse, Charleston, and Seattle have together if Seattle has 20 sheep?",
+      "response": "Let's solve the problem step by step.\n\n1. **Determine the number of sheep in Seattle:**\n   - Seattle has 20 sheep.\n\n2. **Determine the number of sheep in Charleston:**\n   - Charleston has 4 times as many sheep as Seattle.\n   - Number of sheep in Charleston = \\( 4 \\times 20 = 80 \\).\n\n3. **Determine the number of sheep in Toulouse:**\n   - Toulouse has twice as many sheep as Charleston.\n   - Number of sheep in Toulouse = \\( 2 \\times 80 = 160 \\).\n\n4. **Calculate the total number of sheep in Toulouse",
+      "gold": "260",
+      "score": 1.0,
+      "elapsed": 57.4
+    },
+    {
+      "id": "gsm8k-008",
+      "benchmark": "gsm8k",
+      "category": "gsm8k",
+      "prompt": "John drives for 3 hours at a speed of 60 mph and then turns around because he realizes he forgot something. How far did John drive away from his home?",
+      "response": "To determine how far John drove away from his home, we need to calculate the distance he traveled in the first part of his journey. We can use the formula for distance, which is:\n\n\\[ \\text{Distance} = \\text{Speed} \\times \\text{Time} \\]\n\nGiven:\n- Speed = 60 mph\n- Time = 3 hours\n\nStep 1: Calculate the distance John traveled.\n\\[ \\text{Distance} = 60 \\, \\text{mph} \\times 3 \\, \\text{hours} \\]\n\\[ \\text{Distance} = 180 \\, \\text{miles} \\]\n\nSo, John drove 180 miles away from his home before turning aroun",
+      "gold": "180",
+      "score": 1.0,
+      "elapsed": 46.6
+    },
+    {
+      "id": "gsm8k-009",
+      "benchmark": "gsm8k",
+      "category": "gsm8k",
+      "prompt": "A store sells pencils at 3 for $1. If Manuela bought 24 pencils, how much did she pay?",
+      "response": "To determine how much Manuela paid for 24 pencils, we can follow these steps:\n\n1. **Determine the cost per pencil:**\n   - The store sells pencils at 3 for $1.\n   - Therefore, the cost per pencil is:\n     \\[\n     \\frac{1 \\text{ dollar}}{3 \\text{ pencils}} = \\frac{1}{3} \\text{ dollars per pencil}\n     \\]\n\n2. **Calculate the total cost for 24 pencils:**\n   - Manuela bought 24 pencils.\n   - The total cost is:\n     \\[\n     24 \\text{ pencils} \\times \\frac{1}{3} \\text{ dollars per pencil} = 24 \\times \\",
+      "gold": "8",
+      "score": 0.0,
+      "elapsed": 61.1
+    },
+    {
+      "id": "gsm8k-010",
+      "benchmark": "gsm8k",
+      "category": "gsm8k",
+      "prompt": "A train travels 240 miles in 4 hours. What is its average speed in miles per hour?",
+      "response": "To find the average speed of the train, we use the formula for average speed, which is the total distance traveled divided by the total time taken. Here are the steps:\n\n1. Identify the total distance traveled: 240 miles.\n2. Identify the total time taken: 4 hours.\n3. Use the formula for average speed: \\(\\text{Average speed} = \\frac{\\text{Total distance}}{\\text{Total time}}\\).\n\nSubstituting the given values into the formula, we get:\n\\[\n\\text{Average speed} = \\frac{240 \\text{ miles}}{4 \\text{ hours",
+      "gold": "60",
+      "score": 1.0,
+      "elapsed": 43.0
+    },
+    {
+      "id": "gsm8k-011",
+      "benchmark": "gsm8k",
+      "category": "gsm8k",
+      "prompt": "A pizza is cut into 8 equal slices. If 3 people each eat 2 slices, how many slices are left?",
+      "response": "Let's solve this step by step:\n\n1. **Total number of slices**: The pizza is cut into 8 equal slices.\n\n2. **Slices eaten by each person**: Each of the 3 people eats 2 slices.\n\n3. **Total slices eaten**: To find the total number of slices eaten, we multiply the number of people by the number of slices each person eats.\n   \\[\n   3 \\text{ people} \\times 2 \\text{ slices/person} = 6 \\text{ slices}\n   \\]\n\n4. **Slices remaining**: To find the number of slices left, we subtract the total number of slices",
+      "gold": "2",
+      "score": 1.0,
+      "elapsed": 66.4
+    },
+    {
+      "id": "gsm8k-012",
+      "benchmark": "gsm8k",
+      "category": "gsm8k",
+      "prompt": "A rectangular garden is 12 feet long and 8 feet wide. What is the area in square feet?",
+      "response": "To find the area of a rectangular garden, we use the formula for the area of a rectangle, which is:\n\n\\[ \\text{Area} = \\text{length} \\times \\text{width} \\]\n\nGiven:\n- Length = 12 feet\n- Width = 8 feet\n\nStep 1: Substitute the given values into the formula.\n\\[ \\text{Area} = 12 \\, \\text{feet} \\times 8 \\, \\text{feet} \\]\n\nStep 2: Perform the multiplication.\n\\[ \\text{Area} = 96 \\, \\text{square feet} \\]\n\nTherefore, the area of the rectangular garden is \\( 96 \\) square feet.",
+      "gold": "96",
+      "score": 1.0,
+      "elapsed": 49.9
+    },
+    {
+      "id": "gsm8k-013",
+      "benchmark": "gsm8k",
+      "category": "gsm8k",
+      "prompt": "There are 25 students in a class. Each student needs 4 notebooks. How many notebooks are needed in total?",
+      "response": "To determine the total number of notebooks needed, we can follow these steps:\n\n1. Identify the number of students in the class.\n   - There are 25 students.\n\n2. Identify the number of notebooks each student needs.\n   - Each student needs 4 notebooks.\n\n3. Multiply the number of students by the number of notebooks each student needs to find the total number of notebooks.\n   - Total notebooks = Number of students × Number of notebooks per student\n   - Total notebooks = 25 × 4\n\n4. Perform the multipl",
+      "gold": "100",
+      "score": 1.0,
+      "elapsed": 41.6
+    },
+    {
+      "id": "gsm8k-014",
+      "benchmark": "gsm8k",
+      "category": "gsm8k",
+      "prompt": "If a car uses 8 liters of fuel per 100 kilometers, how many liters for a 350-kilometer trip?",
+      "response": "To determine how many liters of fuel are used for a 350-kilometer trip, given that the car uses 8 liters of fuel per 100 kilometers, we can follow these steps:\n\n1. **Determine the fuel consumption rate:**\n   The car uses 8 liters of fuel for every 100 kilometers.\n\n2. **Set up a proportion to find the fuel consumption for 350 kilometers:**\n   We can set up the proportion as follows:\n   \\[\n   \\frac{8 \\text{ liters}}{100 \\text{ kilometers}} = \\frac{x \\text{ liters}}{350 \\text{ kilometers}}\n   \\]\n  ",
+      "gold": "28",
+      "score": 0.0,
+      "elapsed": 83.2
+    },
+    {
+      "id": "gsm8k-015",
+      "benchmark": "gsm8k",
+      "category": "gsm8k",
+      "prompt": "A book has 360 pages. If you read 12 pages per day, how many days to finish the book?",
+      "response": "To determine how many days it will take to finish the book, we need to divide the total number of pages by the number of pages read per day. Here are the steps:\n\n1. **Identify the total number of pages in the book:**\n   \\[\n   \\text{Total pages} = 360\n   \\]\n\n2. **Identify the number of pages read per day:**\n   \\[\n   \\text{Pages per day} = 12\n   \\]\n\n3. **Divide the total number of pages by the number of pages read per day to find the number of days:**\n   \\[\n   \\text{Number of days} = \\frac{\\text{T",
+      "gold": "30",
+      "score": 1.0,
+      "elapsed": 49.4
+    },
+    {
+      "id": "gsm8k-016",
+      "benchmark": "gsm8k",
+      "category": "gsm8k",
+      "prompt": "The sum of three consecutive integers is 72. What is the largest of the three integers?",
+      "response": "To solve the problem, let's denote the three consecutive integers as \\( n \\), \\( n+1 \\), and \\( n+2 \\), where \\( n \\) is the smallest integer.\n\nStep 1: Write the equation for the sum of these three integers.\n\\[\nn + (n+1) + (n+2) = 72\n\\]\n\nStep 2: Simplify the left side of the equation.\n\\[\nn + n + 1 + n + 2 = 72\n\\]\n\\[\n3n + 3 = 72\n\\]\n\nStep 3: Subtract 3 from both sides to isolate the term with \\( n \\).\n\\[\n3n + 3 - 3 = 72 - 3\n\\]\n\\[\n3n = 69\n\\]\n\nStep 4: Divide both sides by 3 to solve for \\( n \\).\n\\[\n",
+      "gold": "25",
+      "score": 1.0,
+      "elapsed": 45.9
+    },
+    {
+      "id": "gsm8k-017",
+      "benchmark": "gsm8k",
+      "category": "gsm8k",
+      "prompt": "A shirt originally costs $80. It is on sale for 25% off, then an additional 10% off the sale price. What is the final price?",
+      "response": "To find the final price of the shirt after the discounts, we need to follow these steps:\n\n1. **Calculate the price after the first discount:**\n   - The original price of the shirt is $80.\n   - The first discount is 25% off.\n   - To find the discount amount: \\( 25\\% \\) of $80 is calculated as:\n     \\[\n     0.25 \\times 80 = 20\n     \\]\n   - Subtract the discount from the original price:\n     \\[\n     80 - 20 = 60\n     \\]\n   - So, the price after the first discount is $60.\n\n2. **Calculate the price a",
+      "gold": "54",
+      "score": 1.0,
+      "elapsed": 45.3
+    },
+    {
+      "id": "gsm8k-018",
+      "benchmark": "gsm8k",
+      "category": "gsm8k",
+      "prompt": "A water tank has a capacity of 500 liters. It is currently 3/5 full. How many more liters are needed to fill it?",
+      "response": "To determine how many more liters are needed to fill the water tank, we can follow these steps:\n\n1. **Calculate the current amount of water in the tank:**\n   The tank is currently \\( \\frac{3}{5} \\) full. The total capacity of the tank is 500 liters.\n   \\[\n   \\text{Current amount of water} = \\frac{3}{5} \\times 500 \\text{ liters}\n   \\]\n   \\[\n   \\text{Current amount of water} = \\frac{3 \\times 500}{5} \\text{ liters}\n   \\]\n   \\[\n   \\text{Current amount of water} = \\frac{1500}{5} \\text{ liters}\n   \\]\n",
+      "gold": "200",
+      "score": 1.0,
+      "elapsed": 63.2
+    },
+    {
+      "id": "gsm8k-019",
+      "benchmark": "gsm8k",
+      "category": "gsm8k",
+      "prompt": "Two trains start from the same station in opposite directions. One travels at 60 km/h and the other at 80 km/h. How far apart after 3 hours?",
+      "response": "To determine how far apart the two trains are after 3 hours, we need to calculate the distance each train travels and then sum these distances.\n\n### Step 1: Calculate the distance traveled by the first train\n- Speed of the first train: \\(60 \\text{ km/h}\\)\n- Time: \\(3 \\text{ hours}\\)\n\nUsing the formula for distance:\n\\[\n\\text{Distance} = \\text{Speed} \\times \\text{Time}\n\\]\n\\[\n\\text{Distance}_1 = 60 \\text{ km/h} \\times 3 \\text{ hours} = 180 \\text{ km}\n\\]\n\n### Step 2: Calculate the distance traveled ",
+      "gold": "420",
+      "score": 0.0,
+      "elapsed": 69.3
+    },
+    {
+      "id": "gsm8k-020",
+      "benchmark": "gsm8k",
+      "category": "gsm8k",
+      "prompt": "A movie theater has 15 rows with 20 seats each. If 3/4 of the seats are occupied, how many people are in the theater?",
+      "response": "To determine how many people are in the theater, we need to follow these steps:\n\n1. **Calculate the total number of seats in the theater:**\n   - The theater has 15 rows.\n   - Each row has 20 seats.\n   - Therefore, the total number of seats is:\n     \\[\n     15 \\text{ rows} \\times 20 \\text{ seats/row} = 300 \\text{ seats}\n     \\]\n\n2. **Determine the number of occupied seats:**\n   - We are given that \\( \\frac{3}{4} \\) of the seats are occupied.\n   - To find the number of occupied seats, we multiply ",
+      "gold": "225",
+      "score": 1.0,
+      "elapsed": 46.2
+    },
+    {
+      "id": "mmlu-anatomy-001",
+      "benchmark": "mmlu",
+      "category": "anatomy",
+      "prompt": "Which of the following is NOT a type of muscle tissue?\nA. Skeletal\nB. Cardiac\nC. Smooth\nD. Nervous",
+      "response": "D",
+      "gold": "D",
+      "score": 1.0,
+      "elapsed": 0.8
+    },
+    {
+      "id": "mmlu-astronomy-001",
+      "benchmark": "mmlu",
+      "category": "astronomy",
+      "prompt": "What is the closest star to Earth (excluding the Sun)?\nA. Sirius\nB. Alpha Centauri\nC. Proxima Centauri\nD. Betelgeuse",
+      "response": "C",
+      "gold": "C",
+      "score": 1.0,
+      "elapsed": 0.7
+    },
+    {
+      "id": "mmlu-biology-001",
+      "benchmark": "mmlu",
+      "category": "biology",
+      "prompt": "Which organelle is responsible for protein synthesis in a cell?\nA. Mitochondria\nB. Ribosome\nC. Golgi apparatus\nD. Lysosome",
+      "response": "B",
+      "gold": "B",
+      "score": 1.0,
+      "elapsed": 0.7
+    },
+    {
+      "id": "mmlu-chemistry-001",
+      "benchmark": "mmlu",
+      "category": "chemistry",
+      "prompt": "What is the chemical symbol for gold?\nA. Go\nB. Gd\nC. Au\nD. Ag",
+      "response": "C",
+      "gold": "C",
+      "score": 1.0,
+      "elapsed": 7.4
+    },
+    {
+      "id": "mmlu-cs-001",
+      "benchmark": "mmlu",
+      "category": "computer_science",
+      "prompt": "What is the time complexity of binary search on a sorted array of n elements?\nA. O(n)\nB. O(n log n)\nC. O(log n)\nD. O(1)",
+      "response": "C",
+      "gold": "C",
+      "score": 1.0,
+      "elapsed": 0.9
+    },
+    {
+      "id": "mmlu-economics-001",
+      "benchmark": "mmlu",
+      "category": "economics",
+      "prompt": "What does GDP stand for?\nA. General Domestic Product\nB. Gross Domestic Product\nC. Global Domestic Product\nD. Gross Development Product",
+      "response": "B",
+      "gold": "B",
+      "score": 1.0,
+      "elapsed": 0.7
+    },
+    {
+      "id": "mmlu-geography-001",
+      "benchmark": "mmlu",
+      "category": "geography",
+      "prompt": "What is the capital of Australia?\nA. Sydney\nB. Melbourne\nC. Canberra\nD. Perth",
+      "response": "C",
+      "gold": "C",
+      "score": 1.0,
+      "elapsed": 7.7
+    },
+    {
+      "id": "mmlu-history-001",
+      "benchmark": "mmlu",
+      "category": "history",
+      "prompt": "In which year did World War II end?\nA. 1943\nB. 1944\nC. 1945\nD. 1946",
+      "response": "C",
+      "gold": "C",
+      "score": 1.0,
+      "elapsed": 0.7
+    },
+    {
+      "id": "mmlu-law-001",
+      "benchmark": "mmlu",
+      "category": "law",
+      "prompt": "What does the Latin term 'habeas corpus' literally mean?\nA. You have the body\nB. Let the buyer beware\nC. Beyond reasonable doubt\nD. Innocent until proven guilty",
+      "response": "A",
+      "gold": "A",
+      "score": 1.0,
+      "elapsed": 0.7
+    },
+    {
+      "id": "mmlu-math-001",
+      "benchmark": "mmlu",
+      "category": "mathematics",
+      "prompt": "What is the derivative of x^3?\nA. 3x\nB. 3x^2\nC. x^2\nD. 3x^3",
+      "response": "B",
+      "gold": "B",
+      "score": 1.0,
+      "elapsed": 0.8
+    },
+    {
+      "id": "mmlu-medicine-001",
+      "benchmark": "mmlu",
+      "category": "medicine",
+      "prompt": "Which blood type is considered the universal donor?\nA. Type A\nB. Type B\nC. Type AB\nD. Type O negative",
+      "response": "D",
+      "gold": "D",
+      "score": 1.0,
+      "elapsed": 0.7
+    },
+    {
+      "id": "mmlu-physics-001",
+      "benchmark": "mmlu",
+      "category": "physics",
+      "prompt": "What is the SI unit of electric current?\nA. Volt\nB. Watt\nC. Ampere\nD. Ohm",
+      "response": "C",
+      "gold": "C",
+      "score": 1.0,
+      "elapsed": 10.6
+    },
+    {
+      "id": "mmlu-psychology-001",
+      "benchmark": "mmlu",
+      "category": "psychology",
+      "prompt": "Who is considered the founder of psychoanalysis?\nA. Carl Jung\nB. Sigmund Freud\nC. B.F. Skinner\nD. Ivan Pavlov",
+      "response": "B",
+      "gold": "B",
+      "score": 1.0,
+      "elapsed": 0.6
+    },
+    {
+      "id": "mmlu-philosophy-001",
+      "benchmark": "mmlu",
+      "category": "philosophy",
+      "prompt": "Who wrote 'Critique of Pure Reason'?\nA. Aristotle\nB. David Hume\nC. Immanuel Kant\nD. Friedrich Nietzsche",
+      "response": "C",
+      "gold": "C",
+      "score": 1.0,
+      "elapsed": 0.7
+    },
+    {
+      "id": "mmlu-cs-002",
+      "benchmark": "mmlu",
+      "category": "computer_science",
+      "prompt": "Which data structure uses FIFO (First In First Out) ordering?\nA. Stack\nB. Queue\nC. Binary Tree\nD. Hash Map",
+      "response": "B",
+      "gold": "B",
+      "score": 1.0,
+      "elapsed": 0.7
+    },
+    {
+      "id": "mmlu-cs-003",
+      "benchmark": "mmlu",
+      "category": "computer_science",
+      "prompt": "What does HTTP stand for?\nA. HyperText Transfer Protocol\nB. High Transfer Text Protocol\nC. HyperText Transmission Process\nD. Host Transfer Text Protocol",
+      "response": "A",
+      "gold": "A",
+      "score": 1.0,
+      "elapsed": 0.6
+    },
+    {
+      "id": "mmlu-biology-002",
+      "benchmark": "mmlu",
+      "category": "biology",
+      "prompt": "Which process do plants use to convert sunlight into chemical energy?\nA. Respiration\nB. Photosynthesis\nC. Fermentation\nD. Digestion",
+      "response": "B",
+      "gold": "B",
+      "score": 1.0,
+      "elapsed": 0.6
+    },
+    {
+      "id": "mmlu-chemistry-002",
+      "benchmark": "mmlu",
+      "category": "chemistry",
+      "prompt": "How many protons does a carbon atom have?\nA. 4\nB. 6\nC. 8\nD. 12",
+      "response": "B",
+      "gold": "B",
+      "score": 1.0,
+      "elapsed": 0.7
+    },
+    {
+      "id": "mmlu-physics-002",
+      "benchmark": "mmlu",
+      "category": "physics",
+      "prompt": "What is Newton's second law of motion?\nA. F = ma\nB. E = mc^2\nC. F = mg\nD. P = mv",
+      "response": "A",
+      "gold": "A",
+      "score": 1.0,
+      "elapsed": 0.8
+    },
+    {
+      "id": "mmlu-history-002",
+      "benchmark": "mmlu",
+      "category": "history",
+      "prompt": "Who was the first Emperor of unified China?\nA. Sun Yat-sen\nB. Qin Shi Huang\nC. Genghis Khan\nD. Kangxi Emperor",
+      "response": "B",
+      "gold": "B",
+      "score": 1.0,
+      "elapsed": 0.7
+    },
+    {
+      "id": "humaneval-001",
+      "benchmark": "humaneval",
+      "category": "humaneval",
+      "prompt": "from typing import List\n\ndef has_close_elements(numbers: List[float], threshold: float) -> bool:\n    \"\"\" Check if in given list of numbers, are any two numbers closer to each other than given threshold.\n    >>> has_close_elements([1.0, 2.0, 3.0], 0.5)\n    False\n    >>> has_close_elements([1.0, 2.8, ",
+      "response": "from typing import *\nfrom typing import List\n\ndef has_close_elements(numbers: List[float], threshold: float) -> bool:\n    \"\"\" Check if in given list of numbers, are any two numbers closer to each other than given threshold.\n    >>> has_close_elements([1.0, 2.0, 3.0], 0.5)\n    False\n    >>> has_close_elements([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3)\n    True\n    \"\"\"\n    numbers.sort()\n    for i in range(len(numbers) - 1):\n        if numbers[i + 1] - numbers[i] < threshold:\n            return True\n   ",
+      "gold": "",
+      "score": 1.0,
+      "elapsed": 25.1
+    },
+    {
+      "id": "humaneval-002",
+      "benchmark": "humaneval",
+      "category": "humaneval",
+      "prompt": "from typing import List\n\ndef separate_paren_groups(paren_string: str) -> List[str]:\n    \"\"\" Input to this function is a string containing multiple groups of nested parentheses.\n    Your goal is to separate those groups into separate strings and return the list of those.\n    >>> separate_paren_groups",
+      "response": "from typing import List\n\ndef separate_paren_groups(paren_string: str) -> List[str]:\n    stack = []\n    result = []\n    current_group = ''\n    \n    for char in paren_string:\n        if char == '(':\n            if current_group:\n                result.append(current_group)\n                current_group = ''\n            stack.append(char)\n        elif char == ')':\n            stack.pop()\n            current_group += char\n            if not stack:\n                result.append(current_group)\n       ",
+      "gold": "",
+      "score": 1.0,
+      "elapsed": 17.8
+    },
+    {
+      "id": "humaneval-003",
+      "benchmark": "humaneval",
+      "category": "humaneval",
+      "prompt": "def truncate_number(number: float) -> float:\n    \"\"\" Given a positive floating point number, it can be decomposed into an integer part\n    (largest integer smaller than given number) and decimals (leftover part always smaller than 1).\n    Return the decimals part.\n    >>> truncate_number(3.5)\n    0.",
+      "response": "def truncate_number(number: float) -> float:\n    \"\"\" Given a positive floating point number, it can be decomposed into an integer part\n    (largest integer smaller than given number) and decimals (leftover part always smaller than 1).\n    Return the decimals part.\n    \"\"\"\n    return number - int(number)",
+      "gold": "",
+      "score": 1.0,
+      "elapsed": 12.0
+    },
+    {
+      "id": "humaneval-004",
+      "benchmark": "humaneval",
+      "category": "humaneval",
+      "prompt": "from typing import List\n\ndef below_zero(operations: List[int]) -> bool:\n    \"\"\" You're given a list of deposit and withdrawal operations on a bank account.\n    Return True if the balance falls below zero at any point.\n    >>> below_zero([1, 2, 3])\n    False\n    >>> below_zero([1, 2, -4, 5])\n    True",
+      "response": "from typing import List\n\ndef below_zero(operations: List[int]) -> bool:\n    balance = 0\n    for op in operations:\n        balance += op\n        if balance < 0:\n            return True\n    return False",
+      "gold": "",
+      "score": 1.0,
+      "elapsed": 7.1
+    },
+    {
+      "id": "humaneval-005",
+      "benchmark": "humaneval",
+      "category": "humaneval",
+      "prompt": "from typing import List\n\ndef mean_absolute_deviation(numbers: List[float]) -> float:\n    \"\"\" For a given list of input numbers, calculate Mean Absolute Deviation around the mean.\n    >>> mean_absolute_deviation([1.0, 2.0, 3.0, 4.0])\n    1.0\n    \"\"\"",
+      "response": "from typing import List\n\ndef mean_absolute_deviation(numbers: List[float]) -> float:\n    mean_val = sum(numbers) / len(numbers)\n    mad = sum(abs(x - mean_val) for x in numbers) / len(numbers)\n    return mad",
+      "gold": "",
+      "score": 1.0,
+      "elapsed": 7.5
+    },
+    {
+      "id": "humaneval-006",
+      "benchmark": "humaneval",
+      "category": "humaneval",
+      "prompt": "from typing import List\n\ndef intersperse(numbers: List[int], delimeter: int) -> List[int]:\n    \"\"\" Insert a number 'delimeter' between every two consecutive elements of input list.\n    >>> intersperse([], 4)\n    []\n    >>> intersperse([1, 2, 3], 4)\n    [1, 4, 2, 4, 3]\n    \"\"\"",
+      "response": "```python\nfrom typing import List\n\ndef intersperse(numbers: List[int], delimiter: int) -> List[int]:\n    result = []\n    for i, num in enumerate(numbers):\n        result.append(num)\n        if i < len(numbers) - 1:\n            result.append(delimiter)\n    return result\n```",
+      "gold": "",
+      "score": 1.0,
+      "elapsed": 9.4
+    },
+    {
+      "id": "humaneval-007",
+      "benchmark": "humaneval",
+      "category": "humaneval",
+      "prompt": "from typing import List\n\ndef parse_nested_parens(paren_string: str) -> List[int]:\n    \"\"\" Input is a string of multiple groups of nested parentheses.\n    Return the depth of the deepest group.\n    >>> parse_nested_parens('(()()) ((())) () ((())()())')\n    [2, 3, 1, 3]\n    \"\"\"",
+      "response": "from typing import List\n\ndef parse_nested_parens(paren_string: str) -> List[int]:\n    depths = []\n    max_depth = 0\n    current_depth = 0\n    \n    for char in paren_string:\n        if char == '(':\n            current_depth += 1\n            max_depth = max(max_depth, current_depth)\n        elif char == ')':\n            current_depth -= 1\n    \n    depths.append(max_depth)\n    max_depth = 0\n    \n    return depths",
+      "gold": "",
+      "score": 1.0,
+      "elapsed": 14.3
+    },
+    {
+      "id": "humaneval-008",
+      "benchmark": "humaneval",
+      "category": "humaneval",
+      "prompt": "from typing import List, Tuple\n\ndef sum_product(numbers: List[int]) -> Tuple[int, int]:\n    \"\"\" For a given list of integers, return a tuple consisting of sum and product.\n    >>> sum_product([])\n    (0, 1)\n    >>> sum_product([1, 2, 3, 4])\n    (10, 24)\n    \"\"\"",
+      "response": "from typing import List, Tuple\n\ndef sum_product(numbers: List[int]) -> Tuple[int, int]:\n    sum_result = 0\n    product_result = 1\n    for number in numbers:\n        sum_result += number\n        product_result *= number\n    return (sum_result, product_result)",
+      "gold": "",
+      "score": 1.0,
+      "elapsed": 12.0
+    },
+    {
+      "id": "humaneval-009",
+      "benchmark": "humaneval",
+      "category": "humaneval",
+      "prompt": "from typing import List\n\ndef rolling_max(numbers: List[int]) -> List[int]:\n    \"\"\" From a list of integers, return a list of rolling maximum element found until given moment.\n    >>> rolling_max([1, 2, 3, 2, 3, 4, 2])\n    [1, 2, 3, 3, 3, 4, 4]\n    \"\"\"",
+      "response": "from typing import *\nfrom typing import List\n\ndef rolling_max(numbers: List[int]) -> List[int]:\n    \"\"\" From a list of integers, return a list of rolling maximum element found until given moment.\n    >>> rolling_max([1, 2, 3, 2, 3, 4, 2])\n    [1, 2, 3, 3, 3, 4, 4]\n    \"\"\"\n    if not numbers:\n        return []\n    \n    rolling_maxes = [numbers[0]]\n    current_max = numbers[0]\n    \n    for number in numbers[1:]:\n        if number > current_max:\n            current_max = number\n        rolling_maxe",
+      "gold": "",
+      "score": 1.0,
+      "elapsed": 28.1
+    },
+    {
+      "id": "humaneval-010",
+      "benchmark": "humaneval",
+      "category": "humaneval",
+      "prompt": "def is_palindrome(string: str) -> bool:\n    \"\"\" Checks if given string is a palindrome.\n    >>> is_palindrome('')\n    True\n    >>> is_palindrome('aba')\n    True\n    >>> is_palindrome('aaaaa')\n    True\n    >>> is_palindrome('zbcd')\n    False\n    \"\"\"",
+      "response": "def is_palindrome(string: str) -> bool:\n    \"\"\" Checks if given string is a palindrome.\n    >>> is_palindrome('')\n    True\n    >>> is_palindrome('aba')\n    True\n    >>> is_palindrome('aaaaa')\n    True\n    >>> is_palindrome('zbcd')\n    False\n    \"\"\"\n    return string == string[::-1]",
+      "gold": "",
+      "score": 1.0,
+      "elapsed": 13.8
+    }
+  ]
+}

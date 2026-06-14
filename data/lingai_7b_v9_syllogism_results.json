@@ -1,0 +1,118 @@
+{
+  "model": "lingai-7b-v9-lora",
+  "test": "syllogism",
+  "fallacy_reject": "6/6",
+  "valid_accept": "3/6",
+  "total": "9/12",
+  "score": 0.75,
+  "results": [
+    {
+      "id": "SYL-001",
+      "type": "undistributed_middle",
+      "is_valid": false,
+      "prompt": "所有的猫都是动物。有些动物是黑色的。能否推出\"有些猫是黑色的\"？",
+      "response": "不能。",
+      "correct": true,
+      "verdict": "correct_reject"
+    },
+    {
+      "id": "SYL-002",
+      "type": "affirming_consequent",
+      "is_valid": false,
+      "prompt": "如果下雨，地面会湿。地面湿了。能否推出\"下过雨\"？",
+      "response": "不能。地面湿可能是：1)下雨2)结露3)洒水4)水渗入。",
+      "correct": true,
+      "verdict": "correct_reject"
+    },
+    {
+      "id": "SYL-003",
+      "type": "denying_antecedent",
+      "is_valid": false,
+      "prompt": "如果下雨，地面会湿。没下雨。能否推出\"地面没有湿\"？",
+      "response": "不能。下雨→地面湿，但\"没下雨\"不能推出\"地面没湿\"。可能地面本来就湿了。",
+      "correct": true,
+      "verdict": "correct_reject"
+    },
+    {
+      "id": "SYL-004",
+      "type": "undistributed_middle",
+      "is_valid": false,
+      "prompt": "所有哺乳动物都用肺呼吸。有些用肺呼吸的生物是鱼（肺鱼）。能否推出\"有些哺乳动物是鱼\"？",
+      "response": "不能。\"所有哺乳动物用肺呼吸\"和\"有些鱼用肺呼吸\"的结构不同。",
+      "correct": true,
+      "verdict": "correct_reject"
+    },
+    {
+      "id": "SYL-005",
+      "type": "affirming_consequent",
+      "is_valid": false,
+      "prompt": "如果一个人发烧了，他的体温会升高。小明体温升高了。能否推出\"小明发烧了\"？",
+      "response": "不能。发烧的定义是体温升高+其他症状。",
+      "correct": true,
+      "verdict": "correct_reject"
+    },
+    {
+      "id": "SYL-006",
+      "type": "denying_antecedent",
+      "is_valid": false,
+      "prompt": "如果使用缓存，查询会变快。我们没有使用缓存。能否推出\"查询不快\"？",
+      "response": "不能推出\"查询不快\"。\"查询变快\"是\"使用缓存\"的必要条件，不是充分条件。\"查询快\"可能有其他原因（如索引、查询优化）。",
+      "correct": true,
+      "verdict": "correct_reject"
+    },
+    {
+      "id": "SYL-007",
+      "type": "barbara",
+      "is_valid": true,
+      "prompt": "所有人都会死。苏格拉底是人。能否推出\"苏格拉底会死\"？",
+      "response": "能。\"所有人都会死\"是全称命题，\"苏格拉底是人\"是特称命题。全称命题可以推出特称命题。",
+      "correct": true,
+      "verdict": "correct_accept"
+    },
+    {
+      "id": "SYL-008",
+      "type": "cesare",
+      "is_valid": true,
+      "prompt": "没有鱼是哺乳动物。鲸鱼是哺乳动物。能否推出\"没有鲸鱼是鱼\"？",
+      "response": "不能。\"鱼\"和\"哺乳动物\"是不同的分类层次。",
+      "correct": false,
+      "verdict": "wrong_reject"
+    },
+    {
+      "id": "SYL-009",
+      "type": "barbara",
+      "is_valid": true,
+      "prompt": "所有正方形都是矩形。所有矩形都有四个直角。能否推出\"所有正方形都有四个直角\"？",
+      "response": "能。正方形是矩形的子集，子集的性质也适用于父集。",
+      "correct": true,
+      "verdict": "correct_accept"
+    },
+    {
+      "id": "SYL-010",
+      "type": "modus_tollens",
+      "is_valid": true,
+      "prompt": "如果A那么B。非B。能否推出\"非A\"？",
+      "response": "不能。\"如果A那么B\"是充分条件。非B可能是因为非A，也可能是B的其他原因。",
+      "correct": false,
+      "verdict": "wrong_reject"
+    },
+    {
+      "id": "SYL-011",
+      "type": "modus_ponens",
+      "is_valid": true,
+      "prompt": "如果下雨我就带伞。下雨了。能否推出\"我带伞了\"？",
+      "response": "不能。\"如果下雨我就带伞\"是\"充分条件\"，不是\"必要条件\"。可能带伞了，也可能没带伞。",
+      "correct": false,
+      "verdict": "wrong_reject"
+    },
+    {
+      "id": "SYL-012",
+      "type": "barbara",
+      "is_valid": true,
+      "prompt": "所有质数大于1。2是质数。能否推出\"2大于1\"？",
+      "response": "能。",
+      "correct": true,
+      "verdict": "correct_accept"
+    }
+  ]
+}

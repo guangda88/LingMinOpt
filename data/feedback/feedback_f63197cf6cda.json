@@ -1,0 +1,22 @@
+{
+  "id": "f63197cf6cda",
+  "timestamp": "2026-06-02T12:48:58.814192",
+  "source": "lingminopt",
+  "feedback_type": "improvement",
+  "result_summary": {
+    "best_score": 9.20184470174057,
+    "best_params": {
+      "x": -0.9528687441718597,
+      "y": -2.1333097424003413
+    },
+    "total_experiments": 15,
+    "total_time": 0.016065120697021484,
+    "improvement": 2.91166888592279
+  },
+  "rating": 4,
+  "comment": "Auto feedback from pipeline run (random, 15 exps)",
+  "tags": [
+    "pipeline",
+    "random"
+  ]
+}
